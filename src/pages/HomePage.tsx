@@ -8,24 +8,22 @@ import BlogCard from '../components/BlogCard'
 import SEO from '../components/SEO'
 import { blogPosts } from '../data/blog-posts'
 
-// Footer is rendered globally in App.tsx — do NOT import or render it here
+// Footer is rendered globally in App.tsx — never import or render it here
 
-const pressItems = [
+const pressPreview = [
   {
-    num: '01',
     outlet: 'PRLog',
-    date: 'Nov 25, 2025',
+    date: 'Nov 2025',
     headline:
       'Daniel Rodriguez Expands PR and Reputation Management Services While Sharing Personal Life Update',
     url: 'https://www.prlog.org/13112958-daniel-rodriguez-expands-pr-and-reputation-management-services-while-sharing-personal-life-update.html',
   },
   {
-    num: '02',
-    outlet: 'PRLog',
-    date: 'May 20, 2025',
+    outlet: 'BizWire Express',
+    date: 'Sep 2025',
     headline:
-      'The Multi-Industry Strategist Helping Entrepreneurs, Homeowners, and Families Take Control',
-    url: 'https://www.prlog.org/13077658-daniel-rodriguezthe-multi-industry-strategist-helping-entrepreneurs-homeowners-and-families-take.html',
+      'Daniel Rodriguez Launches RAH Operations to Empower Small Businesses Nationwide',
+    url: 'https://www.bizwireexpress.com/showstory1888.php?storyid=1842',
   },
 ]
 
@@ -34,7 +32,7 @@ const services = [
     num: '01',
     title: 'Website Design & SEO',
     description:
-      'Premium websites, local SEO architecture, metadata, content structure, and conversion-focused page strategy.',
+      'Premium websites built to convert. Local SEO architecture, metadata, content structure, and search visibility.',
     href: 'https://www.rahoperations.com/website-design-and-seo',
   },
   {
@@ -48,7 +46,7 @@ const services = [
     num: '03',
     title: 'Business Credit',
     description:
-      'Business credit setup, funding readiness, vendor account strategy, and credibility-building structure for new and growing companies.',
+      'Business credit setup, funding readiness, vendor account strategy, and credibility-building structure.',
     href: 'https://www.rahoperations.com/business-credit-and-funding',
   },
 ]
@@ -65,29 +63,43 @@ function Reveal({
   className?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-70px' })
+  const inView = useInView(ref, { once: true, margin: '-60px' })
 
   const initial =
     from === 'left'
-      ? { opacity: 0, x: -55 }
+      ? { opacity: 0, x: -40 }
       : from === 'right'
-        ? { opacity: 0, x: 55 }
+        ? { opacity: 0, x: 40 }
         : from === 'scale'
-          ? { opacity: 0, scale: 0.93 }
-          : { opacity: 0, y: 45 }
+          ? { opacity: 0, scale: 0.96 }
+          : { opacity: 0, y: 32 }
 
   return (
     <motion.div
       ref={ref}
       initial={initial}
       animate={inView ? { opacity: 1, x: 0, y: 0, scale: 1 } : {}}
-      transition={{ duration: 1.0, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
       className={className}
     >
       {children}
     </motion.div>
   )
 }
+
+const label = (text: string) => (
+  <p
+    className="font-sans mb-5"
+    style={{
+      fontSize: '0.62rem',
+      letterSpacing: '0.45em',
+      textTransform: 'uppercase',
+      color: 'rgba(151,204,246,0.55)',
+    }}
+  >
+    {text}
+  </p>
+)
 
 export default function HomePage() {
   const previewPosts = blogPosts.slice(0, 3)
@@ -117,7 +129,7 @@ export default function HomePage() {
               ],
               jobTitle: 'Entrepreneur, Strategist & Business Builder',
               description:
-                'Scottsdale-based entrepreneur, founder of RAH Operations LLC, owner of SunVision Solar, and IAPDA-certified Senior Debt Specialist with expertise in digital marketing, SEO, business credit, and clean energy.',
+                'Scottsdale-based entrepreneur, founder of RAH Operations LLC, owner of SunVision Solar, and IAPDA-certified Senior Debt Specialist.',
               worksFor: {
                 '@type': 'Organization',
                 name: 'RAH Operations LLC',
@@ -130,14 +142,9 @@ export default function HomePage() {
                 addressCountry: 'US',
               },
               knowsAbout: [
-                'Digital Marketing',
-                'SEO',
-                'Website Design',
-                'Business Credit',
-                'Debt Relief',
-                'Solar Energy',
-                'Personal Branding',
-                'Sales Strategy',
+                'Digital Marketing', 'SEO', 'Website Design',
+                'Business Credit', 'Debt Relief', 'Solar Energy',
+                'Personal Branding', 'Sales Strategy',
               ],
             },
             {
@@ -145,8 +152,6 @@ export default function HomePage() {
               '@id': 'https://danielrodriguez.org/#website',
               name: 'Daniel Rodriguez',
               url: 'https://danielrodriguez.org',
-              description:
-                'Personal brand site for Daniel Rodriguez — Arizona entrepreneur, digital marketing strategist, and business builder.',
               author: { '@id': 'https://danielrodriguez.org/#person' },
             },
             {
@@ -155,52 +160,43 @@ export default function HomePage() {
               name: 'RAH Operations LLC',
               url: 'https://www.rahoperations.com',
               founder: { '@id': 'https://danielrodriguez.org/#person' },
-              description:
-                'Website design, SEO, digital marketing, and business credit services for entrepreneurs and small businesses.',
             },
           ],
         })}</script>
       </Helmet>
 
-      {/* Hero — protected, do not modify */}
+      {/* ── HERO — protected, do not modify ─────────────────── */}
       <Hero />
 
-      {/* Statement — protected, do not modify */}
+      {/* ── STATEMENT — protected, do not modify ─────────────── */}
       <Statement />
 
-      {/* ── PROOF STRIP ─────────────────────────────────────── */}
-      <section style={{ background: 'rgba(10,10,10,0.80)' }}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-24 lg:py-36">
+      {/* ── CREDIBILITY STRIP ───────────────────────────────── */}
+      <section style={{ background: 'rgba(10,10,10,0.82)' }}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16 lg:py-22">
           <Reveal from="up" delay={0}>
             <p
-              className="font-cormorant italic leading-relaxed max-w-3xl mb-12"
+              className="font-cormorant italic leading-relaxed max-w-2xl mb-8"
               style={{
-                fontSize: 'clamp(1.2rem, 2.2vw, 1.65rem)',
-                color: 'rgba(255,255,255,0.50)',
+                fontSize: 'clamp(1.1rem, 2vw, 1.45rem)',
+                color: 'rgba(255,255,255,0.45)',
               }}
             >
-              "Scottsdale-based entrepreneur. Founder, RAH Operations LLC. Owner, SunVision Solar.
-              Senior Certified Debt Specialist, IAPDA certified. Over a decade executing the
-              systems, credit structures, and marketing engines that make businesses grow."
+              Founder, RAH Operations LLC. Owner, SunVision Solar. IAPDA-certified Senior Debt
+              Specialist. Over a decade executing — not advising.
             </p>
           </Reveal>
 
-          <Reveal from="up" delay={0.14}>
-            <div className="flex flex-wrap gap-3">
-              {[
-                'Website Design',
-                'SEO & Digital Marketing',
-                'Business Credit',
-                'Debt Relief',
-                'IAPDA Certified',
-              ].map((chip) => (
+          <Reveal from="up" delay={0.1}>
+            <div className="flex flex-wrap gap-2.5">
+              {['Website Design', 'SEO', 'Digital Marketing', 'Business Credit', 'Debt Relief', 'IAPDA Certified'].map((chip) => (
                 <span
                   key={chip}
-                  className="font-sans uppercase tracking-[0.18em] px-4 py-2"
+                  className="font-sans uppercase tracking-[0.18em] px-3.5 py-1.5"
                   style={{
-                    fontSize: '0.62rem',
-                    border: '1px solid rgba(151,204,246,0.22)',
-                    color: 'rgba(151,204,246,0.65)',
+                    fontSize: '0.6rem',
+                    border: '1px solid rgba(151,204,246,0.20)',
+                    color: 'rgba(151,204,246,0.60)',
                   }}
                 >
                   {chip}
@@ -211,98 +207,88 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── RAH OPERATIONS SERVICES ─────────────────────────── */}
+      {/* ── RAH OPERATIONS SERVICE GATEWAY ──────────────────── */}
       <section style={{ background: 'rgba(10,10,10,0.76)' }}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-32 lg:py-48">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-32">
 
-          {/* Section header */}
-          <div className="mb-20">
-            <Reveal from="up" delay={0}>
-              <p
-                className="font-sans mb-6"
-                style={{
-                  fontSize: '0.65rem',
-                  letterSpacing: '0.45em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(151,204,246,0.6)',
-                }}
-              >
-                RAH Operations
-              </p>
-            </Reveal>
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-14">
+            <div>
+              <Reveal from="left" delay={0}>
+                {label('RAH Operations')}
+              </Reveal>
+              <Reveal from="left" delay={0.08}>
+                <h2
+                  className="font-display font-bold text-white"
+                  style={{
+                    fontSize: 'clamp(2rem, 4vw, 3.4rem)',
+                    lineHeight: '1.05',
+                    letterSpacing: '-0.025em',
+                  }}
+                >
+                  Business Growth Systems
+                  <br />
+                  <span className="italic" style={{ color: '#97CCF6' }}>Built to Scale.</span>
+                </h2>
+              </Reveal>
+            </div>
 
-            <Reveal from="up" delay={0.08}>
-              <h2
-                className="font-display font-bold text-white mb-8"
-                style={{
-                  fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-                  lineHeight: '1.0',
-                  letterSpacing: '-0.025em',
-                }}
+            <Reveal from="right" delay={0.12}>
+              <a
+                href="https://www.rahoperations.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-4 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white shrink-0"
+                style={{ fontSize: '0.65rem', color: '#97CCF6' }}
               >
-                Business Growth Systems
-                <br />
-                <span className="italic" style={{ color: '#97CCF6' }}>
-                  Built to Scale.
-                </span>
-              </h2>
-            </Reveal>
-
-            <Reveal from="up" delay={0.15}>
-              <p
-                className="font-sans leading-relaxed max-w-2xl"
-                style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.38)' }}
-              >
-                Daniel's work through RAH Operations connects website design, SEO, digital
-                marketing, and business credit into one practical growth system for entrepreneurs
-                and local businesses.
-              </p>
+                Visit RAH Operations
+                <span
+                  className="block h-px group-hover:w-12 transition-all duration-500"
+                  style={{ width: '2rem', background: 'currentColor' }}
+                />
+              </a>
             </Reveal>
           </div>
 
-          {/* Service grid — full cards are clickable */}
+          {/* Service cards — full card is clickable */}
           <div
             className="grid grid-cols-1 lg:grid-cols-3"
             style={{ border: '1px solid rgba(255,255,255,0.07)' }}
           >
             {services.map((service, i) => (
-              <Reveal key={service.title} from="up" delay={i * 0.1}>
+              <Reveal key={service.title} from="up" delay={i * 0.09}>
                 <a
                   href={service.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group block h-full p-10 lg:p-12 transition-colors duration-500"
+                  className="group block h-full p-8 lg:p-10 transition-colors duration-400"
                   style={{
-                    borderRight:
-                      i < services.length - 1
-                        ? '1px solid rgba(255,255,255,0.07)'
-                        : undefined,
+                    borderRight: i < 2 ? '1px solid rgba(255,255,255,0.07)' : undefined,
                     background: 'transparent',
                   }}
                   onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = 'rgba(151,204,246,0.025)')
+                    (e.currentTarget.style.background = 'rgba(151,204,246,0.028)')
                   }
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.background = 'transparent')
                   }
                 >
-                  <div className="flex flex-col h-full min-h-[18rem]">
-                    <div
-                      className="font-sans mb-8"
+                  <div className="flex flex-col h-full">
+                    <span
+                      className="font-sans mb-6 block"
                       style={{
-                        fontSize: '0.62rem',
+                        fontSize: '0.6rem',
                         letterSpacing: '0.4em',
                         textTransform: 'uppercase',
                         color: 'rgba(151,204,246,0.35)',
                       }}
                     >
                       {service.num}
-                    </div>
+                    </span>
 
                     <h3
-                      className="font-display font-semibold text-white mb-5 transition-colors duration-300 group-hover:text-gold"
+                      className="font-display font-semibold text-white mb-4 transition-colors duration-300 group-hover:text-gold"
                       style={{
-                        fontSize: 'clamp(1.25rem, 2vw, 1.55rem)',
+                        fontSize: 'clamp(1.15rem, 1.8vw, 1.4rem)',
                         lineHeight: '1.2',
                         letterSpacing: '-0.01em',
                       }}
@@ -311,25 +297,22 @@ export default function HomePage() {
                     </h3>
 
                     <p
-                      className="font-sans leading-relaxed flex-1 mb-10"
-                      style={{ fontSize: '0.865rem', color: 'rgba(255,255,255,0.32)' }}
+                      className="font-sans leading-relaxed flex-1 mb-8"
+                      style={{ fontSize: '0.845rem', color: 'rgba(255,255,255,0.30)' }}
                     >
                       {service.description}
                     </p>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                       <span
-                        className="font-sans font-medium tracking-widest uppercase transition-colors duration-300 group-hover:text-white"
-                        style={{ fontSize: '0.62rem', color: 'rgba(151,204,246,0.5)' }}
+                        className="font-sans tracking-widest uppercase transition-colors duration-300 group-hover:text-white"
+                        style={{ fontSize: '0.6rem', color: 'rgba(151,204,246,0.45)' }}
                       >
-                        Explore Service
+                        Explore
                       </span>
                       <span
-                        className="block h-px transition-all duration-500 group-hover:w-10"
-                        style={{
-                          width: '1.5rem',
-                          background: 'rgba(151,204,246,0.5)',
-                        }}
+                        className="block h-px transition-all duration-500 group-hover:w-8"
+                        style={{ width: '1.25rem', background: 'rgba(151,204,246,0.45)' }}
                       />
                     </div>
                   </div>
@@ -337,95 +320,99 @@ export default function HomePage() {
               </Reveal>
             ))}
           </div>
-
-          <Reveal from="up" delay={0.28}>
-            <div className="mt-12">
-              <a
-                href="https://www.rahoperations.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-center gap-5 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
-                style={{ fontSize: '0.72rem', color: '#97CCF6' }}
-              >
-                Visit RAH Operations
-                <span
-                  className="block h-px group-hover:w-14 transition-all duration-500"
-                  style={{ width: '2rem', background: 'currentColor' }}
-                />
-              </a>
-            </div>
-          </Reveal>
         </div>
       </section>
 
       {/* ── ABOUT PREVIEW ───────────────────────────────────── */}
       <section style={{ background: 'rgba(10,10,10,0.72)' }}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-32 lg:py-48">
-          <div className="max-w-2xl">
-            <Reveal from="left" delay={0}>
-              <p
-                className="font-sans mb-8"
-                style={{
-                  fontSize: '0.65rem',
-                  letterSpacing: '0.45em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(151,204,246,0.6)',
-                }}
-              >
-                001 / About
-              </p>
-            </Reveal>
+        <div
+          className="max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-28"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
+        >
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div>
+              <Reveal from="left" delay={0}>
+                {label('001 / About')}
+              </Reveal>
+              <Reveal from="left" delay={0.08}>
+                <h2
+                  className="font-display font-bold text-white mb-6"
+                  style={{
+                    fontSize: 'clamp(2rem, 3.8vw, 3.2rem)',
+                    lineHeight: '1.05',
+                    letterSpacing: '-0.025em',
+                  }}
+                >
+                  The Multi-Industry{' '}
+                  <span className="italic" style={{ color: '#97CCF6' }}>Operator.</span>
+                </h2>
+              </Reveal>
+              <Reveal from="left" delay={0.15}>
+                <p
+                  className="font-sans leading-relaxed mb-8"
+                  style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.42)' }}
+                >
+                  Scottsdale entrepreneur. Started in sales. Built into debt relief, business
+                  credit, digital marketing, and clean energy. Founder of RAH Operations LLC.
+                  IAPDA certified. He executes — he doesn't just advise.
+                </p>
+              </Reveal>
+              <Reveal from="left" delay={0.22}>
+                <Link
+                  to="/about"
+                  className="group inline-flex items-center gap-4 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
+                  style={{ fontSize: '0.65rem', color: '#97CCF6' }}
+                >
+                  Full Story
+                  <span
+                    className="block h-px group-hover:w-12 transition-all duration-500"
+                    style={{ width: '2rem', background: 'currentColor' }}
+                  />
+                </Link>
+              </Reveal>
+            </div>
 
-            <Reveal from="left" delay={0.1}>
-              <h2
-                className="font-display font-bold text-white mb-10"
-                style={{
-                  fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-                  lineHeight: '1.0',
-                  letterSpacing: '-0.025em',
-                }}
+            {/* Stats strip — right side */}
+            <Reveal from="right" delay={0.1}>
+              <div
+                className="grid grid-cols-2 gap-px"
+                style={{ background: 'rgba(255,255,255,0.06)' }}
               >
-                The Multi-Industry{' '}
-                <span className="italic" style={{ color: '#97CCF6' }}>
-                  Operator.
-                </span>
-              </h2>
-            </Reveal>
-
-            <Reveal from="left" delay={0.2}>
-              <p
-                className="font-sans leading-relaxed mb-5"
-                style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.45)' }}
-              >
-                Daniel Rodriguez is a Scottsdale-based entrepreneur who built his career on the
-                fundamentals — sales, financial literacy, and the ability to execute. Over more than
-                a decade, that foundation expanded into debt relief, business credit, digital
-                marketing, and clean energy, each discipline reinforcing the next.
-              </p>
-            </Reveal>
-
-            <Reveal from="left" delay={0.28}>
-              <p
-                className="font-sans leading-relaxed mb-12"
-                style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.45)' }}
-              >
-                Founder of RAH Operations LLC. Owner of SunVision Solar. IAPDA-certified Senior
-                Debt Specialist. He operates — he doesn't just advise.
-              </p>
-            </Reveal>
-
-            <Reveal from="left" delay={0.36}>
-              <Link
-                to="/about"
-                className="group inline-flex items-center gap-5 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
-                style={{ fontSize: '0.72rem', color: '#97CCF6' }}
-              >
-                Full Story
-                <span
-                  className="block h-px group-hover:w-14 transition-all duration-500"
-                  style={{ width: '2rem', background: 'currentColor' }}
-                />
-              </Link>
+                {[
+                  { value: '10+', label: 'Years Operating' },
+                  { value: '100+', label: 'Businesses Built' },
+                  { value: '4', label: 'Industries Led' },
+                  { value: 'IAPDA', label: 'Certified Specialist' },
+                ].map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="group px-8 py-9 text-center cursor-default"
+                    style={{ background: 'rgba(10,10,10,0.80)' }}
+                  >
+                    <div
+                      className="font-display font-bold text-white mb-2 group-hover:text-gold transition-colors duration-500"
+                      style={{
+                        fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)',
+                        letterSpacing: '-0.03em',
+                        lineHeight: 1,
+                      }}
+                    >
+                      {stat.value}
+                    </div>
+                    <div
+                      className="font-sans"
+                      style={{
+                        fontSize: '0.6rem',
+                        letterSpacing: '0.3em',
+                        textTransform: 'uppercase',
+                        color: 'rgba(255,255,255,0.26)',
+                      }}
+                    >
+                      {stat.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </Reveal>
           </div>
         </div>
@@ -433,206 +420,149 @@ export default function HomePage() {
 
       {/* ── PRESS PREVIEW ───────────────────────────────────── */}
       <section style={{ background: 'rgba(10,10,10,0.84)' }}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-32 lg:py-48">
-          <Reveal from="up" delay={0}>
-            <p
-              className="font-sans mb-6"
-              style={{
-                fontSize: '0.65rem',
-                letterSpacing: '0.45em',
-                textTransform: 'uppercase',
-                color: 'rgba(151,204,246,0.6)',
-              }}
-            >
-              002 / Press
-            </p>
-          </Reveal>
-
-          <Reveal from="up" delay={0.08}>
-            <h2
-              className="font-display font-bold text-white mb-4"
-              style={{
-                fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-                lineHeight: '1.0',
-                letterSpacing: '-0.025em',
-              }}
-            >
-              In The{' '}
-              <span className="italic" style={{ color: '#97CCF6' }}>
-                Media
-              </span>
-            </h2>
-          </Reveal>
-
-          <Reveal from="up" delay={0.14}>
-            <p
-              className="font-cormorant italic mb-16 max-w-xl"
-              style={{
-                fontSize: 'clamp(1.05rem, 1.8vw, 1.3rem)',
-                color: 'rgba(255,255,255,0.28)',
-              }}
-            >
-              Five features across four independent publications. All earned.
-            </p>
-          </Reveal>
+        <div
+          className="max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-28"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
+        >
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
+            <div>
+              <Reveal from="up" delay={0}>
+                {label('002 / Press')}
+              </Reveal>
+              <Reveal from="up" delay={0.06}>
+                <h2
+                  className="font-display font-bold text-white"
+                  style={{
+                    fontSize: 'clamp(2rem, 3.8vw, 3.2rem)',
+                    lineHeight: '1.05',
+                    letterSpacing: '-0.025em',
+                  }}
+                >
+                  In The{' '}
+                  <span className="italic" style={{ color: '#97CCF6' }}>Media</span>
+                </h2>
+              </Reveal>
+            </div>
+            <Reveal from="right" delay={0.1}>
+              <Link
+                to="/press"
+                className="group inline-flex items-center gap-4 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white shrink-0"
+                style={{ fontSize: '0.65rem', color: '#97CCF6' }}
+              >
+                All 5 Features
+                <span
+                  className="block h-px group-hover:w-10 transition-all duration-500"
+                  style={{ width: '1.75rem', background: 'currentColor' }}
+                />
+              </Link>
+            </Reveal>
+          </div>
 
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-            {pressItems.map((item, i) => (
-              <Reveal key={item.num} from={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.08}>
+            {pressPreview.map((item, i) => (
+              <Reveal key={item.outlet + i} from={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.07}>
                 <motion.a
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group block py-9"
+                  className="group flex items-start gap-6 py-7"
                   style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
-                  whileHover={{ x: i % 2 === 0 ? 6 : -6 }}
-                  transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+                  whileHover={{ x: i % 2 === 0 ? 5 : -5 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 >
-                  <div className="flex items-start gap-8">
+                  <div className="flex flex-col gap-1.5 shrink-0 pt-0.5" style={{ minWidth: '5rem' }}>
                     <span
-                      className="font-sans pt-0.5 shrink-0"
-                      style={{
-                        fontSize: '0.62rem',
-                        letterSpacing: '0.4em',
-                        textTransform: 'uppercase',
-                        color: 'rgba(151,204,246,0.28)',
-                        width: '3rem',
-                      }}
+                      className="font-display font-semibold"
+                      style={{ fontSize: '0.78rem', color: '#97CCF6' }}
                     >
-                      {item.num}
+                      {item.outlet}
                     </span>
-                    <div className="flex-1">
-                      <div className="flex flex-wrap items-center gap-4 mb-3">
-                        <span
-                          className="font-display font-semibold"
-                          style={{ fontSize: '0.8rem', color: '#97CCF6' }}
-                        >
-                          {item.outlet}
-                        </span>
-                        <span
-                          className="font-sans tracking-widest"
-                          style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.2)' }}
-                        >
-                          {item.date}
-                        </span>
-                      </div>
-                      <p
-                        className="font-display font-semibold text-white group-hover:text-gold transition-colors duration-300"
-                        style={{
-                          fontSize: 'clamp(0.95rem, 1.5vw, 1.15rem)',
-                          lineHeight: '1.4',
-                          letterSpacing: '-0.01em',
-                        }}
-                      >
-                        {item.headline}
-                      </p>
-                    </div>
+                    <span
+                      className="font-sans"
+                      style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.22)' }}
+                    >
+                      {item.date}
+                    </span>
                   </div>
+                  <p
+                    className="font-display font-semibold text-white group-hover:text-gold transition-colors duration-300 flex-1"
+                    style={{
+                      fontSize: 'clamp(0.9rem, 1.4vw, 1.1rem)',
+                      lineHeight: '1.45',
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    {item.headline}
+                  </p>
                 </motion.a>
               </Reveal>
             ))}
           </div>
-
-          <Reveal from="up" delay={0.2}>
-            <div className="mt-12">
-              <Link
-                to="/press"
-                className="group inline-flex items-center gap-5 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
-                style={{ fontSize: '0.72rem', color: '#97CCF6' }}
-              >
-                View All Coverage
-                <span
-                  className="block h-px group-hover:w-14 transition-all duration-500"
-                  style={{ width: '2rem', background: 'currentColor' }}
-                />
-              </Link>
-            </div>
-          </Reveal>
         </div>
       </section>
 
       {/* ── BLOG PREVIEW ────────────────────────────────────── */}
       <section style={{ background: 'rgba(10,10,10,0.78)' }}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-32 lg:py-48">
-          <Reveal from="up" delay={0}>
-            <p
-              className="font-sans mb-6"
-              style={{
-                fontSize: '0.65rem',
-                letterSpacing: '0.45em',
-                textTransform: 'uppercase',
-                color: 'rgba(151,204,246,0.6)',
-              }}
-            >
-              003 / Insights
-            </p>
-          </Reveal>
+        <div
+          className="max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-28"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
+        >
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
+            <div>
+              <Reveal from="up" delay={0}>
+                {label('003 / Insights')}
+              </Reveal>
+              <Reveal from="up" delay={0.06}>
+                <h2
+                  className="font-display font-bold text-white"
+                  style={{
+                    fontSize: 'clamp(2rem, 3.8vw, 3.2rem)',
+                    lineHeight: '1.05',
+                    letterSpacing: '-0.025em',
+                  }}
+                >
+                  From The{' '}
+                  <span className="italic" style={{ color: '#97CCF6' }}>Field</span>
+                </h2>
+              </Reveal>
+            </div>
+            <Reveal from="right" delay={0.1}>
+              <Link
+                to="/blog"
+                className="group inline-flex items-center gap-4 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white shrink-0"
+                style={{ fontSize: '0.65rem', color: '#97CCF6' }}
+              >
+                All Articles
+                <span
+                  className="block h-px group-hover:w-10 transition-all duration-500"
+                  style={{ width: '1.75rem', background: 'currentColor' }}
+                />
+              </Link>
+            </Reveal>
+          </div>
 
-          <Reveal from="up" delay={0.08}>
-            <h2
-              className="font-display font-bold text-white mb-4"
-              style={{
-                fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-                lineHeight: '1.0',
-                letterSpacing: '-0.025em',
-              }}
-            >
-              From The{' '}
-              <span className="italic" style={{ color: '#97CCF6' }}>
-                Field
-              </span>
-            </h2>
-          </Reveal>
-
-          <Reveal from="up" delay={0.14}>
-            <p
-              className="font-cormorant italic mb-16 max-w-xl"
-              style={{
-                fontSize: 'clamp(1.05rem, 1.8vw, 1.3rem)',
-                color: 'rgba(255,255,255,0.28)',
-              }}
-            >
-              Practical perspectives on SEO, business credit, website design, and building a brand
-              that actually works.
-            </p>
-          </Reveal>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-14">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
             {previewPosts.map((post, i) => (
               <BlogCard key={post.id} post={post} index={i} />
             ))}
           </div>
-
-          <Reveal from="up" delay={0.1}>
-            <Link
-              to="/blog"
-              className="group inline-flex items-center gap-5 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
-              style={{ fontSize: '0.72rem', color: '#97CCF6' }}
-            >
-              Read All Articles
-              <span
-                className="block h-px group-hover:w-14 transition-all duration-500"
-                style={{ width: '2rem', background: 'currentColor' }}
-              />
-            </Link>
-          </Reveal>
         </div>
       </section>
 
       {/* ── CONTACT CTA ─────────────────────────────────────── */}
       <section
         style={{
-          background: 'rgba(10,10,10,0.92)',
-          borderTop: '1px solid rgba(255,255,255,0.06)',
+          background: 'rgba(10,10,10,0.94)',
+          borderTop: '1px solid rgba(255,255,255,0.07)',
         }}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-36 lg:py-52">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-24 lg:py-40">
           <Reveal from="scale" delay={0}>
             <div className="max-w-3xl">
               <p
-                className="font-sans mb-10"
+                className="font-sans mb-8"
                 style={{
-                  fontSize: '0.65rem',
+                  fontSize: '0.62rem',
                   letterSpacing: '0.45em',
                   textTransform: 'uppercase',
                   color: 'rgba(151,204,246,0.5)',
@@ -642,44 +572,32 @@ export default function HomePage() {
               </p>
 
               <h2
-                className="font-display font-bold text-white mb-8"
+                className="font-display font-bold text-white mb-7"
                 style={{
-                  fontSize: 'clamp(2.8rem, 6.5vw, 5.5rem)',
-                  lineHeight: '0.95',
+                  fontSize: 'clamp(2.6rem, 6vw, 5rem)',
+                  lineHeight: '0.96',
                   letterSpacing: '-0.03em',
                 }}
               >
                 Ready to build
                 <br />
-                <span className="italic" style={{ color: '#97CCF6' }}>
-                  something real?
-                </span>
+                <span className="italic" style={{ color: '#97CCF6' }}>something real?</span>
               </h2>
 
               <p
-                className="font-sans leading-relaxed mb-6 max-w-xl"
-                style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.38)' }}
+                className="font-sans leading-relaxed mb-10 max-w-lg"
+                style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.36)' }}
               >
-                Daniel works with a limited number of clients each quarter — business owners,
-                entrepreneurs, and operators who are serious about growing in revenue, reputation,
-                or reach.
+                Daniel works with a limited number of clients each quarter — business owners
+                and entrepreneurs serious about growing in revenue, reputation, or reach.
               </p>
 
-              <p
-                className="font-sans leading-relaxed mb-14 max-w-xl"
-                style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.28)' }}
-              >
-                Website design, SEO, digital marketing, business credit, debt relief strategy —
-                or just a direct conversation about where your business is and what it could
-                become.
-              </p>
-
-              <div className="flex flex-wrap gap-5">
+              <div className="flex flex-wrap gap-4">
                 <Link
                   to="/contact"
-                  className="font-sans font-medium tracking-widest uppercase px-8 py-4 transition-all duration-300 hover:opacity-90"
+                  className="font-sans font-medium tracking-widest uppercase px-7 py-3.5 transition-all duration-300 hover:opacity-90"
                   style={{
-                    fontSize: '0.72rem',
+                    fontSize: '0.7rem',
                     background: '#97CCF6',
                     color: '#0a0a0a',
                   }}
@@ -688,11 +606,11 @@ export default function HomePage() {
                 </Link>
                 <Link
                   to="/about"
-                  className="font-sans font-medium tracking-widest uppercase px-8 py-4 border transition-all duration-300 hover:bg-white/5"
+                  className="font-sans font-medium tracking-widest uppercase px-7 py-3.5 border transition-all duration-300 hover:bg-white/5"
                   style={{
-                    fontSize: '0.72rem',
-                    borderColor: 'rgba(255,255,255,0.15)',
-                    color: 'rgba(255,255,255,0.45)',
+                    fontSize: '0.7rem',
+                    borderColor: 'rgba(255,255,255,0.14)',
+                    color: 'rgba(255,255,255,0.42)',
                   }}
                 >
                   Learn About Daniel

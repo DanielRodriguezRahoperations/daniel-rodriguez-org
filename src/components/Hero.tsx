@@ -5,11 +5,19 @@ export default function Hero() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const progress = useMotionValue(0)
 
-  const danielX    = useTransform(progress, [0, 0.3], [-700, 0])
-  const rodriguezX = useTransform(progress, [0, 0.3], [700,  0])
-  const textOpacity = useTransform(progress, [0, 0.2], [0, 1])
-  const marqueeX   = useTransform(progress, [0.2, 1], ['0%', '-35%'])
-  const taglineOpacity = useTransform(progress, [0.25, 0.45], [0, 1])
+  /*
+    Scroll timeline adjustments:
+    - Container reduced from 400vh → 220vh (120vh of actual scroll travel).
+    - Text starts at 65% opacity / ±220px offset so content is visible on
+      first load with no scrolling required — eliminates the black screen.
+    - All animation trigger points compressed to match the shorter travel.
+    - marqueeX starts later (0.30) so the slide-in finishes before marquee moves.
+  */
+  const danielX        = useTransform(progress, [0, 0.45], [-220, 0])
+  const rodriguezX     = useTransform(progress, [0, 0.45], [220, 0])
+  const textOpacity    = useTransform(progress, [0, 0.12], [0.65, 1])
+  const marqueeX       = useTransform(progress, [0.30, 1], ['0%', '-35%'])
+  const taglineOpacity = useTransform(progress, [0.38, 0.62], [0, 1])
 
   useEffect(() => {
     const section = sectionRef.current
@@ -23,21 +31,32 @@ export default function Hero() {
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
+    // Initialize immediately — prevents blank frame on first render
+    onScroll()
     return () => window.removeEventListener('scroll', onScroll)
   }, [progress])
 
   return (
-    <div ref={sectionRef} style={{ height: '400vh' }}>
+    /* 220vh spacer — 120vh of actual scroll travel after the sticky viewport */
+    <div ref={sectionRef} style={{ height: '220vh' }}>
 
-      <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
+      {/*
+        hero-viewport class applies:  height: 100vh; height: 100dvh;
+        dvh = dynamic viewport height — excludes mobile browser chrome,
+        preventing the black gap that 100vh causes on iOS/Android.
+      */}
+      <div
+        className="hero-viewport"
+        style={{ position: 'sticky', top: 0, overflow: 'hidden' }}
+      >
 
-        {/* Gradient — bottom fade for text legibility */}
+        {/* Gradient overlay — bottom fade for text legibility */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
           background: 'linear-gradient(to top, rgba(10,10,10,0.7) 0%, transparent 45%), linear-gradient(to bottom, rgba(10,10,10,0.25) 0%, transparent 25%)',
         }} />
 
-        {/* Daniel + Rodriguez name */}
+        {/* Daniel + Rodriguez name — starts at 65% opacity, ±220px offset */}
         <motion.div style={{
           position: 'absolute', inset: 0, zIndex: 2,
           display: 'flex', flexDirection: 'column',

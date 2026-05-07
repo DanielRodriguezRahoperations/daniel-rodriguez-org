@@ -65,3 +65,13 @@ body {
   outline: 2px solid var(--color-gold);
   outline-offset: 2px;
 }
+
+/*
+  Hero sticky viewport — uses dvh (dynamic viewport height) so the
+  sticky panel fills exactly the visible area on mobile without the
+  browser chrome cutting into it. Falls back to 100vh on older browsers.
+*/
+.hero-viewport {
+  height: 100vh;
+  height: 100dvh;
+}
