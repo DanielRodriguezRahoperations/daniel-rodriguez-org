@@ -1,52 +1,129 @@
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import { motion, useMotionValue, useTransform } from 'framer-motion'
 
 export default function Hero() {
-  const { scrollY } = useScroll()
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const progress = useMotionValue(0)
+  const rafRef = useRef<number | null>(null)
 
-  const textY = useTransform(scrollY, [0, 400], [200, 0])
-  const textOpacity = useTransform(scrollY, [0, 300], [0, 1])
+  // Daniel slides from left → center, Rodriguez from right → center
+  const danielX   = useTransform(progress, [0, 0.3], [-600, 0])
+  const rodriguezX = useTransform(progress, [0, 0.3], [600,  0])
+  const textOpacity = useTransform(progress, [0, 0.2], [0, 1])
+
+  useEffect(() => {
+    const video = videoRef.current
+    const section = sectionRef.current
+    if (!video || !section) return
+
+    // Never autoplay — scroll controls everything
+    video.pause()
+    video.currentTime = 0
+
+    const onScroll = () => {
+      const scrolled = Math.max(0, window.scrollY - section.offsetTop)
+      const scrollable = section.offsetHeight - window.innerHeight
+      const p = Math.min(1, scrolled / Math.max(1, scrollable))
+      progress.set(p)
+
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(() => {
+        if (video.duration) video.currentTime = p * video.duration
+      })
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [progress])
 
   return (
-    <section className="relative h-screen bg-[#0a0a0a] overflow-hidden">
+    // Tall section gives scroll room to drive the video and text
+    <div ref={sectionRef} style={{ height: '400vh' }}>
 
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        src="/hero.mp4"
-        className="absolute inset-0 w-full h-full object-contain"
-      />
+      {/* Sticky viewport — video stays fullscreen while you scroll */}
+      <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', background: '#0a0a0a' }}>
 
-      <div className="absolute inset-0 bg-black/30" />
-      <div className="absolute bottom-0 left-0 right-0 h-56 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
+        {/* Video — fullscreen background, no autoplay */}
+        <video
+          ref={videoRef}
+          src="/hero.mp4"
+          muted
+          playsInline
+          preload="auto"
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            objectFit: 'contain',
+            zIndex: 0,
+          }}
+        />
 
-      <motion.div
-        className="absolute inset-0 flex flex-col items-center justify-end pb-28 px-6"
-        style={{ y: textY, opacity: textOpacity }}
-      >
-        <h1
-          className="font-display text-center leading-none mb-5"
-          style={{ fontFamily: "'Playfair Display', serif" }}
+        {/* Overlay */}
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 1,
+          background: 'linear-gradient(to top, #0a0a0a 0%, transparent 40%), linear-gradient(to bottom, rgba(10,10,10,0.35) 0%, transparent 30%)',
+        }} />
+
+        {/* Hero text — slides in from left/right as you scroll */}
+        <motion.div
+          style={{
+            position: 'absolute', inset: 0, zIndex: 2,
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'flex-end',
+            paddingBottom: '7rem', paddingLeft: '1.5rem', paddingRight: '1.5rem',
+            opacity: textOpacity,
+          }}
         >
-          <span className="block text-white font-black"
-            style={{ fontSize: 'clamp(4rem, 12vw, 10rem)', letterSpacing: '-0.02em' }}>
-            Daniel
-          </span>
-          <span className="block text-white font-black italic"
-            style={{ fontSize: 'clamp(3.5rem, 11vw, 9rem)', letterSpacing: '-0.02em', marginTop: '-0.1em' }}>
-            Rodriguez
-          </span>
-        </h1>
+          <div style={{ textAlign: 'center', lineHeight: 0.9, marginBottom: '1.2rem', overflow: 'hidden' }}>
+            {/* Daniel — from left */}
+            <motion.div style={{ x: danielX }}>
+              <span style={{
+                display: 'block',
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 900,
+                fontSize: 'clamp(4rem, 12vw, 10rem)',
+                color: '#ffffff',
+                letterSpacing: '-0.02em',
+              }}>
+                Daniel
+              </span>
+            </motion.div>
 
-        <p
-          className="text-white/55 italic text-center"
-          style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(1rem, 2vw, 1.4rem)', letterSpacing: '0.04em' }}
-        >
-          Transform Your Narrative. Build Your Legacy.
-        </p>
-      </motion.div>
+            {/* Rodriguez — from right */}
+            <motion.div style={{ x: rodriguezX }}>
+              <span style={{
+                display: 'block',
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 900,
+                fontStyle: 'italic',
+                fontSize: 'clamp(3.5rem, 11vw, 9rem)',
+                color: '#ffffff',
+                letterSpacing: '-0.02em',
+                marginTop: '-0.08em',
+              }}>
+                Rodriguez
+              </span>
+            </motion.div>
+          </div>
 
-    </section>
+          {/* Tagline */}
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(1rem, 2vw, 1.35rem)',
+            fontStyle: 'italic',
+            color: 'rgba(255,255,255,0.5)',
+            letterSpacing: '0.05em',
+            textAlign: 'center',
+          }}>
+            Transform Your Narrative. Build Your Legacy.
+          </p>
+        </motion.div>
+
+      </div>
+    </div>
   )
 }
