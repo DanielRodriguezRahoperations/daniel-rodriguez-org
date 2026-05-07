@@ -30,24 +30,32 @@ const pillars = [
   },
 ]
 
-function FadeIn({
+function SlideIn({
   children,
   delay = 0,
+  from = 'left',
   className = '',
 }: {
   children: React.ReactNode
   delay?: number
+  from?: 'left' | 'right' | 'up' | 'scale'
   className?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
+  const initial =
+    from === 'left'  ? { opacity: 0, x: -60 } :
+    from === 'right' ? { opacity: 0, x: 60 } :
+    from === 'scale' ? { opacity: 0, scale: 0.88 } :
+                       { opacity: 0, y: 50 }
+
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
+      initial={initial}
+      animate={inView ? { opacity: 1, x: 0, y: 0, scale: 1 } : {}}
+      transition={{ duration: 1, delay, ease: [0.16, 1, 0.3, 1] }}
       className={className}
     >
       {children}
@@ -57,107 +65,113 @@ function FadeIn({
 
 export default function About() {
   return (
-    <section id="about" className="py-32 lg:py-48 px-6 lg:px-12 max-w-7xl mx-auto">
+    <section
+      id="about"
+      className="py-32 lg:py-48 px-6 lg:px-12 max-w-7xl mx-auto"
+      style={{ background: 'rgba(10,10,10,0.72)' }}
+    >
       {/* Two-column: text + 3D */}
-      <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center mb-28">
-        {/* Left — Text */}
-        <div>
-          <FadeIn>
-            <p className="font-sans text-xs tracking-[0.4em] uppercase text-gold/70 mb-8">
-              About
-            </p>
-          </FadeIn>
+      <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center mb-32">
 
-          <FadeIn delay={0.1}>
-            <h2 className="font-display text-[clamp(2.5rem,5vw,4rem)] font-bold text-white leading-tight mb-10">
+        {/* Left — Text: slides from left */}
+        <div>
+          <SlideIn from="left" delay={0}>
+            <p className="font-sans text-xs tracking-[0.4em] uppercase text-gold/70 mb-8">
+              001 / About
+            </p>
+          </SlideIn>
+
+          <SlideIn from="left" delay={0.1}>
+            <h2 className="font-display text-[clamp(2.8rem,5.5vw,4.5rem)] font-bold text-white leading-tight mb-10">
               The Multi-Industry
               <br />
               <span className="italic text-gold">Strategist</span>
             </h2>
-          </FadeIn>
+          </SlideIn>
 
-          <FadeIn delay={0.2}>
-            <blockquote className="font-cormorant text-[clamp(1.2rem,2.2vw,1.6rem)] italic text-gold/80 leading-relaxed mb-10 pl-6 border-l border-gold/30">
+          <SlideIn from="left" delay={0.2}>
+            <blockquote className="font-cormorant text-[clamp(1.2rem,2.2vw,1.6rem)] italic text-gold/75 leading-relaxed mb-10 pl-6 border-l-2 border-gold/40">
               "When you search for Daniel Rodriguez, you'll find a driven, multi-faceted professional with one mission — to help people grow in business, finances, and life."
             </blockquote>
-          </FadeIn>
+          </SlideIn>
 
-          <FadeIn delay={0.3}>
+          <SlideIn from="left" delay={0.3}>
             <p className="font-sans text-base text-white/55 leading-relaxed mb-6">
               Daniel Rodriguez is a Scottsdale-based entrepreneur and strategist passionate
               about helping others succeed. He is the Founder of RAH Operations LLC, the
               Owner of SunVision Solar, and a Senior Certified Debt Specialist with an IAPDA
               certification.
             </p>
-          </FadeIn>
+          </SlideIn>
 
-          <FadeIn delay={0.4}>
+          <SlideIn from="left" delay={0.4}>
             <p className="font-sans text-base text-white/55 leading-relaxed mb-12">
               With over a decade of experience in digital marketing, SEO, business credit
               building, and solar energy, Daniel empowers everyday people to grow their
               income, rebuild their credit, and create real freedom — no matter where they're
               starting from.
             </p>
-          </FadeIn>
+          </SlideIn>
 
-          <FadeIn delay={0.5}>
+          <SlideIn from="left" delay={0.5}>
             <a
               href="#contact"
-              className="group inline-flex items-center gap-4 font-sans text-sm font-medium tracking-widest uppercase text-gold hover:text-gold-light transition-colors duration-300"
+              className="group inline-flex items-center gap-4 font-sans text-sm font-medium tracking-widest uppercase text-gold hover:text-white transition-colors duration-300"
             >
               Work With Daniel
               <span className="w-8 h-px bg-gold group-hover:w-16 transition-all duration-500" />
             </a>
-          </FadeIn>
+          </SlideIn>
         </div>
 
-        {/* Right — Three.js Canvas with 3D depth wrapper */}
-        <FadeIn delay={0.2} className="relative h-[500px] lg:h-[600px]">
-          {/* Depth glow layers for dimensionality */}
+        {/* Right — 3D canvas: slides from right */}
+        <SlideIn from="right" delay={0.2} className="relative h-[500px] lg:h-[600px]">
           <div className="absolute inset-0 rounded-2xl bg-gradient-radial from-gold/5 via-transparent to-transparent pointer-events-none z-10" />
           <div className="absolute -inset-4 rounded-3xl border border-gold/5 pointer-events-none" />
-          <div className="absolute -inset-8 rounded-3xl border border-gold/[0.03] pointer-events-none" />
           <FloatingGeometry />
-        </FadeIn>
+        </SlideIn>
       </div>
 
-      {/* Stats row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/5 rounded-sm overflow-hidden mb-28">
+      {/* Stats — stagger up, no card backgrounds */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 border border-white/8 mb-32">
         {stats.map((stat, i) => (
-          <FadeIn key={stat.label} delay={i * 0.1}>
-            <div className="bg-[#0a0a0a] px-8 py-10 text-center group hover:bg-[#111] transition-colors duration-500">
-              <div className="font-display text-[clamp(2rem,4vw,3rem)] font-bold text-gold mb-2 group-hover:scale-105 transition-transform duration-300">
+          <SlideIn key={stat.label} from="up" delay={i * 0.1}>
+            <div className="px-8 py-12 text-center border-r border-white/8 last:border-r-0 group">
+              <div className="font-display text-[clamp(2.2rem,4.5vw,3.5rem)] font-bold text-gold mb-3 group-hover:scale-110 transition-transform duration-400">
                 {stat.value}
               </div>
-              <div className="font-sans text-xs tracking-[0.25em] uppercase text-white/40">
+              <div className="font-sans text-xs tracking-[0.3em] uppercase text-white/35">
                 {stat.label}
               </div>
             </div>
-          </FadeIn>
+          </SlideIn>
         ))}
       </div>
 
-      {/* Three pillars */}
-      <div className="grid md:grid-cols-3 gap-px bg-white/5 rounded-sm overflow-hidden">
-        {pillars.map((pillar, i) => (
-          <FadeIn key={pillar.title} delay={i * 0.12}>
-            <div
-              className="bg-[#0a0a0a] p-10 lg:p-12 group hover:bg-[#0f0f0f] transition-all duration-500"
-              style={{ perspective: '800px' }}
-            >
-              <div className="font-sans text-xs tracking-[0.4em] text-gold/40 mb-6">
-                {pillar.num}
+      {/* Pillars — scale reveal, no card backgrounds */}
+      <div>
+        <SlideIn from="up" delay={0}>
+          <p className="font-sans text-xs tracking-[0.4em] uppercase text-gold/50 mb-16">
+            Areas of Expertise
+          </p>
+        </SlideIn>
+        <div className="divide-y divide-white/8">
+          {pillars.map((pillar, i) => (
+            <SlideIn key={pillar.title} from="scale" delay={i * 0.14}>
+              <div className="group py-12 grid md:grid-cols-[120px_1fr_2fr] gap-8 items-start hover:pl-4 transition-all duration-500">
+                <div className="font-sans text-xs tracking-[0.4em] text-gold/40 pt-1">
+                  {pillar.num}
+                </div>
+                <h3 className="font-display text-2xl lg:text-3xl font-semibold text-white group-hover:text-gold transition-colors duration-300">
+                  {pillar.title}
+                </h3>
+                <p className="font-sans text-sm text-white/40 leading-relaxed">
+                  {pillar.description}
+                </p>
               </div>
-              <div className="w-8 h-px bg-gold mb-8 group-hover:w-16 transition-all duration-500" />
-              <h3 className="font-display text-2xl font-semibold text-white mb-4">
-                {pillar.title}
-              </h3>
-              <p className="font-sans text-sm text-white/40 leading-relaxed">
-                {pillar.description}
-              </p>
-            </div>
-          </FadeIn>
-        ))}
+            </SlideIn>
+          ))}
+        </div>
       </div>
     </section>
   )

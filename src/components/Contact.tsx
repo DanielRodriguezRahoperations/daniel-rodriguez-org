@@ -1,23 +1,30 @@
 import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 
-function FadeIn({
-  children,
-  delay = 0,
-  className = '',
-}: {
-  children: React.ReactNode
-  delay?: number
-  className?: string
-}) {
+function ScaleIn({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
-
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
+      initial={{ opacity: 0, scale: 0.9, y: 30 }}
+      animate={inView ? { opacity: 1, scale: 1, y: 0 } : {}}
+      transition={{ duration: 1, delay, ease: [0.16, 1, 0.3, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+function SlideIn({ children, delay = 0, from = 'left', className = '' }: { children: React.ReactNode; delay?: number; from?: 'left' | 'right'; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-40px' })
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, x: from === 'left' ? -40 : 40 }}
+      animate={inView ? { opacity: 1, x: 0 } : {}}
       transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
       className={className}
     >
@@ -31,16 +38,9 @@ const inputClass =
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false)
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    company: '',
-    message: '',
-  })
+  const [form, setForm] = useState({ name: '', email: '', company: '', message: '' })
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
@@ -53,18 +53,23 @@ export default function Contact() {
   const headerInView = useInView(headerRef, { once: true, margin: '-80px' })
 
   return (
-    <section id="contact" className="py-32 lg:py-48 px-6 lg:px-12">
+    <section
+      id="contact"
+      className="py-32 lg:py-48 px-6 lg:px-12"
+      style={{ background: 'rgba(10,10,10,0.80)' }}
+    >
       <div className="max-w-7xl mx-auto">
-        {/* Large header */}
+
+        {/* Heading — rotate-in effect */}
         <motion.div
           ref={headerRef}
-          initial={{ opacity: 0, y: 60 }}
-          animate={headerInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, y: 60, rotate: -1 }}
+          animate={headerInView ? { opacity: 1, y: 0, rotate: 0 } : {}}
+          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
           className="mb-24 lg:mb-32"
         >
           <p className="font-sans text-xs tracking-[0.4em] uppercase text-gold/70 mb-8">
-            Work With Me
+            003 / Work With Me
           </p>
           <h2 className="font-display text-[clamp(3rem,8vw,7rem)] font-bold text-white leading-[0.92] tracking-tight">
             Begin Your
@@ -75,173 +80,85 @@ export default function Contact() {
 
         {/* Two columns */}
         <div className="grid lg:grid-cols-2 gap-20 lg:gap-32">
-          {/* Left — Quote + contact details */}
+
+          {/* Left — Quote + contact details: slide from left */}
           <div>
-            <FadeIn delay={0.1}>
-              <blockquote className="font-cormorant text-[clamp(1.3rem,2.5vw,1.7rem)] italic text-white/50 leading-relaxed mb-16 pl-6 border-l border-gold/30">
+            <SlideIn from="left" delay={0.1}>
+              <blockquote className="font-cormorant text-[clamp(1.3rem,2.5vw,1.7rem)] italic text-white/45 leading-relaxed mb-16 pl-6 border-l-2 border-gold/30">
                 "The most powerful brands in the world didn't happen by accident.
                 They were built — deliberately, strategically, and with an
                 unwavering commitment to a singular vision."
               </blockquote>
-            </FadeIn>
+            </SlideIn>
 
             <div className="space-y-8">
-              <FadeIn delay={0.2}>
-                <div>
-                  <p className="font-sans text-xs tracking-[0.3em] uppercase text-gold/50 mb-2">
-                    Email
-                  </p>
-                  <a
-                    href="mailto:daniel@rahoperations.com"
-                    className="font-sans text-base text-white/60 hover:text-gold transition-colors duration-300"
-                  >
-                    daniel@rahoperations.com
-                  </a>
-                </div>
-              </FadeIn>
+              {[
+                { label: 'Email', content: 'daniel@rahoperations.com', href: 'mailto:daniel@rahoperations.com' },
+                { label: 'Phone', content: '623-640-8884', href: 'tel:6236408884' },
+                { label: 'Location', content: 'Scottsdale, Arizona', href: null },
+                { label: 'Availability', content: 'Accepting select clients — 2026', href: null },
+              ].map((item, i) => (
+                <SlideIn key={item.label} from="left" delay={0.15 + i * 0.07}>
+                  <div>
+                    <p className="font-sans text-xs tracking-[0.3em] uppercase text-gold/45 mb-2">
+                      {item.label}
+                    </p>
+                    {item.href ? (
+                      <a href={item.href} className="font-sans text-base text-white/55 hover:text-gold transition-colors duration-300">
+                        {item.content}
+                      </a>
+                    ) : (
+                      <p className="font-sans text-base text-white/55">{item.content}</p>
+                    )}
+                  </div>
+                </SlideIn>
+              ))}
 
-              <FadeIn delay={0.25}>
+              <SlideIn from="left" delay={0.45}>
                 <div>
-                  <p className="font-sans text-xs tracking-[0.3em] uppercase text-gold/50 mb-2">
-                    Phone
-                  </p>
-                  <a
-                    href="tel:6236408884"
-                    className="font-sans text-base text-white/60 hover:text-gold transition-colors duration-300"
-                  >
-                    623-640-8884
-                  </a>
-                </div>
-              </FadeIn>
-
-              <FadeIn delay={0.3}>
-                <div>
-                  <p className="font-sans text-xs tracking-[0.3em] uppercase text-gold/50 mb-2">
-                    Location
-                  </p>
-                  <p className="font-sans text-base text-white/60">
-                    Scottsdale, Arizona
-                  </p>
-                </div>
-              </FadeIn>
-
-              <FadeIn delay={0.35}>
-                <div>
-                  <p className="font-sans text-xs tracking-[0.3em] uppercase text-gold/50 mb-2">
-                    Availability
-                  </p>
-                  <p className="font-sans text-base text-white/60">
-                    Accepting select clients — 2026
-                  </p>
-                </div>
-              </FadeIn>
-
-              <FadeIn delay={0.4}>
-                <div>
-                  <p className="font-sans text-xs tracking-[0.3em] uppercase text-gold/50 mb-4">
-                    Follow
-                  </p>
+                  <p className="font-sans text-xs tracking-[0.3em] uppercase text-gold/45 mb-4">Follow</p>
                   <div className="flex gap-6">
-                    <a
-                      href="https://www.linkedin.com/in/danielrodriguez-scottsdale/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-sans text-sm text-white/40 hover:text-gold transition-colors duration-300"
-                    >
-                      LinkedIn
-                    </a>
-                    <a
-                      href="https://www.instagram.com/drod6211/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-sans text-sm text-white/40 hover:text-gold transition-colors duration-300"
-                    >
-                      Instagram
-                    </a>
+                    <a href="https://www.linkedin.com/in/danielrodriguez-scottsdale/" target="_blank" rel="noopener noreferrer"
+                      className="font-sans text-sm text-white/35 hover:text-gold transition-colors duration-300">LinkedIn</a>
+                    <a href="https://www.instagram.com/drod6211/" target="_blank" rel="noopener noreferrer"
+                      className="font-sans text-sm text-white/35 hover:text-gold transition-colors duration-300">Instagram</a>
                   </div>
                 </div>
-              </FadeIn>
+              </SlideIn>
             </div>
           </div>
 
-          {/* Right — Contact form */}
-          <FadeIn delay={0.2}>
+          {/* Right — Form: slides from right */}
+          <SlideIn from="right" delay={0.2}>
             {submitted ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-col items-center justify-center h-full py-20 text-center"
-              >
-                <div className="w-16 h-px bg-gold mb-10 mx-auto" />
-                <h3 className="font-display text-3xl font-semibold text-white mb-6">
-                  Message Received
-                </h3>
-                <p className="font-cormorant text-xl italic text-white/50 leading-relaxed max-w-sm">
-                  Thank you for reaching out. I'll be in touch within 48 hours to
-                  discuss how we can build something extraordinary together.
-                </p>
-                <div className="w-16 h-px bg-gold mt-10 mx-auto" />
-              </motion.div>
+              <ScaleIn>
+                <div className="flex flex-col items-center justify-center h-full py-20 text-center">
+                  <div className="w-16 h-px bg-gold mb-10 mx-auto" />
+                  <h3 className="font-display text-3xl font-semibold text-white mb-6">Message Received</h3>
+                  <p className="font-cormorant text-xl italic text-white/45 leading-relaxed max-w-sm">
+                    Thank you for reaching out. I'll be in touch within 48 hours to discuss how we can build something extraordinary together.
+                  </p>
+                  <div className="w-16 h-px bg-gold mt-10 mx-auto" />
+                </div>
+              </ScaleIn>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-2 gap-5">
-                  <div>
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="Full Name"
-                      required
-                      value={form.name}
-                      onChange={handleChange}
-                      className={inputClass}
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Email Address"
-                      required
-                      value={form.email}
-                      onChange={handleChange}
-                      className={inputClass}
-                    />
-                  </div>
+                  <input type="text" name="name" placeholder="Full Name" required value={form.name} onChange={handleChange} className={inputClass} />
+                  <input type="email" name="email" placeholder="Email Address" required value={form.email} onChange={handleChange} className={inputClass} />
                 </div>
-                <div>
-                  <input
-                    type="text"
-                    name="company"
-                    placeholder="Company / Organization"
-                    value={form.company}
-                    onChange={handleChange}
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <textarea
-                    name="message"
-                    placeholder="Tell me about your goals and what you're looking to achieve..."
-                    required
-                    rows={7}
-                    value={form.message}
-                    onChange={handleChange}
-                    className={`${inputClass} resize-none`}
-                  />
-                </div>
+                <input type="text" name="company" placeholder="Company / Organization" value={form.company} onChange={handleChange} className={inputClass} />
+                <textarea name="message" placeholder="Tell me about your goals and what you're looking to achieve..." required rows={7} value={form.message} onChange={handleChange} className={`${inputClass} resize-none`} />
                 <div className="pt-2">
-                  <button
-                    type="submit"
-                    className="group w-full font-sans text-sm font-medium tracking-widest uppercase px-10 py-5 bg-gold text-[#0a0a0a] hover:bg-gold-light transition-all duration-300 flex items-center justify-center gap-4"
-                  >
+                  <button type="submit"
+                    className="group w-full font-sans text-sm font-medium tracking-widest uppercase px-10 py-5 bg-gold text-[#0a0a0a] hover:bg-white transition-all duration-300 flex items-center justify-center gap-4">
                     Send Message
                     <span className="w-4 h-px bg-[#0a0a0a] group-hover:w-8 transition-all duration-300" />
                   </button>
                 </div>
               </form>
             )}
-          </FadeIn>
+          </SlideIn>
         </div>
       </div>
     </section>
