@@ -5,7 +5,7 @@ export default function Hero() {
     <section className="relative w-full h-screen overflow-hidden flex items-center justify-center">
       {/* Video background */}
       <video
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover object-top"
         src="/daniel.mp4"
         autoPlay
         muted

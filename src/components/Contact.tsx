@@ -92,10 +92,10 @@ export default function Contact() {
                     Email
                   </p>
                   <a
-                    href="mailto:hello@danielrodriguez.org"
+                    href="mailto:daniel@rahoperations.com"
                     className="font-sans text-base text-white/60 hover:text-gold transition-colors duration-300"
                   >
-                    hello@danielrodriguez.org
+                    daniel@rahoperations.com
                   </a>
                 </div>
               </FadeIn>
@@ -103,40 +103,61 @@ export default function Contact() {
               <FadeIn delay={0.25}>
                 <div>
                   <p className="font-sans text-xs tracking-[0.3em] uppercase text-gold/50 mb-2">
-                    Location
+                    Phone
                   </p>
-                  <p className="font-sans text-base text-white/60">
-                    Los Angeles, CA &mdash; Available Worldwide
-                  </p>
+                  <a
+                    href="tel:6236408884"
+                    className="font-sans text-base text-white/60 hover:text-gold transition-colors duration-300"
+                  >
+                    623-640-8884
+                  </a>
                 </div>
               </FadeIn>
 
               <FadeIn delay={0.3}>
                 <div>
                   <p className="font-sans text-xs tracking-[0.3em] uppercase text-gold/50 mb-2">
-                    Availability
+                    Location
                   </p>
                   <p className="font-sans text-base text-white/60">
-                    Accepting select clients Q3 2024
+                    Scottsdale, Arizona
                   </p>
                 </div>
               </FadeIn>
 
               <FadeIn delay={0.35}>
                 <div>
+                  <p className="font-sans text-xs tracking-[0.3em] uppercase text-gold/50 mb-2">
+                    Availability
+                  </p>
+                  <p className="font-sans text-base text-white/60">
+                    Accepting select clients — 2026
+                  </p>
+                </div>
+              </FadeIn>
+
+              <FadeIn delay={0.4}>
+                <div>
                   <p className="font-sans text-xs tracking-[0.3em] uppercase text-gold/50 mb-4">
                     Follow
                   </p>
                   <div className="flex gap-6">
-                    {['LinkedIn', 'Instagram', 'Twitter/X'].map((platform) => (
-                      <a
-                        key={platform}
-                        href="#"
-                        className="font-sans text-sm text-white/40 hover:text-gold transition-colors duration-300"
-                      >
-                        {platform}
-                      </a>
-                    ))}
+                    <a
+                      href="https://www.linkedin.com/in/danielrodriguez-scottsdale/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-sans text-sm text-white/40 hover:text-gold transition-colors duration-300"
+                    >
+                      LinkedIn
+                    </a>
+                    <a
+                      href="https://www.instagram.com/drod6211/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-sans text-sm text-white/40 hover:text-gold transition-colors duration-300"
+                    >
+                      Instagram
+                    </a>
                   </div>
                 </div>
               </FadeIn>

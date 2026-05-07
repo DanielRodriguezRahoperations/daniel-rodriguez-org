@@ -1,57 +1,48 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 
-const outlets = [
-  'Forbes',
-  'Entrepreneur',
-  'Fast Company',
-  'Inc.',
-  'Business Insider',
-  'Harvard Business Review',
-]
+const outlets = ['PRLog', 'BizWire Express', '1888 Press Release', 'Articleted']
 
 const pressCards = [
   {
-    outlet: 'Forbes',
-    date: 'March 2024',
-    headline: '30 Under 30: The Brand Strategists Redefining How Leaders Show Up',
+    outlet: 'PRLog',
+    date: 'November 25, 2025',
+    headline: 'Daniel Rodriguez Expands PR and Reputation Management Services While Sharing Personal Life Update',
     excerpt:
-      'Daniel Rodriguez has built a reputation as the go-to architect for executives who want to be known, not just recognized. His methodology is quietly revolutionizing how the C-suite approaches personal branding.',
+      'Daniel Rodriguez, founder of RAH Operations LLC, has announced an expansion of his business consulting agency to include reputation management, public relations strategy, and brand publicity services — broadening his firm\'s capabilities to support clients seeking credibility and online protection.',
+    url: 'https://www.prlog.org/13112958-daniel-rodriguez-expands-pr-and-reputation-management-services-while-sharing-personal-life-update.html',
   },
   {
-    outlet: 'Entrepreneur',
-    date: 'January 2024',
-    headline: 'Why Your Personal Brand Is Your Most Valuable Business Asset',
+    outlet: 'PRLog',
+    date: 'May 20, 2025',
+    headline: 'Daniel Rodriguez: The Multi-Industry Strategist Helping Entrepreneurs, Homeowners, and Families Take Control',
     excerpt:
-      'In an era of radical transparency, Rodriguez argues that authenticity is not a strategy — it\'s the only strategy. Here\'s how he helps leaders find and weaponize their true story.',
+      'Based in Scottsdale, Arizona, Daniel Rodriguez founded RAH Operations LLC, owns Sunvision Solar, and serves as a Senior Certified Debt Specialist at Pacific Debt Relief — a driven, multi-faceted professional with one mission: to help people grow in business, finances, and life.',
+    url: 'https://www.prlog.org/13077658-daniel-rodriguezthe-multi-industry-strategist-helping-entrepreneurs-homeowners-and-families-take.html',
   },
   {
-    outlet: 'Fast Company',
-    date: 'November 2023',
-    headline: 'The Quiet Architect Behind Some of Today\'s Most Powerful Personal Brands',
+    outlet: 'BizWire Express',
+    date: 'September 2, 2025',
+    headline: 'Daniel Rodriguez Launches RAH Operations to Empower Small Businesses Nationwide',
     excerpt:
-      'You may not know his name, but you know his work. Daniel Rodriguez has spent a decade building the narratives that make executives unforgettable — and his methods are unlike anything you\'ve seen.',
+      'Daniel Rodriguez has established RAH Operations LLC, a business services and digital marketing firm focused on supporting small business growth. The Scottsdale-based agency offers business credit setup, SEO, digital marketing, and website development.',
+    url: 'https://www.bizwireexpress.com/showstory1888.php?storyid=1842',
   },
   {
-    outlet: 'Inc.',
-    date: 'September 2023',
-    headline: 'How to Build a Personal Brand That Outlasts Your Business',
+    outlet: '1888 Press Release',
+    date: 'September 2, 2025',
+    headline: 'Daniel Rodriguez Launches RAH Operations to Empower Small Businesses Nationwide',
     excerpt:
-      'Rodriguez\'s framework for legacy-first brand building has helped founders survive pivots, scandals, and market shifts — by anchoring their brand to something deeper than any single venture.',
+      '"After more than a decade of working with entrepreneurs and brands behind the scenes, Daniel Rodriguez has officially launched RAH Operations LLC — a business services and digital marketing agency designed to help small businesses get structured, get seen, and grow fast."',
+    url: 'https://www.1888pressrelease.com/daniel-rodriguez-launches-rah-operations-to-empower-small-bu-pr-751351.html',
   },
   {
-    outlet: 'Business Insider',
-    date: 'July 2023',
-    headline: 'The Science Behind Why Some Leaders Are Impossible to Ignore',
+    outlet: 'Articleted',
+    date: 'September 3, 2025',
+    headline: 'Daniel Rodriguez Launches RAH Operations to Empower Small Businesses Nationwide',
     excerpt:
-      'Drawing on behavioral psychology and media strategy, Rodriguez breaks down the neurological triggers that make certain personal brands magnetically compelling — and how to engineer them deliberately.',
-  },
-  {
-    outlet: 'Harvard Business Review',
-    date: 'April 2023',
-    headline: 'Personal Branding as Competitive Moat: A Strategic Framework',
-    excerpt:
-      'Co-authored with leading researchers, Rodriguez\'s HBR piece presents the first empirical model for measuring personal brand equity — and the ROI it generates for executives and their organizations.',
+      'RAH Operations specializes in business credit and Net 30 vendor account setup, SEO and Google Business profile optimization, digital marketing and lead generation — empowering everyday people to build real income and lasting freedom.',
+    url: 'https://www.articleted.com/article/1019949/115742/Daniel-Rodriguez-Launches-RAH-Operations-to-Empower-Small-Businesses-Nationwide',
   },
 ]
 
@@ -93,26 +84,27 @@ export default function Press() {
           initial={{ opacity: 0, y: 40 }}
           animate={headerInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-20"
+          className="mb-20"
         >
           <p className="font-sans text-xs tracking-[0.4em] uppercase text-gold/70 mb-6">
-            Recognition
+            In The Media
           </p>
           <h2 className="font-display text-[clamp(2.5rem,5vw,4rem)] font-bold text-white leading-tight">
-            Press &amp; Recognition
+            Press &amp;{' '}
+            <span className="italic text-gold">Recognition</span>
           </h2>
         </motion.div>
 
-        {/* Featured In logo row */}
+        {/* Featured In label row */}
         <FadeIn delay={0.2} className="mb-20">
-          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-6 pb-16 border-b border-white/5">
-            <p className="font-sans text-xs tracking-[0.4em] uppercase text-white/20 w-full text-center mb-4">
-              Featured In
+          <div className="flex flex-wrap items-center gap-x-10 gap-y-5 pb-16 border-b border-white/5">
+            <p className="font-sans text-xs tracking-[0.4em] uppercase text-white/20 mr-4">
+              As Seen In
             </p>
             {outlets.map((outlet) => (
               <span
                 key={outlet}
-                className="font-display text-lg font-semibold text-white/20 hover:text-gold/60 transition-colors duration-300 cursor-default"
+                className="font-display text-base font-semibold text-white/25 hover:text-gold/60 transition-colors duration-300 cursor-default"
               >
                 {outlet}
               </span>
@@ -120,11 +112,22 @@ export default function Press() {
           </div>
         </FadeIn>
 
-        {/* Press cards grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5 rounded-sm overflow-hidden">
+        {/* Press cards grid — 3D tilt on hover via CSS */}
+        <div
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5 rounded-sm overflow-hidden"
+          style={{ perspective: '1200px' }}
+        >
           {pressCards.map((card, i) => (
-            <FadeIn key={card.headline} delay={i * 0.08}>
-              <div className="bg-[#141414] p-8 lg:p-10 group hover:bg-[#1c1c1c] transition-colors duration-500 flex flex-col h-full">
+            <FadeIn key={i} delay={i * 0.08}>
+              <motion.a
+                href={card.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ rotateY: 2, rotateX: -1, z: 20, scale: 1.01 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className="block bg-[#141414] p-8 lg:p-10 group hover:bg-[#1c1c1c] transition-colors duration-500 flex flex-col h-full"
+                style={{ transformStyle: 'preserve-3d' }}
+              >
                 <div className="flex items-center justify-between mb-6">
                   <span className="font-display text-sm font-semibold text-gold">
                     {card.outlet}
@@ -133,17 +136,17 @@ export default function Press() {
                     {card.date}
                   </span>
                 </div>
-                <h3 className="font-display text-lg font-semibold text-white leading-snug mb-4 flex-1">
+                <h3 className="font-display text-base font-semibold text-white leading-snug mb-4 flex-1">
                   {card.headline}
                 </h3>
                 <p className="font-sans text-sm text-white/40 leading-relaxed mb-8">
                   {card.excerpt}
                 </p>
-                <div className="flex items-center gap-3 font-sans text-xs font-medium tracking-widest uppercase text-gold/60 group-hover:text-gold transition-colors duration-300">
-                  Read More
+                <div className="flex items-center gap-3 font-sans text-xs font-medium tracking-widest uppercase text-gold/50 group-hover:text-gold transition-colors duration-300">
+                  Read Full Release
                   <span className="w-4 h-px bg-gold/40 group-hover:w-8 group-hover:bg-gold transition-all duration-500" />
                 </div>
-              </div>
+              </motion.a>
             </FadeIn>
           ))}
         </div>

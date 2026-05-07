@@ -4,26 +4,29 @@ import FloatingGeometry from './FloatingGeometry'
 
 const stats = [
   { value: '10+', label: 'Years Experience' },
-  { value: '200+', label: 'Clients Transformed' },
-  { value: '50M+', label: 'Audience Reached' },
-  { value: '3x', label: 'Revenue Growth' },
+  { value: '100s', label: 'Businesses Empowered' },
+  { value: '3', label: 'Industries Mastered' },
+  { value: 'IAPDA', label: 'Certified Specialist' },
 ]
 
 const pillars = [
   {
-    title: 'Strategy',
+    num: '01',
+    title: 'Digital Growth',
     description:
-      'Deep-dive brand audits and positioning frameworks that separate you from the noise and place you in a category of one.',
+      'Over a decade of hands-on expertise in digital marketing, SEO, Google Business optimization, and lead generation — helping businesses get structured, get found, and scale fast.',
   },
   {
-    title: 'Storytelling',
+    num: '02',
+    title: 'Business Credit',
     description:
-      'Authentic narratives crafted to captivate media, investors, and audiences — turning your journey into your greatest asset.',
+      'Specialized in business credit building and Net 30 vendor account setup, empowering entrepreneurs to access capital, build credibility, and grow without personal credit risk.',
   },
   {
-    title: 'Execution',
+    num: '03',
+    title: 'Solar & Energy',
     description:
-      'Hands-on implementation across media, speaking, content, and partnerships to make your brand impossible to ignore.',
+      'As owner of SunVision Solar, Daniel helps homeowners and businesses make the switch to clean energy — reducing costs and building long-term financial freedom.',
   },
 ]
 
@@ -67,34 +70,33 @@ export default function About() {
 
           <FadeIn delay={0.1}>
             <h2 className="font-display text-[clamp(2.5rem,5vw,4rem)] font-bold text-white leading-tight mb-10">
-              The Architect of Iconic Brands
+              The Multi-Industry
+              <br />
+              <span className="italic text-gold">Strategist</span>
             </h2>
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <blockquote className="font-cormorant text-[clamp(1.3rem,2.5vw,1.7rem)] italic text-gold/80 leading-relaxed mb-10 pl-6 border-l border-gold/30">
-              "Your personal brand is not what you say about yourself — it's what
-              the world says about you when you've given them the right story to
-              tell."
+            <blockquote className="font-cormorant text-[clamp(1.2rem,2.2vw,1.6rem)] italic text-gold/80 leading-relaxed mb-10 pl-6 border-l border-gold/30">
+              "When you search for Daniel Rodriguez, you'll find a driven, multi-faceted professional with one mission — to help people grow in business, finances, and life."
             </blockquote>
           </FadeIn>
 
           <FadeIn delay={0.3}>
-            <p className="font-sans text-base text-white/50 leading-relaxed mb-6">
-              For over a decade, Daniel Rodriguez has been the quiet force behind
-              some of the world's most recognized personal brands. From Fortune 500
-              executives to emerging thought leaders, his methodology combines
-              psychological precision with narrative artistry to create legacies
-              that endure.
+            <p className="font-sans text-base text-white/55 leading-relaxed mb-6">
+              Daniel Rodriguez is a Scottsdale-based entrepreneur and strategist passionate
+              about helping others succeed. He is the Founder of RAH Operations LLC, the
+              Owner of SunVision Solar, and a Senior Certified Debt Specialist with an IAPDA
+              certification.
             </p>
           </FadeIn>
 
           <FadeIn delay={0.4}>
-            <p className="font-sans text-base text-white/50 leading-relaxed mb-12">
-              Trained in behavioral psychology and media strategy, Daniel brings a
-              rare lens to brand building — one that honors authenticity while
-              demanding excellence. His clients don't just get noticed; they become
-              the standard others are measured by.
+            <p className="font-sans text-base text-white/55 leading-relaxed mb-12">
+              With over a decade of experience in digital marketing, SEO, business credit
+              building, and solar energy, Daniel empowers everyday people to grow their
+              income, rebuild their credit, and create real freedom — no matter where they're
+              starting from.
             </p>
           </FadeIn>
 
@@ -103,14 +105,18 @@ export default function About() {
               href="#contact"
               className="group inline-flex items-center gap-4 font-sans text-sm font-medium tracking-widest uppercase text-gold hover:text-gold-light transition-colors duration-300"
             >
-              Start Your Transformation
+              Work With Daniel
               <span className="w-8 h-px bg-gold group-hover:w-16 transition-all duration-500" />
             </a>
           </FadeIn>
         </div>
 
-        {/* Right — Three.js Canvas */}
+        {/* Right — Three.js Canvas with 3D depth wrapper */}
         <FadeIn delay={0.2} className="relative h-[500px] lg:h-[600px]">
+          {/* Depth glow layers for dimensionality */}
+          <div className="absolute inset-0 rounded-2xl bg-gradient-radial from-gold/5 via-transparent to-transparent pointer-events-none z-10" />
+          <div className="absolute -inset-4 rounded-3xl border border-gold/5 pointer-events-none" />
+          <div className="absolute -inset-8 rounded-3xl border border-gold/[0.03] pointer-events-none" />
           <FloatingGeometry />
         </FadeIn>
       </div>
@@ -119,8 +125,8 @@ export default function About() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/5 rounded-sm overflow-hidden mb-28">
         {stats.map((stat, i) => (
           <FadeIn key={stat.label} delay={i * 0.1}>
-            <div className="bg-[#0a0a0a] px-8 py-10 text-center">
-              <div className="font-display text-[clamp(2.5rem,5vw,3.5rem)] font-bold text-gold mb-2">
+            <div className="bg-[#0a0a0a] px-8 py-10 text-center group hover:bg-[#111] transition-colors duration-500">
+              <div className="font-display text-[clamp(2rem,4vw,3rem)] font-bold text-gold mb-2 group-hover:scale-105 transition-transform duration-300">
                 {stat.value}
               </div>
               <div className="font-sans text-xs tracking-[0.25em] uppercase text-white/40">
@@ -135,7 +141,13 @@ export default function About() {
       <div className="grid md:grid-cols-3 gap-px bg-white/5 rounded-sm overflow-hidden">
         {pillars.map((pillar, i) => (
           <FadeIn key={pillar.title} delay={i * 0.12}>
-            <div className="bg-[#0a0a0a] p-10 lg:p-12 group hover:bg-dark-100 transition-colors duration-500">
+            <div
+              className="bg-[#0a0a0a] p-10 lg:p-12 group hover:bg-[#0f0f0f] transition-all duration-500"
+              style={{ perspective: '800px' }}
+            >
+              <div className="font-sans text-xs tracking-[0.4em] text-gold/40 mb-6">
+                {pillar.num}
+              </div>
               <div className="w-8 h-px bg-gold mb-8 group-hover:w-16 transition-all duration-500" />
               <h3 className="font-display text-2xl font-semibold text-white mb-4">
                 {pillar.title}
