@@ -89,7 +89,7 @@ export default function Hero() {
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: 'clamp(1rem, 2.5vw, 1.6rem)',
             fontStyle: 'italic',
-            color: 'rgba(201,169,110,0.65)',
+            color: 'rgba(151,204,246,0.65)',
             letterSpacing: '0.08em',
           }}>
             Transform Your Narrative&nbsp;&nbsp;•&nbsp;&nbsp;Build Your Legacy&nbsp;&nbsp;•&nbsp;&nbsp;Scottsdale, Arizona&nbsp;&nbsp;•&nbsp;&nbsp;Founder · RAH Operations&nbsp;&nbsp;•&nbsp;&nbsp;Transform Your Narrative&nbsp;&nbsp;•&nbsp;&nbsp;Build Your Legacy&nbsp;&nbsp;•&nbsp;&nbsp;Scottsdale, Arizona&nbsp;&nbsp;•&nbsp;&nbsp;

@@ -9,8 +9,8 @@ export default {
       colors: {
         bg: '#0a0a0a',
         gold: {
-          DEFAULT: '#c9a96e',
-          light: '#e8d5a3',
+          DEFAULT: '#97CCF6',
+          light: '#c4e3fa',
         },
         'dark-100': '#1a1a1a',
         'dark-200': '#141414',

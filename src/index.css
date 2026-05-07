@@ -5,8 +5,8 @@
 /* CSS Custom Properties */
 :root {
   --color-bg: #0a0a0a;
-  --color-gold: #c9a96e;
-  --color-gold-light: #e8d5a3;
+  --color-gold: #97CCF6;
+  --color-gold-light: #c4e3fa;
   --color-dark-100: #1a1a1a;
   --color-dark-200: #141414;
   --font-display: 'Playfair Display', serif;
@@ -41,7 +41,7 @@ html {
 
 /* Text selection */
 ::selection {
-  background-color: rgba(201, 169, 110, 0.25);
+  background-color: rgba(151, 204, 246, 0.2);
   color: var(--color-gold-light);
 }
 

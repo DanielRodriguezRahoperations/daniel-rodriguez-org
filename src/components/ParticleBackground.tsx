@@ -10,7 +10,7 @@ function Particles() {
     const positions = new Float32Array(count * 3)
     const colors = new Float32Array(count * 3)
 
-    const goldColor = new THREE.Color('#c9a96e')
+    const goldColor = new THREE.Color('#97CCF6')
     const whiteColor = new THREE.Color('#ffffff')
 
     for (let i = 0; i < count; i++) {

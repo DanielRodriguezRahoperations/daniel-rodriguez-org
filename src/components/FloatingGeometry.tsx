@@ -44,9 +44,9 @@ function Scene() {
   return (
     <>
       <ambientLight intensity={0.15} />
-      <pointLight position={[4, 4, 4]} color="#c9a96e" intensity={4} />
+      <pointLight position={[4, 4, 4]} color="#97CCF6" intensity={4} />
       <pointLight position={[-4, -3, 3]} color="#ffffff" intensity={0.6} />
-      <pointLight position={[0, -4, -2]} color="#c9a96e" intensity={1} />
+      <pointLight position={[0, -4, -2]} color="#97CCF6" intensity={1} />
 
       <Stars radius={25} depth={20} count={500} factor={1.2} fade speed={0.2} />
 
@@ -54,15 +54,15 @@ function Scene() {
         {/* Outer wireframe icosahedron — large, dim */}
         <mesh ref={outerRef}>
           <icosahedronGeometry args={[1.7, 1]} />
-          <meshBasicMaterial color="#c9a96e" wireframe transparent opacity={0.1} />
+          <meshBasicMaterial color="#97CCF6" wireframe transparent opacity={0.1} />
         </mesh>
 
         {/* Inner metallic core */}
         <mesh ref={innerRef}>
           <icosahedronGeometry args={[0.85, 0]} />
           <meshStandardMaterial
-            color="#2a1a00"
-            emissive="#c9a96e"
+            color="#001828"
+            emissive="#97CCF6"
             emissiveIntensity={0.6}
             metalness={1}
             roughness={0.0}
@@ -72,7 +72,7 @@ function Scene() {
         {/* Primary orbit ring */}
         <mesh ref={ringRef} rotation={[Math.PI / 3, 0, 0]}>
           <torusGeometry args={[1.45, 0.007, 16, 120]} />
-          <meshBasicMaterial color="#c9a96e" transparent opacity={0.35} />
+          <meshBasicMaterial color="#97CCF6" transparent opacity={0.35} />
         </mesh>
 
         {/* Secondary orbit ring — offset axis */}
@@ -85,7 +85,7 @@ function Scene() {
         <mesh>
           <sphereGeometry args={[2.0, 32, 32]} />
           <meshBasicMaterial
-            color="#c9a96e"
+            color="#97CCF6"
             transparent
             opacity={0.015}
             side={THREE.BackSide}
