@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Custom Properties */
+:root {
+  --color-bg: #0a0a0a;
+  --color-gold: #c9a96e;
+  --color-gold-light: #e8d5a3;
+  --color-dark-100: #1a1a1a;
+  --color-dark-200: #141414;
+  --font-display: 'Playfair Display', serif;
+  --font-cormorant: 'Cormorant Garamond', serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold) transparent;
+}
+
+/* Custom scrollbar (Webkit) */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-gold);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-gold-light);
+}
+
+/* Text selection */
+::selection {
+  background-color: rgba(201, 169, 110, 0.25);
+  color: var(--color-gold-light);
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: #ffffff;
+  font-family: var(--font-body);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
