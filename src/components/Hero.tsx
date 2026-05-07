@@ -12,7 +12,8 @@ export default function Hero({ onProgress }: HeroProps) {
   const [progress, setProgress] = useState(0)
   const [videoReady, setVideoReady] = useState(false)
   const [exited, setExited] = useState(false)
-  const accumulatedDelta = useRef(0)
+  const targetTimeRef = useRef(0)
+  const rafRef = useRef<number | null>(null)
 
   // Text hidden at 0 (clean open), visible once scrolling starts, hides mid-video, returns at end
   const showText = (progress > 0.03 && progress < 0.25) || progress > 0.78
@@ -40,23 +41,22 @@ export default function Hero({ onProgress }: HeroProps) {
     const onWheel = (e: WheelEvent) => {
       if (exited) return
       e.preventDefault()
-
       if (!video.duration) return
 
-      // Accumulate scroll for smooth sensitivity
-      accumulatedDelta.current += e.deltaY
+      const sensitivity = video.duration / 3000
+      targetTimeRef.current = Math.max(0, Math.min(video.duration, targetTimeRef.current + e.deltaY * sensitivity))
 
-      const sensitivity = video.duration / 3000 // full video over ~3000px of scroll delta
-      const newTime = Math.max(0, Math.min(video.duration, video.currentTime + e.deltaY * sensitivity))
-      video.currentTime = newTime
-
-      const p = newTime / video.duration
-      progressRef.current = p
-      setProgress(p)
-      onProgress(p)
+      // Batch seeks to animation frames — prevents browser from choking on rapid seeks
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(() => {
+        video.currentTime = targetTimeRef.current
+        const p = targetTimeRef.current / video.duration
+        progressRef.current = p
+        setProgress(p)
+        onProgress(p)
+      })
     }
 
-    // Capture on the hero element, not window — so page scrolls normally elsewhere
     hero.addEventListener('wheel', onWheel, { passive: false })
     return () => hero.removeEventListener('wheel', onWheel)
   }, [exited])
