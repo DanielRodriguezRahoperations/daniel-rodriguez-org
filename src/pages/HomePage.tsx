@@ -4,12 +4,12 @@ import { motion, useInView } from 'framer-motion'
 import { Helmet } from 'react-helmet-async'
 import Hero from '../components/Hero'
 import Statement from '../components/Statement'
-import Footer from '../components/Footer'
 import BlogCard from '../components/BlogCard'
 import SEO from '../components/SEO'
 import { blogPosts } from '../data/blog-posts'
 
-// Press items for preview (first 2)
+// Footer is rendered globally in App.tsx — do NOT import or render it here
+
 const pressItems = [
   {
     num: '01',
@@ -26,6 +26,30 @@ const pressItems = [
     headline:
       'The Multi-Industry Strategist Helping Entrepreneurs, Homeowners, and Families Take Control',
     url: 'https://www.prlog.org/13077658-daniel-rodriguezthe-multi-industry-strategist-helping-entrepreneurs-homeowners-and-families-take.html',
+  },
+]
+
+const services = [
+  {
+    num: '01',
+    title: 'Website Design & SEO',
+    description:
+      'Premium websites, local SEO architecture, metadata, content structure, and conversion-focused page strategy.',
+    href: 'https://www.rahoperations.com/website-design-and-seo',
+  },
+  {
+    num: '02',
+    title: 'Digital Marketing',
+    description:
+      'Campaign strategy, brand visibility, reputation growth, content direction, and lead-generation systems.',
+    href: 'https://www.rahoperations.com/digital-marketing',
+  },
+  {
+    num: '03',
+    title: 'Business Credit',
+    description:
+      'Business credit setup, funding readiness, vendor account strategy, and credibility-building structure for new and growing companies.',
+    href: 'https://www.rahoperations.com/business-credit-and-funding',
   },
 ]
 
@@ -65,13 +89,6 @@ function Reveal({
   )
 }
 
-const credentialChips = [
-  'Website Design',
-  'SEO & Digital Marketing',
-  'Business Credit',
-  'Debt Relief',
-]
-
 export default function HomePage() {
   const previewPosts = blogPosts.slice(0, 3)
 
@@ -84,7 +101,6 @@ export default function HomePage() {
         keywords="Daniel Rodriguez, Daniel Rodriguez Arizona, Daniel Rodriguez RAH Operations, Arizona entrepreneur, Scottsdale website design, Phoenix SEO, business credit services"
       />
 
-      {/* JSON-LD Schemas */}
       <Helmet>
         <script type="application/ld+json">{JSON.stringify({
           '@context': 'https://schema.org',
@@ -146,44 +162,197 @@ export default function HomePage() {
         })}</script>
       </Helmet>
 
-      {/* Hero — protected component, untouched */}
+      {/* Hero — protected, do not modify */}
       <Hero />
 
-      {/* Statement — protected component, untouched */}
+      {/* Statement — protected, do not modify */}
       <Statement />
 
-      {/* ── POSITIONING ─────────────────────────────────────── */}
-      <section style={{ background: 'rgba(10,10,10,0.78)' }}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-28 lg:py-40">
+      {/* ── PROOF STRIP ─────────────────────────────────────── */}
+      <section style={{ background: 'rgba(10,10,10,0.80)' }}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-24 lg:py-36">
           <Reveal from="up" delay={0}>
             <p
               className="font-cormorant italic leading-relaxed max-w-3xl mb-12"
               style={{
-                fontSize: 'clamp(1.25rem, 2.4vw, 1.75rem)',
-                color: 'rgba(255,255,255,0.55)',
+                fontSize: 'clamp(1.2rem, 2.2vw, 1.65rem)',
+                color: 'rgba(255,255,255,0.50)',
               }}
             >
               "Scottsdale-based entrepreneur. Founder, RAH Operations LLC. Owner, SunVision Solar.
-              Senior Certified Debt Specialist, IAPDA certified. Over a decade building the systems,
-              credit structures, and marketing engines that make businesses grow."
+              Senior Certified Debt Specialist, IAPDA certified. Over a decade executing the
+              systems, credit structures, and marketing engines that make businesses grow."
             </p>
           </Reveal>
 
-          <Reveal from="up" delay={0.15}>
+          <Reveal from="up" delay={0.14}>
             <div className="flex flex-wrap gap-3">
-              {credentialChips.map((chip) => (
+              {[
+                'Website Design',
+                'SEO & Digital Marketing',
+                'Business Credit',
+                'Debt Relief',
+                'IAPDA Certified',
+              ].map((chip) => (
                 <span
                   key={chip}
                   className="font-sans uppercase tracking-[0.18em] px-4 py-2"
                   style={{
                     fontSize: '0.62rem',
-                    border: '1px solid rgba(151,204,246,0.25)',
-                    color: 'rgba(151,204,246,0.7)',
+                    border: '1px solid rgba(151,204,246,0.22)',
+                    color: 'rgba(151,204,246,0.65)',
                   }}
                 >
                   {chip}
                 </span>
               ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── RAH OPERATIONS SERVICES ─────────────────────────── */}
+      <section style={{ background: 'rgba(10,10,10,0.76)' }}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-32 lg:py-48">
+
+          {/* Section header */}
+          <div className="mb-20">
+            <Reveal from="up" delay={0}>
+              <p
+                className="font-sans mb-6"
+                style={{
+                  fontSize: '0.65rem',
+                  letterSpacing: '0.45em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(151,204,246,0.6)',
+                }}
+              >
+                RAH Operations
+              </p>
+            </Reveal>
+
+            <Reveal from="up" delay={0.08}>
+              <h2
+                className="font-display font-bold text-white mb-8"
+                style={{
+                  fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+                  lineHeight: '1.0',
+                  letterSpacing: '-0.025em',
+                }}
+              >
+                Business Growth Systems
+                <br />
+                <span className="italic" style={{ color: '#97CCF6' }}>
+                  Built to Scale.
+                </span>
+              </h2>
+            </Reveal>
+
+            <Reveal from="up" delay={0.15}>
+              <p
+                className="font-sans leading-relaxed max-w-2xl"
+                style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.38)' }}
+              >
+                Daniel's work through RAH Operations connects website design, SEO, digital
+                marketing, and business credit into one practical growth system for entrepreneurs
+                and local businesses.
+              </p>
+            </Reveal>
+          </div>
+
+          {/* Service grid — full cards are clickable */}
+          <div
+            className="grid grid-cols-1 lg:grid-cols-3"
+            style={{ border: '1px solid rgba(255,255,255,0.07)' }}
+          >
+            {services.map((service, i) => (
+              <Reveal key={service.title} from="up" delay={i * 0.1}>
+                <a
+                  href={service.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block h-full p-10 lg:p-12 transition-colors duration-500"
+                  style={{
+                    borderRight:
+                      i < services.length - 1
+                        ? '1px solid rgba(255,255,255,0.07)'
+                        : undefined,
+                    background: 'transparent',
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = 'rgba(151,204,246,0.025)')
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = 'transparent')
+                  }
+                >
+                  <div className="flex flex-col h-full min-h-[18rem]">
+                    <div
+                      className="font-sans mb-8"
+                      style={{
+                        fontSize: '0.62rem',
+                        letterSpacing: '0.4em',
+                        textTransform: 'uppercase',
+                        color: 'rgba(151,204,246,0.35)',
+                      }}
+                    >
+                      {service.num}
+                    </div>
+
+                    <h3
+                      className="font-display font-semibold text-white mb-5 transition-colors duration-300 group-hover:text-gold"
+                      style={{
+                        fontSize: 'clamp(1.25rem, 2vw, 1.55rem)',
+                        lineHeight: '1.2',
+                        letterSpacing: '-0.01em',
+                      }}
+                    >
+                      {service.title}
+                    </h3>
+
+                    <p
+                      className="font-sans leading-relaxed flex-1 mb-10"
+                      style={{ fontSize: '0.865rem', color: 'rgba(255,255,255,0.32)' }}
+                    >
+                      {service.description}
+                    </p>
+
+                    <div className="flex items-center gap-4">
+                      <span
+                        className="font-sans font-medium tracking-widest uppercase transition-colors duration-300 group-hover:text-white"
+                        style={{ fontSize: '0.62rem', color: 'rgba(151,204,246,0.5)' }}
+                      >
+                        Explore Service
+                      </span>
+                      <span
+                        className="block h-px transition-all duration-500 group-hover:w-10"
+                        style={{
+                          width: '1.5rem',
+                          background: 'rgba(151,204,246,0.5)',
+                        }}
+                      />
+                    </div>
+                  </div>
+                </a>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal from="up" delay={0.28}>
+            <div className="mt-12">
+              <a
+                href="https://www.rahoperations.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-5 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
+                style={{ fontSize: '0.72rem', color: '#97CCF6' }}
+              >
+                Visit RAH Operations
+                <span
+                  className="block h-px group-hover:w-14 transition-all duration-500"
+                  style={{ width: '2rem', background: 'currentColor' }}
+                />
+              </a>
             </div>
           </Reveal>
         </div>
@@ -228,9 +397,10 @@ export default function HomePage() {
                 className="font-sans leading-relaxed mb-5"
                 style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.45)' }}
               >
-                Daniel Rodriguez is a Scottsdale-based entrepreneur, strategist, and business builder
-                who has spent the past decade executing the systems, credit structures, marketing
-                engines, and digital strategies that make businesses grow.
+                Daniel Rodriguez is a Scottsdale-based entrepreneur who built his career on the
+                fundamentals — sales, financial literacy, and the ability to execute. Over more than
+                a decade, that foundation expanded into debt relief, business credit, digital
+                marketing, and clean energy, each discipline reinforcing the next.
               </p>
             </Reveal>
 
@@ -239,8 +409,8 @@ export default function HomePage() {
                 className="font-sans leading-relaxed mb-12"
                 style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.45)' }}
               >
-                Founder of RAH Operations LLC. Owner of SunVision Solar. Senior Certified Debt
-                Specialist, IAPDA certified. Three industries. One operator.
+                Founder of RAH Operations LLC. Owner of SunVision Solar. IAPDA-certified Senior
+                Debt Specialist. He operates — he doesn't just advise.
               </p>
             </Reveal>
 
@@ -250,7 +420,7 @@ export default function HomePage() {
                 className="group inline-flex items-center gap-5 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
                 style={{ fontSize: '0.72rem', color: '#97CCF6' }}
               >
-                Read Full Story
+                Full Story
                 <span
                   className="block h-px group-hover:w-14 transition-all duration-500"
                   style={{ width: '2rem', background: 'currentColor' }}
@@ -262,9 +432,8 @@ export default function HomePage() {
       </section>
 
       {/* ── PRESS PREVIEW ───────────────────────────────────── */}
-      <section style={{ background: 'rgba(10,10,10,0.82)' }}>
+      <section style={{ background: 'rgba(10,10,10,0.84)' }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-32 lg:py-48">
-          {/* Header */}
           <Reveal from="up" delay={0}>
             <p
               className="font-sans mb-6"
@@ -281,7 +450,7 @@ export default function HomePage() {
 
           <Reveal from="up" delay={0.08}>
             <h2
-              className="font-display font-bold text-white mb-16"
+              className="font-display font-bold text-white mb-4"
               style={{
                 fontSize: 'clamp(2.5rem, 5vw, 4rem)',
                 lineHeight: '1.0',
@@ -295,22 +464,35 @@ export default function HomePage() {
             </h2>
           </Reveal>
 
-          {/* Press rows */}
+          <Reveal from="up" delay={0.14}>
+            <p
+              className="font-cormorant italic mb-16 max-w-xl"
+              style={{
+                fontSize: 'clamp(1.05rem, 1.8vw, 1.3rem)',
+                color: 'rgba(255,255,255,0.28)',
+              }}
+            >
+              Five features across four independent publications. All earned.
+            </p>
+          </Reveal>
+
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
             {pressItems.map((item, i) => (
               <Reveal key={item.num} from={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.08}>
-                <a
+                <motion.a
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group block py-8"
+                  className="group block py-9"
                   style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+                  whileHover={{ x: i % 2 === 0 ? 6 : -6 }}
+                  transition={{ type: 'spring', stiffness: 280, damping: 28 }}
                 >
                   <div className="flex items-start gap-8">
                     <span
                       className="font-sans pt-0.5 shrink-0"
                       style={{
-                        fontSize: '0.65rem',
+                        fontSize: '0.62rem',
                         letterSpacing: '0.4em',
                         textTransform: 'uppercase',
                         color: 'rgba(151,204,246,0.28)',
@@ -329,7 +511,7 @@ export default function HomePage() {
                         </span>
                         <span
                           className="font-sans tracking-widest"
-                          style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)' }}
+                          style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.2)' }}
                         >
                           {item.date}
                         </span>
@@ -346,7 +528,7 @@ export default function HomePage() {
                       </p>
                     </div>
                   </div>
-                </a>
+                </motion.a>
               </Reveal>
             ))}
           </div>
@@ -388,7 +570,7 @@ export default function HomePage() {
 
           <Reveal from="up" delay={0.08}>
             <h2
-              className="font-display font-bold text-white mb-16"
+              className="font-display font-bold text-white mb-4"
               style={{
                 fontSize: 'clamp(2.5rem, 5vw, 4rem)',
                 lineHeight: '1.0',
@@ -400,6 +582,19 @@ export default function HomePage() {
                 Field
               </span>
             </h2>
+          </Reveal>
+
+          <Reveal from="up" delay={0.14}>
+            <p
+              className="font-cormorant italic mb-16 max-w-xl"
+              style={{
+                fontSize: 'clamp(1.05rem, 1.8vw, 1.3rem)',
+                color: 'rgba(255,255,255,0.28)',
+              }}
+            >
+              Practical perspectives on SEO, business credit, website design, and building a brand
+              that actually works.
+            </p>
           </Reveal>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-14">
@@ -425,14 +620,31 @@ export default function HomePage() {
       </section>
 
       {/* ── CONTACT CTA ─────────────────────────────────────── */}
-      <section style={{ background: 'rgba(10,10,10,0.88)' }}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-32 lg:py-52">
+      <section
+        style={{
+          background: 'rgba(10,10,10,0.92)',
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-36 lg:py-52">
           <Reveal from="scale" delay={0}>
             <div className="max-w-3xl">
+              <p
+                className="font-sans mb-10"
+                style={{
+                  fontSize: '0.65rem',
+                  letterSpacing: '0.45em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(151,204,246,0.5)',
+                }}
+              >
+                004 / Work With Me
+              </p>
+
               <h2
                 className="font-display font-bold text-white mb-8"
                 style={{
-                  fontSize: 'clamp(3rem, 7vw, 5.5rem)',
+                  fontSize: 'clamp(2.8rem, 6.5vw, 5.5rem)',
                   lineHeight: '0.95',
                   letterSpacing: '-0.03em',
                 }}
@@ -443,13 +655,25 @@ export default function HomePage() {
                   something real?
                 </span>
               </h2>
+
               <p
-                className="font-sans leading-relaxed mb-12 max-w-xl"
-                style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.40)' }}
+                className="font-sans leading-relaxed mb-6 max-w-xl"
+                style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.38)' }}
               >
-                Daniel accepts a limited number of clients each quarter. If you're serious about
-                growing in revenue, reputation, or reach — this is where it starts.
+                Daniel works with a limited number of clients each quarter — business owners,
+                entrepreneurs, and operators who are serious about growing in revenue, reputation,
+                or reach.
               </p>
+
+              <p
+                className="font-sans leading-relaxed mb-14 max-w-xl"
+                style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.28)' }}
+              >
+                Website design, SEO, digital marketing, business credit, debt relief strategy —
+                or just a direct conversation about where your business is and what it could
+                become.
+              </p>
+
               <div className="flex flex-wrap gap-5">
                 <Link
                   to="/contact"
@@ -467,19 +691,17 @@ export default function HomePage() {
                   className="font-sans font-medium tracking-widest uppercase px-8 py-4 border transition-all duration-300 hover:bg-white/5"
                   style={{
                     fontSize: '0.72rem',
-                    borderColor: 'rgba(255,255,255,0.2)',
-                    color: 'rgba(255,255,255,0.55)',
+                    borderColor: 'rgba(255,255,255,0.15)',
+                    color: 'rgba(255,255,255,0.45)',
                   }}
                 >
-                  View Portfolio
+                  Learn About Daniel
                 </Link>
               </div>
             </div>
           </Reveal>
         </div>
       </section>
-
-      <Footer />
     </>
   )
 }

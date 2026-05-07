@@ -8,28 +8,34 @@ import SEO from '../components/SEO'
 const stats = [
   { value: '10+', label: 'Years Operating' },
   { value: '100+', label: 'Businesses Built' },
-  { value: '3', label: 'Industries Led' },
+  { value: '4', label: 'Industries Led' },
   { value: 'IAPDA', label: 'Certified Specialist' },
 ]
 
 const pillars = [
   {
     num: '01',
-    title: 'Digital Growth',
+    title: 'Website Design & SEO',
     description:
-      'Most businesses are invisible online. Daniel makes them undeniable. Over a decade of executing SEO strategy, Google Business optimization, and precision lead generation — turning dormant websites into 24/7 lead machines.',
+      'Most businesses are invisible online. Daniel builds websites that convert and engineers the SEO infrastructure — Google Business optimization, content architecture, citation building, and local keyword strategy — that keeps them visible. Through RAH Operations, he turns dormant digital presences into 24/7 lead engines.',
   },
   {
     num: '02',
     title: 'Business Credit',
     description:
-      "Personal credit shouldn't be the ceiling on business ambition. Daniel has structured standalone credit profiles, Net 30 vendor relationships, and capital access strategies for hundreds of operators — without touching a single digit of personal score.",
+      "Personal credit shouldn't be the ceiling on business ambition. Daniel has structured standalone credit profiles, Net 30 vendor relationships, and capital-access strategies for hundreds of operators — building business credit that doesn't touch a single digit of personal score. IAPDA-certified. Proven system.",
   },
   {
     num: '03',
-    title: 'Solar & Energy',
+    title: 'Debt Relief',
     description:
-      'As founder of SunVision Solar, Daniel helps homeowners and commercial operators reduce energy overhead and build long-term asset value. Own your power. Reduce your costs. Strengthen your equity position.',
+      'As an IAPDA-certified Senior Debt Specialist, Daniel helps individuals and business owners navigate the debt side of the financial equation — settlement strategy, creditor negotiation, and building a path from financial pressure toward real financial stability.',
+  },
+  {
+    num: '04',
+    title: 'Solar & Clean Energy',
+    description:
+      'As founder of SunVision Solar, Daniel helps homeowners and commercial operators reduce energy costs and build long-term asset value. Owning your power means reducing overhead, improving equity position, and removing a recurring cost from your financial picture indefinitely.',
   },
 ]
 
@@ -74,29 +80,18 @@ export default function AboutPage() {
     <>
       <SEO
         title="About Daniel Rodriguez | Entrepreneur, Strategist & Business Builder"
-        description="Meet Daniel Rodriguez — Scottsdale-based entrepreneur, founder of RAH Operations LLC, owner of SunVision Solar, and IAPDA-certified debt specialist with 10+ years building businesses across digital marketing, credit, and clean energy."
+        description="Meet Daniel Rodriguez — Scottsdale-based entrepreneur, founder of RAH Operations LLC, owner of SunVision Solar, IAPDA-certified Senior Debt Specialist with 10+ years building businesses across digital marketing, credit, debt relief, and clean energy."
         canonical="/about"
-        keywords="Daniel Rodriguez about, Daniel Rodriguez entrepreneur, Daniel Rodriguez Arizona, RAH Operations founder"
+        keywords="Daniel Rodriguez about, Daniel Rodriguez entrepreneur, Daniel Rodriguez Arizona, RAH Operations founder, IAPDA certified debt specialist"
       />
 
-      {/* BreadcrumbList Schema */}
       <Helmet>
         <script type="application/ld+json">{JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            {
-              '@type': 'ListItem',
-              position: 1,
-              name: 'Home',
-              item: 'https://danielrodriguez.org/',
-            },
-            {
-              '@type': 'ListItem',
-              position: 2,
-              name: 'About',
-              item: 'https://danielrodriguez.org/about',
-            },
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://danielrodriguez.org/' },
+            { '@type': 'ListItem', position: 2, name: 'About', item: 'https://danielrodriguez.org/about' },
           ],
         })}</script>
       </Helmet>
@@ -124,7 +119,6 @@ export default function AboutPage() {
               </Reveal>
 
               <Reveal from="left" delay={0.1}>
-                {/* H1 on dedicated about page for SEO */}
                 <h1
                   className="font-display font-bold text-white mb-12"
                   style={{
@@ -133,10 +127,10 @@ export default function AboutPage() {
                     letterSpacing: '-0.025em',
                   }}
                 >
-                  The Multi-Industry
+                  Founder. Operator.
                   <br />
                   <span className="italic" style={{ color: '#97CCF6' }}>
-                    Operator.
+                    Builder.
                   </span>
                 </h1>
               </Reveal>
@@ -150,9 +144,8 @@ export default function AboutPage() {
                     borderLeft: '2px solid rgba(151,204,246,0.28)',
                   }}
                 >
-                  "When you search for Daniel Rodriguez, you'll find a driven, multi-faceted
-                  professional with one mission — to help people grow in business, finances, and
-                  life."
+                  "Most consultants describe what you should do. I do it — and I've been doing it
+                  across multiple industries for over a decade."
                 </blockquote>
               </Reveal>
 
@@ -165,14 +158,31 @@ export default function AboutPage() {
                     letterSpacing: '0.01em',
                   }}
                 >
-                  Daniel Rodriguez is a Scottsdale-based entrepreneur, strategist, and business
-                  builder who has spent the past decade doing what most consultants only describe —
-                  executing the systems, credit structures, marketing engines, and digital strategies
-                  that make businesses grow.
+                  Daniel Rodriguez is a Scottsdale-based entrepreneur who started where most
+                  operators start — in sales. The ability to understand what people need, build
+                  trust quickly, and close the gap between problem and solution became the
+                  foundation for everything that came after.
                 </p>
               </Reveal>
 
-              <Reveal from="left" delay={0.38}>
+              <Reveal from="left" delay={0.36}>
+                <p
+                  className="font-sans leading-relaxed mb-6"
+                  style={{
+                    fontSize: '0.9375rem',
+                    color: 'rgba(255,255,255,0.48)',
+                    letterSpacing: '0.01em',
+                  }}
+                >
+                  That foundation expanded into debt relief — earning IAPDA Senior Certified Debt
+                  Specialist certification and helping individuals navigate financial pressure with
+                  real strategy, not empty promises. From there came business credit: recognizing
+                  that most entrepreneurs were capping their own growth by funding businesses on
+                  personal credit instead of building independent credit profiles.
+                </p>
+              </Reveal>
+
+              <Reveal from="left" delay={0.42}>
                 <p
                   className="font-sans leading-relaxed mb-14"
                   style={{
@@ -181,13 +191,14 @@ export default function AboutPage() {
                     letterSpacing: '0.01em',
                   }}
                 >
-                  Founder of RAH Operations LLC. Owner of SunVision Solar. Senior Certified Debt
-                  Specialist, IAPDA certified. He shows up as an operator first — with a verifiable
-                  track record across three distinct industries.
+                  Today he runs RAH Operations LLC — a digital marketing and business services firm
+                  built specifically for small business owners and entrepreneurs — and SunVision
+                  Solar, helping property owners build long-term value while reducing energy costs.
+                  Three industries. One consistent approach: execute what others only advise.
                 </p>
               </Reveal>
 
-              <Reveal from="left" delay={0.46}>
+              <Reveal from="left" delay={0.48}>
                 <Link
                   to="/contact"
                   className="group inline-flex items-center gap-5 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
@@ -255,7 +266,7 @@ export default function AboutPage() {
             ))}
           </div>
 
-          {/* Methodology */}
+          {/* Areas of Expertise */}
           <Reveal from="up" delay={0}>
             <p
               className="font-sans mb-14"
@@ -266,13 +277,13 @@ export default function AboutPage() {
                 color: 'rgba(151,204,246,0.5)',
               }}
             >
-              Methodology
+              Areas of Expertise
             </p>
           </Reveal>
 
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
             {pillars.map((pillar, i) => (
-              <Reveal key={pillar.title} from="scale" delay={i * 0.13}>
+              <Reveal key={pillar.title} from="scale" delay={i * 0.1}>
                 <div style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                   <motion.div
                     className="group py-12 lg:py-14"
@@ -296,7 +307,7 @@ export default function AboutPage() {
                     >
                       {pillar.num}
                     </div>
-                    <h3
+                    <h2
                       className="font-display font-semibold text-white group-hover:text-gold transition-colors duration-400"
                       style={{
                         fontSize: 'clamp(1.3rem, 2.2vw, 1.8rem)',
@@ -305,7 +316,7 @@ export default function AboutPage() {
                       }}
                     >
                       {pillar.title}
-                    </h3>
+                    </h2>
                     <p
                       className="font-sans leading-relaxed"
                       style={{
@@ -321,6 +332,38 @@ export default function AboutPage() {
               </Reveal>
             ))}
           </div>
+
+          {/* CTA */}
+          <Reveal from="up" delay={0.1}>
+            <div
+              className="mt-32 lg:mt-40 pt-20"
+              style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+            >
+              <p
+                className="font-cormorant italic mb-10 max-w-2xl"
+                style={{
+                  fontSize: 'clamp(1.1rem, 2vw, 1.45rem)',
+                  color: 'rgba(255,255,255,0.32)',
+                }}
+              >
+                If you're a business owner looking to grow online, a professional who needs a
+                stronger financial position, or someone who just wants to have a direct conversation
+                with someone who's actually done this work — the contact page is the right next
+                step.
+              </p>
+              <Link
+                to="/contact"
+                className="group inline-flex items-center gap-5 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
+                style={{ fontSize: '0.72rem', color: '#97CCF6' }}
+              >
+                Work With Daniel
+                <span
+                  className="block h-px group-hover:w-14 transition-all duration-500"
+                  style={{ width: '2rem', background: 'currentColor' }}
+                />
+              </Link>
+            </div>
+          </Reveal>
 
         </div>
       </section>

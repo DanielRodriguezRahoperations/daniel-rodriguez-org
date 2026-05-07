@@ -41,6 +41,29 @@ const inputClass = [
   'transition-colors duration-300 focus:outline-none',
 ].join(' ')
 
+const whoFor = [
+  {
+    label: 'Small Business Owners',
+    detail: 'Website design, SEO, local visibility, or digital marketing strategy.',
+  },
+  {
+    label: 'Entrepreneurs & Startups',
+    detail: 'Business credit setup, brand building, or full-stack growth systems.',
+  },
+  {
+    label: 'Individuals Facing Debt',
+    detail: 'Debt relief strategy, creditor negotiation, or credit profile repair.',
+  },
+  {
+    label: 'Press & Media',
+    detail: 'Interview requests, commentary on digital marketing, entrepreneurship, or business credit.',
+  },
+  {
+    label: 'Serious Collaborations',
+    detail: 'Partnership inquiries, referral relationships, or strategic conversations.',
+  },
+]
+
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', company: '', message: '' })
@@ -60,29 +83,18 @@ export default function ContactPage() {
     <>
       <SEO
         title="Contact Daniel Rodriguez | Work With Me"
-        description="Ready to build something real? Contact Daniel Rodriguez for website design, SEO, business credit, or digital marketing strategy. Based in Scottsdale, Arizona — serving clients nationwide."
+        description="Ready to build something real? Contact Daniel Rodriguez for website design, SEO, business credit, debt relief strategy, or digital marketing. Based in Scottsdale, Arizona — serving clients nationwide."
         canonical="/contact"
-        keywords="contact Daniel Rodriguez, work with Daniel Rodriguez, Daniel Rodriguez consultation, RAH Operations contact"
+        keywords="contact Daniel Rodriguez, work with Daniel Rodriguez, Daniel Rodriguez consultation, RAH Operations contact, Scottsdale business consultant"
       />
 
-      {/* BreadcrumbList Schema */}
       <Helmet>
         <script type="application/ld+json">{JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            {
-              '@type': 'ListItem',
-              position: 1,
-              name: 'Home',
-              item: 'https://danielrodriguez.org/',
-            },
-            {
-              '@type': 'ListItem',
-              position: 2,
-              name: 'Contact',
-              item: 'https://danielrodriguez.org/contact',
-            },
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://danielrodriguez.org/' },
+            { '@type': 'ListItem', position: 2, name: 'Contact', item: 'https://danielrodriguez.org/contact' },
           ],
         })}</script>
       </Helmet>
@@ -96,7 +108,7 @@ export default function ContactPage() {
             initial={{ opacity: 0, y: 55, rotate: -0.8 }}
             animate={headerInView ? { opacity: 1, y: 0, rotate: 0 } : {}}
             transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-28 lg:mb-36"
+            className="mb-24 lg:mb-32"
           >
             <p
               className="font-sans mb-8"
@@ -107,10 +119,10 @@ export default function ContactPage() {
                 color: 'rgba(151,204,246,0.6)',
               }}
             >
-              003 / Work With Me
+              004 / Work With Me
             </p>
             <h1
-              className="font-display font-bold text-white"
+              className="font-display font-bold text-white mb-8"
               style={{
                 fontSize: 'clamp(3rem, 8vw, 7rem)',
                 lineHeight: '0.92',
@@ -124,17 +136,65 @@ export default function ContactPage() {
               </span>
             </h1>
             <p
-              className="font-sans leading-relaxed mt-8 max-w-xl"
+              className="font-sans leading-relaxed max-w-xl"
               style={{
                 fontSize: '0.9375rem',
                 color: 'rgba(255,255,255,0.38)',
                 letterSpacing: '0.01em',
               }}
             >
-              Daniel accepts a limited number of clients each quarter. If you're serious about
-              growing in revenue, reputation, or reach — this is where it starts.
+              Daniel accepts a limited number of clients each quarter. Reach out if you're serious
+              about growing — in revenue, reputation, or reach.
             </p>
           </motion.div>
+
+          {/* Who reaches out */}
+          <Reveal from="up" delay={0}>
+            <div className="mb-24 lg:mb-32">
+              <p
+                className="font-sans mb-10"
+                style={{
+                  fontSize: '0.65rem',
+                  letterSpacing: '0.45em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(151,204,246,0.45)',
+                }}
+              >
+                Who This Is For
+              </p>
+              <div
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px"
+                style={{ background: 'rgba(255,255,255,0.05)' }}
+              >
+                {whoFor.map((item, i) => (
+                  <div
+                    key={item.label}
+                    className="px-7 py-8"
+                    style={{ background: 'rgba(10,10,10,0.80)' }}
+                  >
+                    <p
+                      className="font-sans uppercase tracking-[0.18em] mb-3"
+                      style={{ fontSize: '0.62rem', color: 'rgba(151,204,246,0.55)' }}
+                    >
+                      0{i + 1}
+                    </p>
+                    <p
+                      className="font-display font-semibold text-white mb-2"
+                      style={{ fontSize: '1rem', letterSpacing: '-0.01em', lineHeight: '1.3' }}
+                    >
+                      {item.label}
+                    </p>
+                    <p
+                      className="font-sans"
+                      style={{ fontSize: '0.825rem', color: 'rgba(255,255,255,0.30)', lineHeight: '1.6' }}
+                    >
+                      {item.detail}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
 
           {/* Two columns */}
           <div className="grid lg:grid-cols-2 gap-20 lg:gap-32">
@@ -254,9 +314,9 @@ export default function ContactPage() {
                     className="mb-10 mx-auto"
                     style={{ width: '3rem', height: 1, background: '#97CCF6' }}
                   />
-                  <h3 className="font-display text-3xl font-semibold text-white mb-6">
+                  <h2 className="font-display text-3xl font-semibold text-white mb-6">
                     Message Received
-                  </h3>
+                  </h2>
                   <p
                     className="font-cormorant text-xl italic leading-relaxed max-w-sm"
                     style={{ color: 'rgba(255,255,255,0.4)' }}
@@ -300,7 +360,7 @@ export default function ContactPage() {
                   <input
                     type="text"
                     name="company"
-                    placeholder="Company / Organization"
+                    placeholder="Company / Organization (optional)"
                     value={form.company}
                     onChange={handleChange}
                     className={inputClass}
@@ -310,7 +370,7 @@ export default function ContactPage() {
                   />
                   <textarea
                     name="message"
-                    placeholder="Tell me about your goals — where you are now, and where you want to be."
+                    placeholder="Tell me where your business is now and where you want it to go. Be specific — the more context you share, the more useful our first conversation will be."
                     required
                     rows={7}
                     value={form.message}
@@ -341,6 +401,12 @@ export default function ContactPage() {
                       />
                     </motion.button>
                   </div>
+                  <p
+                    className="font-sans text-center pt-2"
+                    style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.18)' }}
+                  >
+                    No spam. No automated responses. A real reply within 48 hours.
+                  </p>
                 </form>
               )}
             </Reveal>
