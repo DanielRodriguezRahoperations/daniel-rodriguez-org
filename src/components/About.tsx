@@ -3,9 +3,9 @@ import { motion, useInView } from 'framer-motion'
 import FloatingGeometry from './FloatingGeometry'
 
 const stats = [
-  { value: '10+', label: 'Years Experience' },
-  { value: '100s', label: 'Businesses Empowered' },
-  { value: '3', label: 'Industries Mastered' },
+  { value: '10+',   label: 'Years Operating' },
+  { value: '100+',  label: 'Businesses Built' },
+  { value: '3',     label: 'Industries Led' },
   { value: 'IAPDA', label: 'Certified Specialist' },
 ]
 
@@ -14,26 +14,26 @@ const pillars = [
     num: '01',
     title: 'Digital Growth',
     description:
-      'Over a decade of hands-on expertise in digital marketing, SEO, Google Business optimization, and lead generation — helping businesses get structured, get found, and scale fast.',
+      'Most businesses are invisible online. Daniel makes them undeniable. Over a decade of executing SEO strategy, Google Business optimization, and precision lead generation — turning dormant websites into 24/7 lead machines.',
   },
   {
     num: '02',
     title: 'Business Credit',
     description:
-      'Specialized in business credit building and Net 30 vendor account setup, empowering entrepreneurs to access capital, build credibility, and grow without personal credit risk.',
+      "Personal credit shouldn't be the ceiling on business ambition. Daniel has structured standalone credit profiles, Net 30 vendor relationships, and capital access strategies for hundreds of operators — without touching a single digit of personal score.",
   },
   {
     num: '03',
     title: 'Solar & Energy',
     description:
-      'As owner of SunVision Solar, Daniel helps homeowners and businesses make the switch to clean energy — reducing costs and building long-term financial freedom.',
+      'As founder of SunVision Solar, Daniel helps homeowners and commercial operators reduce energy overhead and build long-term asset value. Own your power. Reduce your costs. Strengthen your equity position.',
   },
 ]
 
-function SlideIn({
+function Reveal({
   children,
   delay = 0,
-  from = 'left',
+  from = 'up',
   className = '',
 }: {
   children: React.ReactNode
@@ -42,20 +42,20 @@ function SlideIn({
   className?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const inView = useInView(ref, { once: true, margin: '-70px' })
 
   const initial =
-    from === 'left'  ? { opacity: 0, x: -60 } :
-    from === 'right' ? { opacity: 0, x: 60 } :
-    from === 'scale' ? { opacity: 0, scale: 0.88 } :
-                       { opacity: 0, y: 50 }
+    from === 'left'  ? { opacity: 0, x: -55 } :
+    from === 'right' ? { opacity: 0, x: 55 } :
+    from === 'scale' ? { opacity: 0, scale: 0.92 } :
+                       { opacity: 0, y: 45 }
 
   return (
     <motion.div
       ref={ref}
       initial={initial}
       animate={inView ? { opacity: 1, x: 0, y: 0, scale: 1 } : {}}
-      transition={{ duration: 1, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 1.0, delay, ease: [0.16, 1, 0.3, 1] }}
       className={className}
     >
       {children}
@@ -67,111 +67,210 @@ export default function About() {
   return (
     <section
       id="about"
-      className="py-32 lg:py-48 px-6 lg:px-12 max-w-7xl mx-auto"
-      style={{ background: 'rgba(10,10,10,0.72)' }}
+      style={{ background: 'rgba(10,10,10,0.75)' }}
     >
-      {/* Two-column: text + 3D */}
-      <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center mb-32">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-40 lg:py-56">
 
-        {/* Left — Text: slides from left */}
-        <div>
-          <SlideIn from="left" delay={0}>
-            <p className="font-sans text-xs tracking-[0.4em] uppercase text-gold/70 mb-8">
-              001 / About
-            </p>
-          </SlideIn>
+        {/* Bio: asymmetric two-column */}
+        <div className="grid lg:grid-cols-[1fr_460px] xl:grid-cols-[1fr_540px] gap-16 lg:gap-20 items-start mb-36">
 
-          <SlideIn from="left" delay={0.1}>
-            <h2 className="font-display text-[clamp(2.8rem,5.5vw,4.5rem)] font-bold text-white leading-tight mb-10">
-              The Multi-Industry
-              <br />
-              <span className="italic text-gold">Strategist</span>
-            </h2>
-          </SlideIn>
+          {/* Left — text */}
+          <div>
+            <Reveal from="left" delay={0}>
+              <p
+                className="font-sans mb-10"
+                style={{
+                  fontSize: '0.65rem', letterSpacing: '0.45em',
+                  textTransform: 'uppercase', color: 'rgba(151,204,246,0.6)',
+                }}
+              >
+                001 / About
+              </p>
+            </Reveal>
 
-          <SlideIn from="left" delay={0.2}>
-            <blockquote className="font-cormorant text-[clamp(1.2rem,2.2vw,1.6rem)] italic text-gold/75 leading-relaxed mb-10 pl-6 border-l-2 border-gold/40">
-              "When you search for Daniel Rodriguez, you'll find a driven, multi-faceted professional with one mission — to help people grow in business, finances, and life."
-            </blockquote>
-          </SlideIn>
+            <Reveal from="left" delay={0.1}>
+              <h2
+                className="font-display font-bold text-white mb-12"
+                style={{
+                  fontSize: 'clamp(2.8rem, 5.5vw, 4.8rem)',
+                  lineHeight: '1.0', letterSpacing: '-0.025em',
+                }}
+              >
+                The Multi-Industry
+                <br />
+                <span className="italic" style={{ color: '#97CCF6' }}>Operator.</span>
+              </h2>
+            </Reveal>
 
-          <SlideIn from="left" delay={0.3}>
-            <p className="font-sans text-base text-white/55 leading-relaxed mb-6">
-              Daniel Rodriguez is a Scottsdale-based entrepreneur and strategist passionate
-              about helping others succeed. He is the Founder of RAH Operations LLC, the
-              Owner of SunVision Solar, and a Senior Certified Debt Specialist with an IAPDA
-              certification.
-            </p>
-          </SlideIn>
+            <Reveal from="left" delay={0.2}>
+              <blockquote
+                className="font-cormorant italic leading-relaxed mb-10 pl-5"
+                style={{
+                  fontSize: 'clamp(1.15rem, 2.1vw, 1.5rem)',
+                  color: 'rgba(151,204,246,0.62)',
+                  borderLeft: '2px solid rgba(151,204,246,0.28)',
+                }}
+              >
+                "When you search for Daniel Rodriguez, you'll find a driven, multi-faceted professional
+                with one mission — to help people grow in business, finances, and life."
+              </blockquote>
+            </Reveal>
 
-          <SlideIn from="left" delay={0.4}>
-            <p className="font-sans text-base text-white/55 leading-relaxed mb-12">
-              With over a decade of experience in digital marketing, SEO, business credit
-              building, and solar energy, Daniel empowers everyday people to grow their
-              income, rebuild their credit, and create real freedom — no matter where they're
-              starting from.
-            </p>
-          </SlideIn>
+            <Reveal from="left" delay={0.3}>
+              <p
+                className="font-sans leading-relaxed mb-6"
+                style={{
+                  fontSize: '0.9375rem', color: 'rgba(255,255,255,0.48)',
+                  letterSpacing: '0.01em',
+                }}
+              >
+                Daniel Rodriguez is a Scottsdale-based entrepreneur, strategist, and business builder
+                who has spent the past decade doing what most consultants only describe — executing the
+                systems, credit structures, marketing engines, and digital strategies that make businesses
+                grow.
+              </p>
+            </Reveal>
 
-          <SlideIn from="left" delay={0.5}>
-            <a
-              href="#contact"
-              className="group inline-flex items-center gap-4 font-sans text-sm font-medium tracking-widest uppercase text-gold hover:text-white transition-colors duration-300"
-            >
-              Work With Daniel
-              <span className="w-8 h-px bg-gold group-hover:w-16 transition-all duration-500" />
-            </a>
-          </SlideIn>
+            <Reveal from="left" delay={0.38}>
+              <p
+                className="font-sans leading-relaxed mb-14"
+                style={{
+                  fontSize: '0.9375rem', color: 'rgba(255,255,255,0.48)',
+                  letterSpacing: '0.01em',
+                }}
+              >
+                Founder of RAH Operations LLC. Owner of SunVision Solar. Senior Certified Debt
+                Specialist, IAPDA certified. He shows up as an operator first — with a verifiable
+                track record across three distinct industries.
+              </p>
+            </Reveal>
+
+            <Reveal from="left" delay={0.46}>
+              <a
+                href="#contact"
+                className="group inline-flex items-center gap-5 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
+                style={{ fontSize: '0.72rem', color: '#97CCF6' }}
+              >
+                Start a Conversation
+                <span
+                  className="block h-px group-hover:w-14 transition-all duration-500"
+                  style={{ width: '2rem', background: 'currentColor' }}
+                />
+              </a>
+            </Reveal>
+          </div>
+
+          {/* Right — 3D geometry */}
+          <Reveal from="right" delay={0.15} className="relative h-[480px] lg:h-[560px]">
+            <div
+              className="absolute inset-0 pointer-events-none z-10"
+              style={{
+                background:
+                  'radial-gradient(ellipse at 50% 50%, rgba(151,204,246,0.04) 0%, transparent 70%)',
+              }}
+            />
+            <FloatingGeometry />
+          </Reveal>
         </div>
 
-        {/* Right — 3D canvas: slides from right */}
-        <SlideIn from="right" delay={0.2} className="relative h-[500px] lg:h-[600px]">
-          <div className="absolute inset-0 rounded-2xl bg-gradient-radial from-gold/5 via-transparent to-transparent pointer-events-none z-10" />
-          <div className="absolute -inset-4 rounded-3xl border border-gold/5 pointer-events-none" />
-          <FloatingGeometry />
-        </SlideIn>
-      </div>
-
-      {/* Stats — stagger up, no card backgrounds */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 border border-white/8 mb-32">
-        {stats.map((stat, i) => (
-          <SlideIn key={stat.label} from="up" delay={i * 0.1}>
-            <div className="px-8 py-12 text-center border-r border-white/8 last:border-r-0 group">
-              <div className="font-display text-[clamp(2.2rem,4.5vw,3.5rem)] font-bold text-gold mb-3 group-hover:scale-110 transition-transform duration-400">
-                {stat.value}
-              </div>
-              <div className="font-sans text-xs tracking-[0.3em] uppercase text-white/35">
-                {stat.label}
-              </div>
-            </div>
-          </SlideIn>
-        ))}
-      </div>
-
-      {/* Pillars — scale reveal, no card backgrounds */}
-      <div>
-        <SlideIn from="up" delay={0}>
-          <p className="font-sans text-xs tracking-[0.4em] uppercase text-gold/50 mb-16">
-            Areas of Expertise
-          </p>
-        </SlideIn>
-        <div className="divide-y divide-white/8">
-          {pillars.map((pillar, i) => (
-            <SlideIn key={pillar.title} from="scale" delay={i * 0.14}>
-              <div className="group py-12 grid md:grid-cols-[120px_1fr_2fr] gap-8 items-start hover:pl-4 transition-all duration-500">
-                <div className="font-sans text-xs tracking-[0.4em] text-gold/40 pt-1">
-                  {pillar.num}
+        {/* Stats row */}
+        <div
+          className="grid grid-cols-2 lg:grid-cols-4 mb-36"
+          style={{ border: '1px solid rgba(255,255,255,0.06)' }}
+        >
+          {stats.map((stat, i) => (
+            <Reveal key={stat.label} from="up" delay={i * 0.09}>
+              <div
+                className="group px-8 py-12 text-center cursor-default"
+                style={{
+                  borderRight: i < 3 ? '1px solid rgba(255,255,255,0.06)' : undefined,
+                  borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.06)' : undefined,
+                }}
+              >
+                <div
+                  className="font-display font-bold text-white mb-3 group-hover:text-gold transition-colors duration-500"
+                  style={{
+                    fontSize: 'clamp(2.2rem, 4.5vw, 3.6rem)',
+                    letterSpacing: '-0.03em', lineHeight: 1,
+                  }}
+                >
+                  {stat.value}
                 </div>
-                <h3 className="font-display text-2xl lg:text-3xl font-semibold text-white group-hover:text-gold transition-colors duration-300">
-                  {pillar.title}
-                </h3>
-                <p className="font-sans text-sm text-white/40 leading-relaxed">
-                  {pillar.description}
-                </p>
+                <div
+                  className="font-sans"
+                  style={{
+                    fontSize: '0.65rem', letterSpacing: '0.3em',
+                    textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)',
+                  }}
+                >
+                  {stat.label}
+                </div>
               </div>
-            </SlideIn>
+            </Reveal>
           ))}
         </div>
+
+        {/* Methodology */}
+        <Reveal from="up" delay={0}>
+          <p
+            className="font-sans mb-14"
+            style={{
+              fontSize: '0.65rem', letterSpacing: '0.45em',
+              textTransform: 'uppercase', color: 'rgba(151,204,246,0.5)',
+            }}
+          >
+            Methodology
+          </p>
+        </Reveal>
+
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          {pillars.map((pillar, i) => (
+            <Reveal key={pillar.title} from="scale" delay={i * 0.13}>
+              <div style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                <motion.div
+                  className="group py-12 lg:py-14"
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'minmax(64px, 80px) 1fr 2fr',
+                    gap: '2rem',
+                    alignItems: 'start',
+                  }}
+                  whileHover={{ x: 8 }}
+                  transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+                >
+                  <div
+                    className="font-sans pt-1"
+                    style={{
+                      fontSize: '0.65rem', letterSpacing: '0.4em',
+                      textTransform: 'uppercase', color: 'rgba(151,204,246,0.28)',
+                    }}
+                  >
+                    {pillar.num}
+                  </div>
+                  <h3
+                    className="font-display font-semibold text-white group-hover:text-gold transition-colors duration-400"
+                    style={{
+                      fontSize: 'clamp(1.3rem, 2.2vw, 1.8rem)',
+                      lineHeight: '1.2', letterSpacing: '-0.01em',
+                    }}
+                  >
+                    {pillar.title}
+                  </h3>
+                  <p
+                    className="font-sans leading-relaxed"
+                    style={{
+                      fontSize: '0.875rem', color: 'rgba(255,255,255,0.36)',
+                      letterSpacing: '0.01em',
+                    }}
+                  >
+                    {pillar.description}
+                  </p>
+                </motion.div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
       </div>
     </section>
   )

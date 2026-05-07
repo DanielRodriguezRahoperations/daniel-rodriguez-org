@@ -1,5 +1,6 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import Statement from './components/Statement'
 import About from './components/About'
 import Press from './components/Press'
 import Contact from './components/Contact'
@@ -16,6 +17,7 @@ function App() {
         <Navbar />
         <main>
           <Hero />
+          <Statement />
           <About />
           <Press />
           <Contact />

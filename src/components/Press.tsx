@@ -10,7 +10,7 @@ const pressItems = [
     date: 'Nov 25, 2025',
     headline: 'Daniel Rodriguez Expands PR and Reputation Management Services While Sharing Personal Life Update',
     excerpt:
-      'Daniel Rodriguez, founder of RAH Operations LLC, has announced an expansion of his business consulting agency to include reputation management, public relations strategy, and brand publicity services.',
+      "Daniel Rodriguez, founder of RAH Operations LLC, has announced an expansion of his business consulting agency to include reputation management, public relations strategy, and brand publicity services — broadening his firm's capabilities to support clients seeking credibility and online protection.",
     url: 'https://www.prlog.org/13112958-daniel-rodriguez-expands-pr-and-reputation-management-services-while-sharing-personal-life-update.html',
   },
   {
@@ -19,7 +19,7 @@ const pressItems = [
     date: 'May 20, 2025',
     headline: 'The Multi-Industry Strategist Helping Entrepreneurs, Homeowners, and Families Take Control',
     excerpt:
-      'Based in Scottsdale, Arizona, Daniel Rodriguez founded RAH Operations LLC, owns Sunvision Solar, and serves as a Senior Certified Debt Specialist — a driven, multi-faceted professional with one mission.',
+      'Based in Scottsdale, Arizona, Daniel Rodriguez founded RAH Operations LLC, owns Sunvision Solar, and serves as a Senior Certified Debt Specialist — a driven, multi-faceted professional with one mission: to help people grow in business, finances, and life.',
     url: 'https://www.prlog.org/13077658-daniel-rodriguezthe-multi-industry-strategist-helping-entrepreneurs-homeowners-and-families-take.html',
   },
   {
@@ -28,7 +28,7 @@ const pressItems = [
     date: 'Sep 2, 2025',
     headline: 'Daniel Rodriguez Launches RAH Operations to Empower Small Businesses Nationwide',
     excerpt:
-      'Daniel Rodriguez has established RAH Operations LLC, a business services and digital marketing firm focused on supporting small business growth across credit, SEO, and lead generation.',
+      'Daniel Rodriguez has established RAH Operations LLC, a business services and digital marketing firm focused on supporting small business growth. The agency offers business credit setup, SEO, digital marketing, and website development.',
     url: 'https://www.bizwireexpress.com/showstory1888.php?storyid=1842',
   },
   {
@@ -46,35 +46,40 @@ const pressItems = [
     date: 'Sep 3, 2025',
     headline: 'Daniel Rodriguez Launches RAH Operations to Empower Small Businesses Nationwide',
     excerpt:
-      'RAH Operations specializes in business credit and Net 30 vendor account setup, SEO and Google Business profile optimization, digital marketing and lead generation.',
+      'RAH Operations specializes in business credit and Net 30 vendor account setup, SEO and Google Business profile optimization, digital marketing and lead generation — empowering everyday people to build real income and lasting freedom.',
     url: 'https://www.articleted.com/article/1019949/115742/Daniel-Rodriguez-Launches-RAH-Operations-to-Empower-Small-Businesses-Nationwide',
   },
 ]
 
-function ClipReveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function Reveal({
+  children,
+  delay = 0,
+  from = 'up',
+}: {
+  children: React.ReactNode
+  delay?: number
+  from?: 'left' | 'right' | 'up' | 'clip'
+}) {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ clipPath: 'inset(100% 0 0 0)', opacity: 0 }}
-      animate={inView ? { clipPath: 'inset(0% 0 0 0)', opacity: 1 } : {}}
-      transition={{ duration: 1.1, delay, ease: [0.16, 1, 0.3, 1] }}
-    >
-      {children}
-    </motion.div>
-  )
-}
+  const inView = useInView(ref, { once: true, margin: '-50px' })
 
-function SlideIn({ children, delay = 0, from = 'left' }: { children: React.ReactNode; delay?: number; from?: 'left' | 'right' }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-40px' })
+  const initial =
+    from === 'left'  ? { opacity: 0, x: -50 } :
+    from === 'right' ? { opacity: 0, x: 50 } :
+    from === 'clip'  ? { clipPath: 'inset(100% 0 0 0)', opacity: 0 } :
+                       { opacity: 0, y: 40 }
+
+  const animate =
+    from === 'clip'
+      ? (inView ? { clipPath: 'inset(0% 0 0 0)', opacity: 1 } : {})
+      : (inView ? { opacity: 1, x: 0, y: 0 } : {})
+
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, x: from === 'left' ? -50 : 50 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
+      initial={initial}
+      animate={animate}
+      transition={{ duration: 1.0, delay, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </motion.div>
@@ -82,16 +87,15 @@ function SlideIn({ children, delay = 0, from = 'left' }: { children: React.React
 }
 
 export default function Press() {
-  const headerRef = useRef<HTMLDivElement>(null)
+  const headerRef    = useRef<HTMLDivElement>(null)
   const headerInView = useInView(headerRef, { once: true, margin: '-80px' })
 
   return (
     <section
       id="press"
-      style={{ background: 'rgba(10,10,10,0.82)' }}
-      className="py-32 lg:py-48"
+      style={{ background: 'rgba(10,10,10,0.86)' }}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-40 lg:py-56">
 
         {/* Header — clip reveal */}
         <motion.div
@@ -99,79 +103,151 @@ export default function Press() {
           initial={{ clipPath: 'inset(100% 0 0 0)', opacity: 0 }}
           animate={headerInView ? { clipPath: 'inset(0% 0 0 0)', opacity: 1 } : {}}
           transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-24"
+          className="mb-8"
         >
-          <p className="font-sans text-xs tracking-[0.4em] uppercase text-gold/70 mb-6">
+          <p
+            className="font-sans mb-6"
+            style={{
+              fontSize: '0.65rem', letterSpacing: '0.45em',
+              textTransform: 'uppercase', color: 'rgba(151,204,246,0.6)',
+            }}
+          >
             002 / In The Media
           </p>
-          <h2 className="font-display text-[clamp(2.8rem,5.5vw,4.5rem)] font-bold text-white leading-tight">
+          <h2
+            className="font-display font-bold text-white"
+            style={{
+              fontSize: 'clamp(2.8rem, 5.5vw, 4.8rem)',
+              lineHeight: '1.0', letterSpacing: '-0.025em',
+            }}
+          >
             Press &amp;{' '}
-            <span className="italic text-gold">Recognition</span>
+            <span className="italic" style={{ color: '#97CCF6' }}>Recognition</span>
           </h2>
         </motion.div>
 
-        {/* As Seen In — horizontal scrolling marquee */}
-        <ClipReveal delay={0.2}>
-          <div className="overflow-hidden border-y border-white/8 py-6 mb-24">
+        {/* Intro statement */}
+        <Reveal from="up" delay={0.12}>
+          <p
+            className="font-cormorant italic mb-20 max-w-2xl"
+            style={{
+              fontSize: 'clamp(1.1rem, 2vw, 1.4rem)',
+              color: 'rgba(255,255,255,0.32)',
+            }}
+          >
+            Five media features across four independent publications.
+            All earned — no paid placements, no PR shortcuts.
+          </p>
+        </Reveal>
+
+        {/* Outlet marquee */}
+        <Reveal from="clip" delay={0.18}>
+          <div
+            className="overflow-hidden mb-24"
+            style={{
+              borderTop: '1px solid rgba(255,255,255,0.07)',
+              borderBottom: '1px solid rgba(255,255,255,0.07)',
+              paddingTop: '1.25rem', paddingBottom: '1.25rem',
+            }}
+          >
             <motion.div
               animate={{ x: ['0%', '-50%'] }}
-              transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
               className="flex gap-16 whitespace-nowrap"
             >
               {[...outlets, ...outlets].map((outlet, i) => (
                 <span
                   key={i}
-                  className="font-display text-base font-semibold text-white/20 tracking-widest uppercase"
+                  className="font-display font-semibold tracking-widest uppercase"
+                  style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.16)' }}
                 >
                   {outlet}
                 </span>
               ))}
             </motion.div>
           </div>
-        </ClipReveal>
+        </Reveal>
 
-        {/* Press items — editorial list, alternating slide-left / slide-right */}
-        <div className="divide-y divide-white/8">
+        {/* Press items — editorial list */}
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
           {pressItems.map((item, i) => (
-            <SlideIn key={i} delay={0.05} from={i % 2 === 0 ? 'left' : 'right'}>
+            <Reveal key={i} delay={0.04} from={i % 2 === 0 ? 'left' : 'right'}>
               <motion.a
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group block py-12 grid md:grid-cols-[80px_1fr_auto] gap-8 items-start hover:pl-4 transition-all duration-500"
-                whileHover={{ x: i % 2 === 0 ? 6 : -6 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                className="group block py-12 lg:py-14"
+                style={{
+                  borderBottom: '1px solid rgba(255,255,255,0.07)',
+                  display: 'grid',
+                  gridTemplateColumns: '64px 1fr auto',
+                  gap: '2rem',
+                  alignItems: 'start',
+                }}
+                whileHover={{ x: i % 2 === 0 ? 7 : -7 }}
+                transition={{ type: 'spring', stiffness: 280, damping: 28 }}
               >
                 {/* Number */}
-                <div className="font-sans text-xs tracking-[0.4em] text-gold/35 pt-2">
+                <div
+                  className="font-sans pt-1"
+                  style={{
+                    fontSize: '0.65rem', letterSpacing: '0.4em',
+                    textTransform: 'uppercase', color: 'rgba(151,204,246,0.28)',
+                  }}
+                >
                   {item.num}
                 </div>
 
                 {/* Content */}
                 <div>
                   <div className="flex flex-wrap items-center gap-4 mb-4">
-                    <span className="font-display text-sm font-semibold text-gold">
+                    <span
+                      className="font-display font-semibold"
+                      style={{ fontSize: '0.8rem', color: '#97CCF6' }}
+                    >
                       {item.outlet}
                     </span>
-                    <span className="font-sans text-xs text-white/25 tracking-widest">
+                    <span
+                      className="font-sans tracking-widest"
+                      style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)' }}
+                    >
                       {item.date}
                     </span>
                   </div>
-                  <h3 className="font-display text-xl lg:text-2xl font-semibold text-white leading-snug mb-4 group-hover:text-gold/90 transition-colors duration-300">
+                  <h3
+                    className="font-display font-semibold text-white group-hover:text-gold transition-colors duration-400 mb-4"
+                    style={{
+                      fontSize: 'clamp(1rem, 1.8vw, 1.35rem)',
+                      lineHeight: '1.35', letterSpacing: '-0.01em',
+                    }}
+                  >
                     {item.headline}
                   </h3>
-                  <p className="font-sans text-sm text-white/35 leading-relaxed max-w-2xl">
+                  <p
+                    className="font-sans leading-relaxed"
+                    style={{
+                      fontSize: '0.825rem',
+                      color: 'rgba(255,255,255,0.3)',
+                      maxWidth: '42rem',
+                    }}
+                  >
                     {item.excerpt}
                   </p>
                 </div>
 
-                {/* Arrow */}
-                <div className="hidden md:flex items-center gap-3 font-sans text-xs tracking-widest uppercase text-gold/30 group-hover:text-gold transition-colors duration-300 pt-2 whitespace-nowrap">
+                {/* Read link */}
+                <div
+                  className="hidden md:flex items-center gap-3 font-sans tracking-widest uppercase text-gold/25 group-hover:text-gold transition-colors duration-400 pt-1 whitespace-nowrap"
+                  style={{ fontSize: '0.65rem' }}
+                >
                   Read
-                  <span className="w-4 h-px bg-current group-hover:w-10 transition-all duration-500" />
+                  <span
+                    className="block h-px bg-current group-hover:w-10 transition-all duration-500"
+                    style={{ width: '1rem' }}
+                  />
                 </div>
               </motion.a>
-            </SlideIn>
+            </Reveal>
           ))}
         </div>
 
