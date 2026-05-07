@@ -3,72 +3,41 @@ import { motion, useMotionValue, useTransform } from 'framer-motion'
 
 export default function Hero() {
   const sectionRef = useRef<HTMLDivElement>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
   const progress = useMotionValue(0)
-  const rafRef = useRef<number | null>(null)
 
-  // Daniel slides from left → center, Rodriguez from right → center
-  const danielX   = useTransform(progress, [0, 0.3], [-600, 0])
+  const danielX    = useTransform(progress, [0, 0.3], [-600, 0])
   const rodriguezX = useTransform(progress, [0, 0.3], [600,  0])
   const textOpacity = useTransform(progress, [0, 0.2], [0, 1])
 
   useEffect(() => {
-    const video = videoRef.current
     const section = sectionRef.current
-    if (!video || !section) return
-
-    // Never autoplay — scroll controls everything
-    video.pause()
-    video.currentTime = 0
+    if (!section) return
 
     const onScroll = () => {
-      const scrolled = Math.max(0, window.scrollY - section.offsetTop)
+      const scrolled  = Math.max(0, window.scrollY - section.offsetTop)
       const scrollable = section.offsetHeight - window.innerHeight
       const p = Math.min(1, scrolled / Math.max(1, scrollable))
       progress.set(p)
-
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
-      rafRef.current = requestAnimationFrame(() => {
-        if (video.duration) video.currentTime = p * video.duration
-      })
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    }
+    return () => window.removeEventListener('scroll', onScroll)
   }, [progress])
 
   return (
-    // Tall section gives scroll room to drive the video and text
     <div ref={sectionRef} style={{ height: '400vh' }}>
 
-      {/* Sticky viewport — video stays fullscreen while you scroll */}
-      <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', background: '#0a0a0a' }}>
+      {/* Sticky viewport — transparent so fixed video shows through */}
+      <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
 
-        {/* Video — fullscreen background, no autoplay */}
-        <video
-          ref={videoRef}
-          src="/hero.mp4"
-          muted
-          playsInline
-          preload="auto"
-          style={{
-            position: 'absolute', inset: 0,
-            width: '100%', height: '100%',
-            objectFit: 'contain',
-            zIndex: 0,
-          }}
-        />
-
-        {/* Overlay */}
+        {/* Gradient for text readability */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 1,
-          background: 'linear-gradient(to top, #0a0a0a 0%, transparent 40%), linear-gradient(to bottom, rgba(10,10,10,0.35) 0%, transparent 30%)',
+          background: 'linear-gradient(to top, rgba(10,10,10,0.65) 0%, transparent 40%), linear-gradient(to bottom, rgba(10,10,10,0.3) 0%, transparent 30%)',
+          pointerEvents: 'none',
         }} />
 
-        {/* Hero text — slides in from left/right as you scroll */}
+        {/* Hero text — Daniel from left, Rodriguez from right */}
         <motion.div
           style={{
             position: 'absolute', inset: 0, zIndex: 2,
@@ -78,8 +47,7 @@ export default function Hero() {
             opacity: textOpacity,
           }}
         >
-          <div style={{ textAlign: 'center', lineHeight: 0.9, marginBottom: '1.2rem', overflow: 'hidden' }}>
-            {/* Daniel — from left */}
+          <div style={{ textAlign: 'center', lineHeight: 0.9, marginBottom: '1.2rem' }}>
             <motion.div style={{ x: danielX }}>
               <span style={{
                 display: 'block',
@@ -92,8 +60,6 @@ export default function Hero() {
                 Daniel
               </span>
             </motion.div>
-
-            {/* Rodriguez — from right */}
             <motion.div style={{ x: rodriguezX }}>
               <span style={{
                 display: 'block',
@@ -110,7 +76,6 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Tagline */}
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: 'clamp(1rem, 2vw, 1.35rem)',
