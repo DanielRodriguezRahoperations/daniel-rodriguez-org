@@ -38,7 +38,7 @@ function AppShell() {
   }, [])
 
   return (
-    <div className="bg-[#0a0a0a] min-h-screen overflow-x-hidden relative">
+    <div className="bg-[#0a0a0a] min-h-screen relative">
       <ParticleBackground />
       <ScrollToTop />
       <div className="relative z-10">
