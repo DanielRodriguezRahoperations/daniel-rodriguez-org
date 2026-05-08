@@ -125,8 +125,8 @@ export default function Hero({ onProgress }: HeroProps) {
     }
     const onResize = () => { setH(); requestAnimationFrame(tick) }
 
-    // pointermove fires instantly on first touch — no tap required
-    window.addEventListener('pointermove',       onScroll, { passive: true })
+    window.addEventListener('touchstart',        onScroll, { passive: true })
+    window.addEventListener('touchmove',         onScroll, { passive: true })
     window.addEventListener('scroll',            onScroll, { passive: true })
     window.addEventListener('resize',            onResize, { passive: true })
     window.addEventListener('orientationchange', onResize)
@@ -152,7 +152,8 @@ export default function Hero({ onProgress }: HeroProps) {
     requestAnimationFrame(tick)
 
     return () => {
-      window.removeEventListener('pointermove',       onScroll)
+      window.removeEventListener('touchstart',        onScroll)
+      window.removeEventListener('touchmove',         onScroll)
       window.removeEventListener('scroll',            onScroll)
       window.removeEventListener('resize',            onResize)
       window.removeEventListener('orientationchange', onResize)
