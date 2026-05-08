@@ -1,4 +1,5 @@
-import { useRef } from 'react'
+
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView } from 'framer-motion'
 import { Helmet } from 'react-helmet-async'
@@ -103,6 +104,7 @@ const label = (text: string) => (
 
 export default function HomePage() {
   const previewPosts = blogPosts.slice(0, 3)
+  const [_heroProgress, setHeroProgress] = useState(0)
 
   return (
     <>
@@ -165,8 +167,8 @@ export default function HomePage() {
         })}</script>
       </Helmet>
 
-      {/* ── HERO — protected, do not modify ─────────────────── */}
-      <Hero />
+      {/* ── HERO ─────────────────────────────────────────────── */}
+      <Hero onProgress={setHeroProgress} />
 
       {/* ── STATEMENT — protected, do not modify ─────────────── */}
       <Statement />
