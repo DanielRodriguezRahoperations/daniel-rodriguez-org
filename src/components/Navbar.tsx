@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
@@ -9,31 +9,33 @@ const navLinks = [
   { label: 'Contact', href: '/contact' },
 ]
 
-export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+
+interface NavbarProps {
+  heroProgress?: number
+}
+
+export default function Navbar({ heroProgress = 0 }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
+  const navRef = useRef<HTMLElement>(null)
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  // Close mobile menu on route change
   useEffect(() => {
     setMenuOpen(false)
   }, [location.pathname])
 
+  useEffect(() => {
+    if (!navRef.current) return
+    const p = Math.min(1, heroProgress / 0.25)
+    navRef.current.style.opacity   = String(p)
+    navRef.current.style.transform = `translateY(${lerp(-40, 0, p)}px)`
+  }, [heroProgress])
+
   return (
-    <motion.nav
-      initial={{ y: '-100%' }}
-      animate={{
-        y: scrolled ? '0%' : '-100%',
-      }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+    <nav
+      ref={navRef}
       className="fixed top-0 left-0 right-0 bg-[#0a0a0a]/70 backdrop-blur-xl border-b border-white/5"
-      style={{ zIndex: 3 }}
+      style={{ zIndex: 3, opacity: 0, transform: 'translateY(-40px)' }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">
@@ -109,6 +111,6 @@ export default function Navbar() {
           </Link>
         </div>
       </motion.div>
-    </motion.nav>
+    </nav>
   )
 }

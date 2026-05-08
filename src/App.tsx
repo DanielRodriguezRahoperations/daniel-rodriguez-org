@@ -1,9 +1,8 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Navbar from './components/Navbar'
 import ParticleBackground from './components/ParticleBackground'
-import VideoBackground from './components/VideoBackground'
 import Footer from './components/Footer'
 import HomePage from './pages/HomePage'
 import AboutPage from './pages/AboutPage'
@@ -22,13 +21,28 @@ function ScrollToTop() {
 }
 
 function AppShell() {
+  const [heroProgress, setHeroProgress] = useState(0)
+  const { pathname } = useLocation()
+
+  // On non-home routes the hero isn't rendered, so keep navbar fully visible
+  useEffect(() => {
+    setHeroProgress(pathname === '/' ? 0 : 1)
+  }, [pathname])
+
+  // Hero.tsx dispatches scroll progress via custom event
+  useEffect(() => {
+    const handler = (e: Event) =>
+      setHeroProgress((e as CustomEvent<number>).detail)
+    window.addEventListener('hero-progress', handler)
+    return () => window.removeEventListener('hero-progress', handler)
+  }, [])
+
   return (
     <div className="bg-[#0a0a0a] min-h-screen overflow-x-hidden relative">
       <ParticleBackground />
-      <VideoBackground />
       <ScrollToTop />
       <div className="relative z-10">
-        <Navbar />
+        <Navbar heroProgress={heroProgress} />
         <main>
           <Routes>
             <Route path="/" element={<HomePage />} />
