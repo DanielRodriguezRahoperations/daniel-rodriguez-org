@@ -9,8 +9,6 @@ const navLinks = [
   { label: 'Contact', href: '/contact' },
 ]
 
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t
-
 interface NavbarProps {
   heroProgress?: number
 }
@@ -26,16 +24,17 @@ export default function Navbar({ heroProgress = 0 }: NavbarProps) {
 
   useEffect(() => {
     if (!navRef.current) return
+    // Always visible — just slides down from top as hero scrolls
     const p = Math.min(1, heroProgress / 0.25)
-    navRef.current.style.opacity   = String(p)
-    navRef.current.style.transform = `translateY(${lerp(-40, 0, p)}px)`
+    navRef.current.style.opacity   = String(Math.max(0.3, p))
+    navRef.current.style.transform = `translateY(${(1 - p) * -20}px)`
   }, [heroProgress])
 
   return (
     <nav
       ref={navRef}
       className="fixed top-0 left-0 right-0 bg-[#0a0a0a]/70 backdrop-blur-xl border-b border-white/5"
-      style={{ zIndex: 3, opacity: 0, transform: 'translateY(-40px)' }}
+      style={{ zIndex: 50, opacity: 0.3, transform: 'translateY(-20px)' }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">
@@ -71,15 +70,9 @@ export default function Navbar({ heroProgress = 0 }: NavbarProps) {
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
           >
-            <span
-              className={`block w-6 h-px bg-white transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`}
-            />
-            <span
-              className={`block w-6 h-px bg-white transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`}
-            />
-            <span
-              className={`block w-6 h-px bg-white transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`}
-            />
+            <span className={`block w-6 h-px bg-white transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+            <span className={`block w-6 h-px bg-white transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
+            <span className={`block w-6 h-px bg-white transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
           </button>
         </div>
       </div>
