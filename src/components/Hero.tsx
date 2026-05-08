@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const TOTAL_FRAMES = 60
 const MOBILE_BP = 768
@@ -46,9 +46,9 @@ export default function Hero({ onProgress }: HeroProps) {
   const nameGroupRef = useRef<HTMLDivElement>(null)
   const danielRef    = useRef<HTMLDivElement>(null)
   const rodriguezRef = useRef<HTMLDivElement>(null)
-  const marqueeRef   = useRef<HTMLDivElement>(null)
   const lastFrame    = useRef(-1)
   const frames       = useRef<HTMLImageElement[]>([])
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     const sticky      = stickyRef.current
@@ -57,8 +57,7 @@ export default function Hero({ onProgress }: HeroProps) {
     const nameGroup   = nameGroupRef.current
     const danielEl    = danielRef.current
     const rodriguezEl = rodriguezRef.current
-    const marqueeEl   = marqueeRef.current
-    if (!sticky || !spacer || !canvas || !nameGroup || !danielEl || !rodriguezEl || !marqueeEl) return
+    if (!sticky || !spacer || !canvas || !nameGroup || !danielEl || !rodriguezEl) return
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
@@ -95,10 +94,6 @@ export default function Hero({ onProgress }: HeroProps) {
       danielEl.style.opacity      = String(nameP)
       rodriguezEl.style.transform = `translateX(${lerp(120, 0, nameP)}px)`
       rodriguezEl.style.opacity   = String(nameP)
-
-      const mqP = invlerp(0, 0.4, p)
-      marqueeEl.style.transform = `translateX(${lerp(0, -35, mqP)}%)`
-      marqueeEl.style.opacity   = String(mqP)
     }
 
     const onResize = () => { setH(); update() }
@@ -108,10 +103,8 @@ export default function Hero({ onProgress }: HeroProps) {
     window.addEventListener('orientationchange', onResize)
     document.addEventListener('visibilitychange', update)
 
-    // Init
     setH()
 
-    // Load frames
     let loadedCount = 0
     frames.current = Array.from({ length: TOTAL_FRAMES }, (_, i) => {
       const img = new Image()
@@ -122,16 +115,13 @@ export default function Hero({ onProgress }: HeroProps) {
           if (!canvas.width || !canvas.height) setH()
           drawFrame(ctx, img, canvas.width, canvas.height, getMob())
           lastFrame.current = 0
+          setLoaded(true)
         }
       }
       return img
     })
 
-    // Wait for layout then run first update
-    requestAnimationFrame(() => {
-      setH()
-      update()
-    })
+    requestAnimationFrame(() => { setH(); update() })
 
     return () => {
       window.removeEventListener('scroll',            update)
@@ -149,6 +139,7 @@ export default function Hero({ onProgress }: HeroProps) {
         ref={stickyRef}
         style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}
       >
+        {/* Poster — visible until frame 0 loads, prevents black flash */}
         <img
           src="/hero-poster.jpg"
           alt=""
@@ -160,8 +151,31 @@ export default function Hero({ onProgress }: HeroProps) {
             objectPosition: 'center',
             background: '#0a0a0a',
             zIndex: 0, pointerEvents: 'none',
+            opacity: loaded ? 0 : 1,
+            transition: 'opacity 0.3s ease',
           }}
         />
+
+        {/* Loading bar — shows until frame 0 loaded */}
+        {!loaded && (
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0,
+            height: 2, zIndex: 10, overflow: 'hidden',
+          }}>
+            <div style={{
+              height: '100%',
+              background: '#97CCF6',
+              animation: 'loadbar 1.2s ease-in-out infinite',
+            }} />
+            <style>{`
+              @keyframes loadbar {
+                0% { width: 0%; margin-left: 0%; }
+                50% { width: 60%; margin-left: 20%; }
+                100% { width: 0%; margin-left: 100%; }
+              }
+            `}</style>
+          </div>
+        )}
 
         <canvas
           ref={canvasRef}
@@ -220,31 +234,67 @@ export default function Hero({ onProgress }: HeroProps) {
             </div>
           </div>
         </div>
-
-        <div
-          ref={marqueeRef}
-          style={{
-            position: 'absolute', bottom: '2rem', left: 0, zIndex: 3,
-            whiteSpace: 'nowrap', pointerEvents: 'none',
-            opacity: 0, transform: 'translateX(0%)',
-          }}
-        >
-          <span style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(1rem, 2.5vw, 1.6rem)',
-            fontStyle: 'italic',
-            color: 'rgba(151,204,246,0.65)',
-            letterSpacing: '0.08em',
-          }}>
-            Transform Your Narrative&nbsp;&nbsp;•&nbsp;&nbsp;Build Your Legacy&nbsp;&nbsp;•&nbsp;&nbsp;Scottsdale, Arizona&nbsp;&nbsp;•&nbsp;&nbsp;Founder · RAH Operations&nbsp;&nbsp;•&nbsp;&nbsp;Transform Your Narrative&nbsp;&nbsp;•&nbsp;&nbsp;Build Your Legacy&nbsp;&nbsp;•&nbsp;&nbsp;Scottsdale, Arizona&nbsp;&nbsp;•&nbsp;&nbsp;
-          </span>
-        </div>
       </div>
 
+      {/* Spacer */}
       <div
         ref={spacerRef}
         style={{ height: isMob ? '150vh' : '200vh' }}
       />
+
+      {/* Permanent rotating marquee banner below hero */}
+      <div
+        style={{
+          overflow: 'hidden',
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          background: 'rgba(10,10,10,0.9)',
+          padding: '1rem 0',
+        }}
+      >
+        <div style={{
+          display: 'flex',
+          whiteSpace: 'nowrap',
+          animation: 'marquee 30s linear infinite',
+        }}>
+          {[...Array(2)].map((_, ri) => (
+            <span key={ri} style={{ display: 'flex' }}>
+              {[
+                'Transform Your Narrative',
+                'Build Your Legacy',
+                'Scottsdale, Arizona',
+                'Founder · RAH Operations',
+                'Digital Marketing',
+                'SEO & Web Design',
+                'Business Credit',
+                'Debt Relief Strategy',
+              ].map((item, i) => (
+                <span
+                  key={i}
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: 'clamp(0.9rem, 2vw, 1.4rem)',
+                    fontStyle: 'italic',
+                    color: 'rgba(151,204,246,0.65)',
+                    letterSpacing: '0.08em',
+                    paddingLeft: '2rem',
+                    paddingRight: '2rem',
+                    borderRight: '1px solid rgba(151,204,246,0.15)',
+                  }}
+                >
+                  {item}
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+        <style>{`
+          @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+          }
+        `}</style>
+      </div>
     </div>
   )
 }
