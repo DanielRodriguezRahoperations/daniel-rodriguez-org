@@ -18,22 +18,17 @@ function drawFrame(
   const ir = img.naturalWidth / img.naturalHeight
   const cr = cw / ch
   let sw: number, sh: number, sx: number, sy: number
-
   if (mob) {
     if (ir > cr) {
-      sh = ch; sw = sh * ir
-      sy = 0; sx = (cw - sw) * 0.5
+      sh = ch; sw = sh * ir; sy = 0; sx = (cw - sw) * 0.5
     } else {
-      sw = cw; sh = sw / ir
-      sx = 0; sy = (ch - sh) * 0.5
+      sw = cw; sh = sw / ir; sx = 0; sy = (ch - sh) * 0.5
     }
   } else {
     if (ir < cr) {
-      sh = ch; sw = sh * ir
-      sx = (cw - sw) * 0.5; sy = 0
+      sh = ch; sw = sh * ir; sx = (cw - sw) * 0.5; sy = 0
     } else {
-      sw = cw; sh = sw / ir
-      sx = 0; sy = (ch - sh) * 0.15
+      sw = cw; sh = sw / ir; sx = 0; sy = (ch - sh) * 0.15
     }
   }
   ctx.clearRect(0, 0, cw, ch)
@@ -52,10 +47,8 @@ export default function Hero({ onProgress }: HeroProps) {
   const danielRef    = useRef<HTMLDivElement>(null)
   const rodriguezRef = useRef<HTMLDivElement>(null)
   const marqueeRef   = useRef<HTMLDivElement>(null)
-  const rafId        = useRef<number>(0)
   const lastFrame    = useRef(-1)
   const frames       = useRef<HTMLImageElement[]>([])
-  const framesReady  = useRef(false)
 
   useEffect(() => {
     const sticky      = stickyRef.current
@@ -76,16 +69,12 @@ export default function Hero({ onProgress }: HeroProps) {
       sticky.style.height = window.innerHeight + 'px'
       canvas.width  = sticky.offsetWidth
       canvas.height = sticky.offsetHeight
-      const idx = lastFrame.current >= 0 ? lastFrame.current : 0
-      const f = frames.current[idx]
-      if (f?.complete && f.naturalWidth > 0) {
-        drawFrame(ctx, f, canvas.width, canvas.height, getMob())
-      }
     }
 
-    // Runs immediately — no rAF delay
     const update = () => {
-      const p = clamp01(window.scrollY / Math.max(1, spacer.offsetHeight))
+      const spacerH = spacer.offsetHeight
+      if (!spacerH) return
+      const p = clamp01(window.scrollY / spacerH)
       const frameIdx = Math.min(TOTAL_FRAMES - 1, Math.floor(p * TOTAL_FRAMES))
       const mob = getMob()
 
@@ -112,19 +101,17 @@ export default function Hero({ onProgress }: HeroProps) {
       marqueeEl.style.opacity   = String(mqP)
     }
 
-    // rAF loop — runs every frame while page is active
-    const loop = () => {
-      update()
-      rafId.current = requestAnimationFrame(loop)
-    }
-
     const onResize = () => { setH(); update() }
 
+    window.addEventListener('scroll',            update,   { passive: true })
     window.addEventListener('resize',            onResize, { passive: true })
     window.addEventListener('orientationchange', onResize)
+    document.addEventListener('visibilitychange', update)
 
+    // Init
     setH()
 
+    // Load frames
     let loadedCount = 0
     frames.current = Array.from({ length: TOTAL_FRAMES }, (_, i) => {
       const img = new Image()
@@ -136,35 +123,21 @@ export default function Hero({ onProgress }: HeroProps) {
           drawFrame(ctx, img, canvas.width, canvas.height, getMob())
           lastFrame.current = 0
         }
-        if (loadedCount === TOTAL_FRAMES) framesReady.current = true
       }
       return img
     })
 
-    // Restart loop when screen unlocks or tab becomes visible
-    const onVisible = () => {
-      cancelAnimationFrame(rafId.current)
-      rafId.current = requestAnimationFrame(loop)
-    }
-
-    // First touch activates scrollY on iOS immediately
-    const onTouch = () => { update() }
-
-    window.addEventListener('touchstart',        onTouch,   { passive: true })
-    document.addEventListener('visibilitychange', onVisible)
-
-    // Delay start until after first paint so spacer has correct height
-    setTimeout(() => {
+    // Wait for layout then run first update
+    requestAnimationFrame(() => {
       setH()
-      rafId.current = requestAnimationFrame(loop)
-    }, 100)
+      update()
+    })
 
     return () => {
-      cancelAnimationFrame(rafId.current)
+      window.removeEventListener('scroll',            update)
       window.removeEventListener('resize',            onResize)
       window.removeEventListener('orientationchange', onResize)
-      window.removeEventListener('touchstart',        onTouch)
-      document.removeEventListener('visibilitychange', onVisible)
+      document.removeEventListener('visibilitychange', update)
     }
   }, [onProgress])
 
