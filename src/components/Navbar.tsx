@@ -9,12 +9,9 @@ const navLinks = [
   { label: 'Contact', href: '/contact' },
 ]
 
-interface NavbarProps {
-  heroProgress?: number
-}
-
-export default function Navbar({ heroProgress = 0 }: NavbarProps) {
+export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
   const navRef = useRef<HTMLElement>(null)
 
@@ -23,18 +20,20 @@ export default function Navbar({ heroProgress = 0 }: NavbarProps) {
   }, [location.pathname])
 
   useEffect(() => {
-    if (!navRef.current) return
-    // Always visible — just slides down from top as hero scrolls
-    const p = Math.min(1, heroProgress / 0.25)
-    navRef.current.style.opacity   = String(Math.max(0.3, p))
-    navRef.current.style.transform = `translateY(${(1 - p) * -20}px)`
-  }, [heroProgress])
+    const onScroll = () => setScrolled(window.scrollY > 40)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
     <nav
       ref={navRef}
-      className="fixed top-0 left-0 right-0 bg-[#0a0a0a]/70 backdrop-blur-xl border-b border-white/5"
-      style={{ zIndex: 50, opacity: 0.3, transform: 'translateY(-20px)' }}
+      className="fixed top-0 left-0 right-0 border-b border-white/5 transition-all duration-500"
+      style={{
+        zIndex: 50,
+        background: scrolled ? 'rgba(10,10,10,0.85)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+      }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">
@@ -51,7 +50,7 @@ export default function Navbar({ heroProgress = 0 }: NavbarProps) {
               <Link
                 key={link.label}
                 to={link.href}
-                className="font-sans text-sm font-medium text-white/60 hover:text-white transition-colors duration-300 tracking-widest uppercase"
+                className="font-sans text-sm font-medium text-white/80 hover:text-white transition-colors duration-300 tracking-widest uppercase"
               >
                 {link.label}
               </Link>
@@ -90,7 +89,7 @@ export default function Navbar({ heroProgress = 0 }: NavbarProps) {
               key={link.label}
               to={link.href}
               onClick={() => setMenuOpen(false)}
-              className="font-sans text-sm font-medium text-white/60 hover:text-white transition-colors duration-300 tracking-widest uppercase"
+              className="font-sans text-sm font-medium text-white/80 hover:text-white transition-colors duration-300 tracking-widest uppercase"
             >
               {link.label}
             </Link>
