@@ -1,56 +1,105 @@
 import { useEffect, useRef } from 'react'
 import { motion, useMotionValue, useTransform } from 'framer-motion'
 
+/*
+  Mobile vs desktop split:
+  ─────────────────────────────────────────────────────────────────────────
+  Mobile  (< 768px):  ±40px x-offset, 160vh spacer
+    At 390px viewport, ±220px would push the name nearly entirely off-screen.
+    ±40px keeps both lines readable on first render while preserving slide-in feel.
+
+  Desktop (≥ 768px):  ±220px x-offset, 220vh spacer
+    Full cinematic offset — text slides in from the edges as you scroll.
+  ─────────────────────────────────────────────────────────────────────────
+*/
+const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 768
+const getXMax  = () => (isMobile() ? 40 : 220)
+const getSpacer = () => (isMobile() ? '160vh' : '220vh')
+
 export default function Hero() {
   const sectionRef = useRef<HTMLDivElement>(null)
-  const progress = useMotionValue(0)
+  const progress   = useMotionValue(0)
 
   /*
-    Scroll timeline — 220vh spacer gives 120vh of actual scroll travel.
-    Text starts at 65% opacity / ±220px so content is visible immediately
-    on mobile without any scrolling. Animation ranges compressed to match.
+    x motion values driven manually (not via useTransform) so they can
+    use a different offset on mobile vs desktop and update on resize.
+    Initialized with the correct starting value immediately — no flash on
+    first render because the value is right before the browser paints.
   */
-  const danielX        = useTransform(progress, [0, 0.45], [-220, 0])
-  const rodriguezX     = useTransform(progress, [0, 0.45], [220, 0])
-  const textOpacity    = useTransform(progress, [0, 0.12], [0.65, 1])
-  const marqueeX       = useTransform(progress, [0.30, 1], ['0%', '-35%'])
+  const danielX    = useMotionValue(-getXMax())
+  const rodriguezX = useMotionValue(getXMax())
+
+  /*
+    Remaining animations driven by scroll progress.
+    textOpacity starts at 0.85 so the hero is clearly readable on mobile
+    without any scrolling.
+  */
+  const textOpacity    = useTransform(progress, [0, 0.15], [0.85, 1])
+  const marqueeX       = useTransform(progress, [0.30, 1],  ['0%', '-35%'])
   const taglineOpacity = useTransform(progress, [0.38, 0.62], [0, 1])
 
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
 
-    const onScroll = () => {
+    const update = () => {
+      const xMax       = getXMax()
       const scrolled   = Math.max(0, window.scrollY - section.offsetTop)
-      const scrollable = section.offsetHeight - window.innerHeight
-      const p = Math.min(1, scrolled / Math.max(1, scrollable))
+      const scrollable = Math.max(1, section.offsetHeight - window.innerHeight)
+      const p          = Math.min(1, scrolled / scrollable)
+
       progress.set(p)
+
+      /*
+        x slides from ±xMax (at p=0) to 0 (at p=0.45).
+        Using direct MotionValue.set() so the offset is always recalculated
+        from the current viewport width — handles resize and orientation flip.
+      */
+      const xT = Math.min(1, p / 0.45)
+      danielX.set(-xMax * (1 - xT))
+      rodriguezX.set(xMax * (1 - xT))
     }
 
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [progress])
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update, { passive: true })
+    window.addEventListener('orientationchange', update)
+
+    /*
+      Run immediately on mount to initialize state before any scroll event.
+      Run again inside rAF to catch any layout shift that happens after
+      the initial paint (fonts, video placeholder, etc.).
+    */
+    update()
+    const raf = requestAnimationFrame(update)
+
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+      window.removeEventListener('orientationchange', update)
+      cancelAnimationFrame(raf)
+    }
+  }, [progress, danielX, rodriguezX])
 
   return (
-    <div ref={sectionRef} style={{ height: '220vh' }}>
+    /* Responsive spacer: 160vh mobile / 220vh desktop */
+    <div ref={sectionRef} style={{ height: getSpacer() }}>
 
       {/*
-        Sticky viewport uses height: 100vh (stable unit).
-        dvh was removed — on iOS Safari, dvh changes dynamically as the
-        browser chrome shows/hides during scroll, causing the sticky element
-        to reflow mid-scroll and lock the page in a feedback loop.
-        100vh is stable and safe for a sticky scroll container.
+        Sticky viewport: stable 100vh — do NOT use dvh here.
+        dvh changes dynamically as mobile browser chrome shows/hides,
+        causing layout reflows mid-scroll that lock the page on iOS Safari.
       */}
       <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
 
-        {/* Gradient overlay */}
+        {/* Gradient — bottom fade for text legibility */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-          background: 'linear-gradient(to top, rgba(10,10,10,0.7) 0%, transparent 45%), linear-gradient(to bottom, rgba(10,10,10,0.25) 0%, transparent 25%)',
+          background:
+            'linear-gradient(to top, rgba(10,10,10,0.7) 0%, transparent 45%),' +
+            'linear-gradient(to bottom, rgba(10,10,10,0.25) 0%, transparent 25%)',
         }} />
 
-        {/* Daniel + Rodriguez — starts at 65% opacity, ±220px offset */}
+        {/* Daniel + Rodriguez name */}
         <motion.div style={{
           position: 'absolute', inset: 0, zIndex: 2,
           display: 'flex', flexDirection: 'column',
