@@ -4,16 +4,18 @@ import { motion, useMotionValue, useTransform } from 'framer-motion'
 /*
   Mobile vs desktop split:
   ─────────────────────────────────────────────────────────────────────────
-  Mobile  (< 768px):  ±40px x-offset, 160vh spacer
-    At 390px viewport, ±220px would push the name nearly entirely off-screen.
-    ±40px keeps both lines readable on first render while preserving slide-in feel.
+  Mobile  (< 768px):  x stays at 0, 160vh spacer
+    On mobile the portrait is visible immediately (VideoBackground starts at
+    25% of the video timeline). The name overlays the portrait centered from
+    the first frame — no slide-in intro. Scroll still drives the marquee
+    and tagline animations.
 
   Desktop (≥ 768px):  ±220px x-offset, 220vh spacer
     Full cinematic offset — text slides in from the edges as you scroll.
   ─────────────────────────────────────────────────────────────────────────
 */
-const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 768
-const getXMax  = () => (isMobile() ? 40 : 220)
+const isMobile  = () => typeof window !== 'undefined' && window.innerWidth < 768
+const getXMax   = () => (isMobile() ? 0 : 220)
 const getSpacer = () => (isMobile() ? '160vh' : '220vh')
 
 export default function Hero() {
@@ -21,18 +23,19 @@ export default function Hero() {
   const progress   = useMotionValue(0)
 
   /*
-    x motion values driven manually (not via useTransform) so they can
-    use a different offset on mobile vs desktop and update on resize.
-    Initialized with the correct starting value immediately — no flash on
-    first render because the value is right before the browser paints.
+    x values:
+    - Mobile: always 0. Name overlays portrait centered from first load.
+    - Desktop: initialized to ±220px and driven by scroll toward 0.
+    Using useMotionValue (not useTransform) so the value can be
+    updated responsively on resize / orientation change.
   */
-  const danielX    = useMotionValue(-getXMax())
-  const rodriguezX = useMotionValue(getXMax())
+  const danielX    = useMotionValue(isMobile() ? 0 : -220)
+  const rodriguezX = useMotionValue(isMobile() ? 0 :  220)
 
   /*
     Remaining animations driven by scroll progress.
-    textOpacity starts at 0.85 so the hero is clearly readable on mobile
-    without any scrolling.
+    textOpacity starts at 0.85 so the hero is readable on first view
+    without any scrolling required.
   */
   const textOpacity    = useTransform(progress, [0, 0.15], [0.85, 1])
   const marqueeX       = useTransform(progress, [0.30, 1],  ['0%', '-35%'])
@@ -43,7 +46,6 @@ export default function Hero() {
     if (!section) return
 
     const update = () => {
-      const xMax       = getXMax()
       const scrolled   = Math.max(0, window.scrollY - section.offsetTop)
       const scrollable = Math.max(1, section.offsetHeight - window.innerHeight)
       const p          = Math.min(1, scrolled / scrollable)
@@ -51,13 +53,18 @@ export default function Hero() {
       progress.set(p)
 
       /*
-        x slides from ±xMax (at p=0) to 0 (at p=0.45).
-        Using direct MotionValue.set() so the offset is always recalculated
-        from the current viewport width — handles resize and orientation flip.
+        Desktop only: slide name in from ±220px to 0 over the first 45%
+        of hero scroll progress.
+        Mobile: name stays at x=0 (centered over portrait) from initial load.
+        getXMax() returns 0 on mobile so this branch is a no-op there,
+        but the explicit isMobile() guard makes the intent clear.
       */
-      const xT = Math.min(1, p / 0.45)
-      danielX.set(-xMax * (1 - xT))
-      rodriguezX.set(xMax * (1 - xT))
+      if (!isMobile()) {
+        const xMax = getXMax()
+        const xT   = Math.min(1, p / 0.45)
+        danielX.set(-xMax * (1 - xT))
+        rodriguezX.set(xMax * (1 - xT))
+      }
     }
 
     window.addEventListener('scroll', update, { passive: true })
@@ -66,8 +73,8 @@ export default function Hero() {
 
     /*
       Run immediately on mount to initialize state before any scroll event.
-      Run again inside rAF to catch any layout shift that happens after
-      the initial paint (fonts, video placeholder, etc.).
+      Run again inside rAF to catch layout shifts after initial paint
+      (fonts, video placeholder, etc.).
     */
     update()
     const raf = requestAnimationFrame(update)
@@ -91,11 +98,11 @@ export default function Hero() {
       */}
       <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
 
-        {/* Gradient — bottom fade for text legibility */}
+        {/* Gradient — bottom fade for text legibility over the portrait */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
           background:
-            'linear-gradient(to top, rgba(10,10,10,0.7) 0%, transparent 45%),' +
+            'linear-gradient(to top, rgba(10,10,10,0.75) 0%, transparent 50%),' +
             'linear-gradient(to bottom, rgba(10,10,10,0.25) 0%, transparent 25%)',
         }} />
 
