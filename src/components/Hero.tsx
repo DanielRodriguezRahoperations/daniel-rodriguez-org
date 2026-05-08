@@ -67,7 +67,7 @@ export default function Hero({ onProgress }: HeroProps) {
       if (frames.current[idx]?.complete && frames.current[idx].naturalWidth > 0) {
         const mob = window.innerWidth < MOBILE_BP
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        drawCover(ctx, frames.current[idx], canvas.width, canvas.height, mob ? 0.5 : 0.35)
+        drawCover(ctx, frames.current[idx], canvas.width, canvas.height, mob ? 0.5 : 0.50
       }
     }
 
