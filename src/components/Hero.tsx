@@ -29,7 +29,7 @@ function drawFrame(
       sx = 0; sy = (ch - sh) * 0.5
     }
   } else {
-    // Desktop: contain — shows full portrait, centered, dark bars on sides
+    // Desktop: contain — shows full portrait centered, dark bars on sides
     if (ir < cr) {
       sh = ch; sw = sh * ir
       sx = (cw - sw) * 0.5; sy = 0
@@ -74,7 +74,6 @@ export default function Hero({ onProgress }: HeroProps) {
 
     const getMob = () => window.innerWidth < MOBILE_BP
 
-    // ── Set canvas + sticky height ──────────────────────────────────
     const setH = () => {
       sticky.style.height = window.innerHeight + 'px'
       canvas.width  = sticky.offsetWidth
@@ -86,7 +85,6 @@ export default function Hero({ onProgress }: HeroProps) {
       }
     }
 
-    // ── Tick ────────────────────────────────────────────────────────
     const tick = () => {
       rafPending.current = false
       const p = clamp01(window.scrollY / Math.max(1, spacer.offsetHeight))
@@ -119,7 +117,6 @@ export default function Hero({ onProgress }: HeroProps) {
       marqueeEl.style.opacity   = String(mqP)
     }
 
-    // ── Listeners ───────────────────────────────────────────────────
     const onScroll = () => {
       if (!rafPending.current) {
         rafPending.current = true
@@ -128,13 +125,12 @@ export default function Hero({ onProgress }: HeroProps) {
     }
     const onResize = () => { setH(); requestAnimationFrame(tick) }
 
-    // touchmove fires continuously as finger moves — no tap required
-    window.addEventListener('touchmove', onScroll, { passive: true })
-    window.addEventListener('scroll',    onScroll, { passive: true })
-    window.addEventListener('resize',    onResize, { passive: true })
+    // pointermove fires instantly on first touch — no tap required
+    window.addEventListener('pointermove',       onScroll, { passive: true })
+    window.addEventListener('scroll',            onScroll, { passive: true })
+    window.addEventListener('resize',            onResize, { passive: true })
     window.addEventListener('orientationchange', onResize)
 
-    // ── Preload frames ───────────────────────────────────────────────
     setH()
 
     let loadedCount = 0
@@ -156,9 +152,9 @@ export default function Hero({ onProgress }: HeroProps) {
     requestAnimationFrame(tick)
 
     return () => {
-      window.removeEventListener('touchmove', onScroll)
-      window.removeEventListener('scroll',    onScroll)
-      window.removeEventListener('resize',    onResize)
+      window.removeEventListener('pointermove',       onScroll)
+      window.removeEventListener('scroll',            onScroll)
+      window.removeEventListener('resize',            onResize)
       window.removeEventListener('orientationchange', onResize)
     }
   }, [onProgress])
@@ -268,7 +264,7 @@ export default function Hero({ onProgress }: HeroProps) {
         </div>
       </div>
 
-      {/* Spacer */}
+      {/* Spacer — scroll budget */}
       <div
         ref={spacerRef}
         style={{ height: isMob ? '150vh' : '200vh' }}
