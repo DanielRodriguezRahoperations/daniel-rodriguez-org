@@ -67,7 +67,7 @@ export default function Hero({ onProgress }: HeroProps) {
       if (frames.current[idx]?.complete && frames.current[idx].naturalWidth > 0) {
         const mob = window.innerWidth < MOBILE_BP
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        drawCover(ctx, frames.current[idx], canvas.width, canvas.height, mob ? 0.5 : 0.35)
+        drawCover(ctx, frames.current[idx], canvas.width, canvas.height, mob ? 0.5 : 0.1)
       }
     }
 
@@ -78,7 +78,7 @@ export default function Hero({ onProgress }: HeroProps) {
       if (!img?.complete || img.naturalWidth === 0) return
       const mob = window.innerWidth < MOBILE_BP
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      drawCover(ctx, img, canvas.width, canvas.height, mob ? 0.5 : 0.35)
+      drawCover(ctx, img, canvas.width, canvas.height, mob ? 0.5 : 0.1)
     }
 
     // ── Tick ────────────────────────────────────────────────────────
@@ -127,7 +127,6 @@ export default function Hero({ onProgress }: HeroProps) {
       requestAnimationFrame(tick)
     }
 
-    window.addEventListener('touchstart', onScroll, { passive: true })
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onResize, { passive: true })
     window.addEventListener('orientationchange', onResize)
