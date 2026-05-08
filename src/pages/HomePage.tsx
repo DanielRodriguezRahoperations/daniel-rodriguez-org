@@ -1,5 +1,4 @@
-
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView } from 'framer-motion'
 import { Helmet } from 'react-helmet-async'
@@ -104,7 +103,6 @@ const label = (text: string) => (
 
 export default function HomePage() {
   const previewPosts = blogPosts.slice(0, 3)
-  const [_heroProgress, setHeroProgress] = useState(0)
 
   return (
     <>
@@ -168,7 +166,7 @@ export default function HomePage() {
       </Helmet>
 
       {/* ── HERO ─────────────────────────────────────────────── */}
-      <Hero onProgress={setHeroProgress} />
+      <Hero />
 
       {/* ── STATEMENT — protected, do not modify ─────────────── */}
       <Statement />
@@ -212,7 +210,6 @@ export default function HomePage() {
       {/* ── RAH OPERATIONS SERVICE GATEWAY ──────────────────── */}
       <section style={{ background: 'rgba(10,10,10,0.76)' }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-32">
-
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-14">
             <div>
               <Reveal from="left" delay={0}>
@@ -251,7 +248,6 @@ export default function HomePage() {
             </Reveal>
           </div>
 
-          {/* Service cards — full card is clickable */}
           <div
             className="grid grid-cols-1 lg:grid-cols-3"
             style={{ border: '1px solid rgba(255,255,255,0.07)' }}
@@ -267,12 +263,8 @@ export default function HomePage() {
                     borderRight: i < 2 ? '1px solid rgba(255,255,255,0.07)' : undefined,
                     background: 'transparent',
                   }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = 'rgba(151,204,246,0.028)')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = 'transparent')
-                  }
+                  onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(151,204,246,0.028)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                 >
                   <div className="flex flex-col h-full">
                     <span
@@ -286,7 +278,6 @@ export default function HomePage() {
                     >
                       {service.num}
                     </span>
-
                     <h3
                       className="font-display font-semibold text-white mb-4 transition-colors duration-300 group-hover:text-gold"
                       style={{
@@ -297,14 +288,12 @@ export default function HomePage() {
                     >
                       {service.title}
                     </h3>
-
                     <p
                       className="font-sans leading-relaxed flex-1 mb-8"
                       style={{ fontSize: '0.845rem', color: 'rgba(255,255,255,0.30)' }}
                     >
                       {service.description}
                     </p>
-
                     <div className="flex items-center gap-3">
                       <span
                         className="font-sans tracking-widest uppercase transition-colors duration-300 group-hover:text-white"
@@ -333,9 +322,7 @@ export default function HomePage() {
         >
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
-              <Reveal from="left" delay={0}>
-                {label('001 / About')}
-              </Reveal>
+              <Reveal from="left" delay={0}>{label('001 / About')}</Reveal>
               <Reveal from="left" delay={0.08}>
                 <h2
                   className="font-display font-bold text-white mb-6"
@@ -374,7 +361,6 @@ export default function HomePage() {
               </Reveal>
             </div>
 
-            {/* Stats strip — right side */}
             <Reveal from="right" delay={0.1}>
               <div
                 className="grid grid-cols-2 gap-px"
@@ -428,9 +414,7 @@ export default function HomePage() {
         >
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
             <div>
-              <Reveal from="up" delay={0}>
-                {label('002 / Press')}
-              </Reveal>
+              <Reveal from="up" delay={0}>{label('002 / Press')}</Reveal>
               <Reveal from="up" delay={0.06}>
                 <h2
                   className="font-display font-bold text-white"
@@ -473,16 +457,10 @@ export default function HomePage() {
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 >
                   <div className="flex flex-col gap-1.5 shrink-0 pt-0.5" style={{ minWidth: '5rem' }}>
-                    <span
-                      className="font-display font-semibold"
-                      style={{ fontSize: '0.78rem', color: '#97CCF6' }}
-                    >
+                    <span className="font-display font-semibold" style={{ fontSize: '0.78rem', color: '#97CCF6' }}>
                       {item.outlet}
                     </span>
-                    <span
-                      className="font-sans"
-                      style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.22)' }}
-                    >
+                    <span className="font-sans" style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.22)' }}>
                       {item.date}
                     </span>
                   </div>
@@ -511,9 +489,7 @@ export default function HomePage() {
         >
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
             <div>
-              <Reveal from="up" delay={0}>
-                {label('003 / Insights')}
-              </Reveal>
+              <Reveal from="up" delay={0}>{label('003 / Insights')}</Reveal>
               <Reveal from="up" delay={0.06}>
                 <h2
                   className="font-display font-bold text-white"
@@ -572,7 +548,6 @@ export default function HomePage() {
               >
                 004 / Work With Me
               </p>
-
               <h2
                 className="font-display font-bold text-white mb-7"
                 style={{
@@ -585,7 +560,6 @@ export default function HomePage() {
                 <br />
                 <span className="italic" style={{ color: '#97CCF6' }}>something real?</span>
               </h2>
-
               <p
                 className="font-sans leading-relaxed mb-10 max-w-lg"
                 style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.36)' }}
@@ -593,16 +567,11 @@ export default function HomePage() {
                 Daniel works with a limited number of clients each quarter — business owners
                 and entrepreneurs serious about growing in revenue, reputation, or reach.
               </p>
-
               <div className="flex flex-wrap gap-4">
                 <Link
                   to="/contact"
                   className="font-sans font-medium tracking-widest uppercase px-7 py-3.5 transition-all duration-300 hover:opacity-90"
-                  style={{
-                    fontSize: '0.7rem',
-                    background: '#97CCF6',
-                    color: '#0a0a0a',
-                  }}
+                  style={{ fontSize: '0.7rem', background: '#97CCF6', color: '#0a0a0a' }}
                 >
                   Get In Touch
                 </Link>
