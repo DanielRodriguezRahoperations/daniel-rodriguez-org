@@ -1,136 +1,128 @@
+
 import { useEffect, useRef } from 'react'
-import { motion, useMotionValue, useTransform } from 'framer-motion'
 
-// ─── Breakpoint ────────────────────────────────────────────────────────────
+const TOTAL_FRAMES = 60
 const MOBILE_BP = 768
-const isMobile = () => typeof window !== 'undefined' && window.innerWidth < MOBILE_BP
 
-// ─── Animation constants — desktop and mobile fully separate ───────────────
-//
-// Video is 623×1080 portrait (10 s).  On a landscape desktop viewport,
-// objectFit:cover scales the video ~2.3× so objectPosition 'center 10%'
-// anchors around the face instead of showing neck/chest.
-// On mobile (portrait viewport), the full height is visible; center center works.
-
-const D = {
-  spacer:     '150vh',   // scroll budget — hero exits after 150 vh of scroll
-  scaleEnd:   1.08,      // video zooms to 108% at full progress
-  nameXMax:   220,       // px the name lines slide in from
-  nameXEnd:   0.40,      // progress fraction where slide completes
-  objPos:     'center 8%',   // frames face on landscape desktop
-  tfOrigin:   'center 8%',   // zoom anchor matches face position
-  opRange:    [0, 0.15] as const,
-  opVals:     [0.85, 1] as const,
-  mqRange:    [0.30, 1.0] as const,
-  mqEnd:      '-35%',
-  tlRange:    [0.35, 0.60] as const,
-}
-
-const M = {
-  spacer:     '110vh',
-  scaleEnd:   1.08,                    // dramatic zoom — noticeable on first swipe
-  nameXMax:   60,                      // subtle slide-in from sides on mobile
-  objPos:     'center center',
-  tfOrigin:   'center center',
-  mqRange:    [0, 1.0] as const,
-  mqEnd:      '-40%',
-  tlRange:    [0, 0.001] as const,     // tagline snaps visible on first scroll tick
-}
-
-// ─── Math helpers ──────────────────────────────────────────────────────────
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
-const lerp     = (a: number, b: number, t: number) => a + (b - a) * t
-const invlerp  = (a: number, b: number, v: number) => clamp01(b === a ? 0 : (v - a) / (b - a))
+const invlerp = (a: number, b: number, v: number) => clamp01(b === a ? 0 : (v - a) / (b - a))
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 
-// ─── Component ─────────────────────────────────────────────────────────────
-export default function Hero() {
-  const stickyRef  = useRef<HTMLDivElement>(null)
-  const spacerRef  = useRef<HTMLDivElement>(null)
-  const videoRef   = useRef<HTMLVideoElement>(null)
-  const rafPending = useRef(false)
+function drawCover(
+  ctx: CanvasRenderingContext2D,
+  img: HTMLImageElement,
+  cw: number,
+  ch: number,
+  anchorY: number
+) {
+  const ir = img.naturalWidth / img.naturalHeight
+  const cr = cw / ch
+  let sw: number, sh: number, sx: number, sy: number
+  if (ir > cr) {
+    sh = ch; sw = sh * ir
+    sy = 0; sx = (cw - sw) * 0.5
+  } else {
+    sw = cw; sh = sw / ir
+    sx = 0; sy = (ch - sh) * anchorY
+  }
+  ctx.drawImage(img, sx, sy, sw, sh)
+}
 
-  // Detect breakpoint at render time.
-  // tick() re-checks on every scroll/resize so resize is handled correctly.
-  const mobile = isMobile()
+interface HeroProps {
+  onProgress?: (p: number) => void
+}
 
-  // ─── Framer Motion values ─────────────────────────────────────────────
-  const progress   = useMotionValue(0)
+export default function Hero({ onProgress }: HeroProps) {
+  const stickyRef    = useRef<HTMLDivElement>(null)
+  const spacerRef    = useRef<HTMLDivElement>(null)
+  const canvasRef    = useRef<HTMLCanvasElement>(null)
+  const nameGroupRef = useRef<HTMLDivElement>(null)
+  const danielRef    = useRef<HTMLDivElement>(null)
+  const rodriguezRef = useRef<HTMLDivElement>(null)
+  const marqueeRef   = useRef<HTMLDivElement>(null)
+  const rafPending   = useRef(false)
+  const lastFrame    = useRef(-1)
+  const frames       = useRef<HTMLImageElement[]>([])
+  const framesReady  = useRef(false)
 
-  // x offset: both breakpoints slide from ±nameXMax (mobile uses M.nameXMax = 60)
-  const danielX    = useMotionValue(mobile ? -M.nameXMax : -D.nameXMax)
-  const rodriguezX = useMotionValue(mobile ?  M.nameXMax :  D.nameXMax)
-
-  // These transforms are computed once at mount using the initial mobile state.
-  // Mobile: text is fully opaque from the start; marquee and tagline animate
-  //         from the very first pixel of scroll so the first swipe is always live.
-  // Desktop: standard cinematic ranges.
-  const textOpacity = useTransform(
-    progress,
-    mobile ? [0, 0.001] : [...D.opRange],
-    mobile ? [1, 1]     : [...D.opVals],
-  )
-  const marqueeX = useTransform(
-    progress,
-    mobile ? [...M.mqRange] : [...D.mqRange],
-    mobile ? ['0%', M.mqEnd] : ['0%', D.mqEnd],
-  )
-  const taglineOpacity = useTransform(
-    progress,
-    mobile ? [0, 0.001] : [...D.tlRange],
-    [0, 1],
-  )
-
-  // ─── Scroll engine ────────────────────────────────────────────────────
   useEffect(() => {
-    const sticky = stickyRef.current
-    const spacer = spacerRef.current
-    const video  = videoRef.current
-    if (!sticky || !spacer || !video) return
+    const sticky    = stickyRef.current
+    const spacer    = spacerRef.current
+    const canvas    = canvasRef.current
+    const nameGroup = nameGroupRef.current
+    const danielEl  = danielRef.current
+    const rodriguezEl = rodriguezRef.current
+    const marqueeEl = marqueeRef.current
+    if (!sticky || !spacer || !canvas || !nameGroup || !danielEl || !rodriguezEl || !marqueeEl) return
 
-    // ── Viewport height (dvh equivalent via JS) ───────────────────────
-    // Setting height in px via window.innerHeight behaves like 100dvh —
-    // it always matches the visible viewport — but avoids the iOS Safari
-    // scroll-lock that can occur when a CSS dvh sticky element reflows.
-    const setH = () => { sticky.style.height = window.innerHeight + 'px' }
-    setH()
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
-    // ── Per-frame update ──────────────────────────────────────────────
-    const tick = () => {
-      rafPending.current = false
-
-      const mob     = isMobile()                           // live breakpoint
-      const spacerH = spacer.offsetHeight                  // 150 vh or 110 vh in px
-      const p       = clamp01(window.scrollY / Math.max(1, spacerH))
-
-      // Single progress MotionValue drives all Framer Motion transforms
-      progress.set(p)
-
-      // Video scale — applied directly to avoid React render overhead
-      const scEnd = mob ? M.scaleEnd : D.scaleEnd
-      video.style.transform = `scale(${lerp(1, scEnd, p)})`
-
-      // Slide name lines from offset to center — mobile uses smaller offset
-      if (mob) {
-        const xT = invlerp(0, 0.35, p)
-        danielX.set(lerp(-M.nameXMax, 0, xT))
-        rodriguezX.set(lerp(M.nameXMax, 0, xT))
-      }
-      if (!mob) {
-        const xT = invlerp(0, D.nameXEnd, p)
-        danielX.set(lerp(-D.nameXMax, 0, xT))
-        rodriguezX.set(lerp(D.nameXMax, 0, xT))
+    // ── Sticky height (dvh via JS) ──────────────────────────────────
+    const setH = () => {
+      sticky.style.height = window.innerHeight + 'px'
+      canvas.width  = sticky.offsetWidth
+      canvas.height = sticky.offsetHeight
+      // Redraw current frame at new size
+      const idx = lastFrame.current >= 0 ? lastFrame.current : 0
+      if (frames.current[idx]?.complete && frames.current[idx].naturalWidth > 0) {
+        const mob = window.innerWidth < MOBILE_BP
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        drawCover(ctx, frames.current[idx], canvas.width, canvas.height, mob ? 0.5 : 0.1)
       }
     }
 
-    // Scroll: batch updates into a single rAF per frame
+    // ── Draw a specific frame ───────────────────────────────────────
+    const drawFrame = (idx: number) => {
+      if (!canvas.width || !canvas.height) return
+      const img = frames.current[idx]
+      if (!img?.complete || img.naturalWidth === 0) return
+      const mob = window.innerWidth < MOBILE_BP
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      drawCover(ctx, img, canvas.width, canvas.height, mob ? 0.5 : 0.1)
+    }
+
+    // ── Tick ────────────────────────────────────────────────────────
+    const tick = () => {
+      rafPending.current = false
+      const p = clamp01(window.scrollY / Math.max(1, spacer.offsetHeight))
+      const frameIdx = Math.min(TOTAL_FRAMES - 1, Math.floor(p * TOTAL_FRAMES))
+
+      // Only redraw canvas when frame changes
+      if (frameIdx !== lastFrame.current) {
+        lastFrame.current = frameIdx
+        drawFrame(frameIdx)
+      }
+
+      // Notify parent for navbar
+      onProgress?.(p)
+
+      // Name group: fade in 0→0.25, hold, fade out 0.85→1.0
+      const groupIn  = invlerp(0, 0.25, p)
+      const groupOut = 1 - invlerp(0.85, 1.0, p)
+      const groupOp  = Math.min(groupIn, groupOut)
+      nameGroup.style.opacity = String(groupOp)
+
+      // Daniel slides from left, Rodriguez from right
+      const nameP = invlerp(0, 0.25, p)
+      danielEl.style.transform    = `translateX(${lerp(-120, 0, nameP)}px)`
+      danielEl.style.opacity      = String(nameP)
+      rodriguezEl.style.transform = `translateX(${lerp(120, 0, nameP)}px)`
+      rodriguezEl.style.opacity   = String(nameP)
+
+      // Marquee slides and fades in
+      const mqP = invlerp(0, 0.4, p)
+      marqueeEl.style.transform = `translateX(${lerp(0, -35, mqP)}%)`
+      marqueeEl.style.opacity   = String(mqP)
+    }
+
+    // ── Scroll + resize listeners ───────────────────────────────────
     const onScroll = () => {
       if (!rafPending.current) {
         rafPending.current = true
         requestAnimationFrame(tick)
       }
     }
-
-    // Resize / orientation: update sticky height and recalc progress
     const onResize = () => {
       setH()
       requestAnimationFrame(tick)
@@ -140,38 +132,44 @@ export default function Hero() {
     window.addEventListener('resize', onResize, { passive: true })
     window.addEventListener('orientationchange', onResize)
 
-    // Initialise on mount (before any scroll event fires)
-    tick()
-    const rafInit = requestAnimationFrame(tick)  // catch post-paint layout shifts
+    // ── Preload all frames ──────────────────────────────────────────
+    setH() // set canvas size before any drawing
+
+    let loadedCount = 0
+    frames.current = Array.from({ length: TOTAL_FRAMES }, (_, i) => {
+      const img = new Image()
+      const num = String(i + 1).padStart(4, '0')
+      img.src = `/hero-frames/frame_${num}.jpg`
+      img.onload = () => {
+        loadedCount++
+        // Draw frame 0 immediately when it loads — no black flash
+        if (i === 0) {
+          if (!canvas.width || !canvas.height) setH()
+          drawFrame(0)
+          lastFrame.current = 0
+        }
+        if (loadedCount === TOTAL_FRAMES) {
+          framesReady.current = true
+        }
+      }
+      return img
+    })
+
+    // Init tick
+    requestAnimationFrame(tick)
 
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
       window.removeEventListener('orientationchange', onResize)
-      cancelAnimationFrame(rafInit)
     }
-  }, [progress, danielX, rodriguezX])
+  }, [onProgress])
 
-  // ─── Render ───────────────────────────────────────────────────────────
-  //
-  // Outer div has no explicit height — its natural height is the sticky
-  // element (100 vh) plus the spacer (150 vh / 110 vh).  The spacer IS
-  // the scroll budget: progress = scrollY / spacer.offsetHeight.
-  // When scrollY reaches spacerHeight, the sticky element exits naturally.
-
-  const objPos   = mobile ? M.objPos : D.objPos
-  const tfOrigin = mobile ? M.tfOrigin : D.tfOrigin
+  const isMob = typeof window !== 'undefined' && window.innerWidth < MOBILE_BP
 
   return (
     <div>
-      {/* ── Sticky viewport ──────────────────────────────────────────── */}
-      {/*
-        height starts at 100 vh; JS overrides to window.innerHeight px
-        (dvh equivalent) on mount and on every resize.
-        overflow:hidden clips the scaled-up video at the edges.
-        Do NOT use dvh as a CSS value here — the JS approach avoids the
-        iOS Safari scroll-lock caused by dvh reflow inside sticky.
-      */}
+      {/* Sticky viewport */}
       <div
         ref={stickyRef}
         style={{
@@ -181,46 +179,43 @@ export default function Hero() {
           overflow: 'hidden',
         }}
       >
-        {/* Portrait / video ─────────────────────────────────────────── */}
-        {/*
-          poster="/hero-poster.jpg" shows the composed portrait frame
-          immediately while the video loads — no black flash on mobile.
-          autoPlay unlocks programmatic play() in iOS Safari scroll handlers.
-          objectPosition is breakpoint-specific:
-            desktop — 'center 8%' anchors the face on a landscape crop
-            mobile  — 'center center' (full portrait fits portrait viewport)
-          transformOrigin matches objectPosition so zoom stays on the face.
-        */}
-        <video
-          ref={videoRef}
-          src="/hero.mp4"
-          poster="/hero-poster.jpg"
-          muted
-          playsInline
-          autoPlay
-          loop
-          preload="auto"
+        {/* Poster fallback — sits behind canvas, hides before frame 0 loads */}
+        <img
+          src="/hero-poster.jpg"
+          alt=""
+          aria-hidden
           style={{
             position: 'absolute',
             inset: 0,
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            objectPosition: objPos,
-            transformOrigin: tfOrigin,
-            willChange: 'transform',
+            objectPosition: isMob ? 'center center' : 'center 10%',
             zIndex: 0,
             pointerEvents: 'none',
           }}
         />
 
-        {/* Gradient — text legibility ──────────────────────────────── */}
+        {/* Canvas — image sequence drawn here */}
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 1,
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* Gradient overlay */}
         <div
           aria-hidden
           style={{
             position: 'absolute',
             inset: 0,
-            zIndex: 1,
+            zIndex: 2,
             pointerEvents: 'none',
             background:
               'linear-gradient(to top, rgba(10,10,10,0.80) 0%, transparent 52%),' +
@@ -228,12 +223,13 @@ export default function Hero() {
           }}
         />
 
-        {/* Name overlay ─────────────────────────────────────────────── */}
-        <motion.div
+        {/* Name group */}
+        <div
+          ref={nameGroupRef}
           style={{
             position: 'absolute',
             inset: 0,
-            zIndex: 2,
+            zIndex: 3,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -241,12 +237,12 @@ export default function Hero() {
             paddingBottom: '6rem',
             paddingLeft: '1.5rem',
             paddingRight: '1.5rem',
-            opacity: textOpacity,
             pointerEvents: 'none',
+            opacity: 0,
           }}
         >
           <div style={{ textAlign: 'center', lineHeight: 0.88, marginBottom: '2rem' }}>
-            <motion.div style={{ x: danielX }}>
+            <div ref={danielRef} style={{ opacity: 0, transform: 'translateX(-120px)' }}>
               <span
                 style={{
                   display: 'block',
@@ -260,8 +256,8 @@ export default function Hero() {
               >
                 Daniel
               </span>
-            </motion.div>
-            <motion.div style={{ x: rodriguezX }}>
+            </div>
+            <div ref={rodriguezRef} style={{ opacity: 0, transform: 'translateX(120px)' }}>
               <span
                 style={{
                   display: 'block',
@@ -277,21 +273,22 @@ export default function Hero() {
               >
                 Rodriguez
               </span>
-            </motion.div>
+            </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Marquee ──────────────────────────────────────────────────── */}
-        <motion.div
+        {/* Marquee */}
+        <div
+          ref={marqueeRef}
           style={{
             position: 'absolute',
             bottom: '2rem',
             left: 0,
-            zIndex: 2,
-            x: marqueeX,
-            opacity: taglineOpacity,
+            zIndex: 3,
             whiteSpace: 'nowrap',
             pointerEvents: 'none',
+            opacity: 0,
+            transform: 'translateX(0%)',
           }}
         >
           <span
@@ -305,19 +302,13 @@ export default function Hero() {
           >
             Transform Your Narrative&nbsp;&nbsp;•&nbsp;&nbsp;Build Your Legacy&nbsp;&nbsp;•&nbsp;&nbsp;Scottsdale, Arizona&nbsp;&nbsp;•&nbsp;&nbsp;Founder · RAH Operations&nbsp;&nbsp;•&nbsp;&nbsp;Transform Your Narrative&nbsp;&nbsp;•&nbsp;&nbsp;Build Your Legacy&nbsp;&nbsp;•&nbsp;&nbsp;Scottsdale, Arizona&nbsp;&nbsp;•&nbsp;&nbsp;
           </span>
-        </motion.div>
+        </div>
       </div>
 
-      {/* ── Scroll budget spacer ──────────────────────────────────────── */}
-      {/*
-        This div IS the scroll budget.  progress = scrollY / spacer.offsetHeight.
-        Desktop 150 vh: cinematic, leisurely scroll through the animation.
-        Mobile  110 vh: first swipe creates immediate visible change;
-                        user exits the pinned hero quickly and naturally.
-      */}
+      {/* Scroll budget spacer */}
       <div
         ref={spacerRef}
-        style={{ height: mobile ? M.spacer : D.spacer }}
+        style={{ height: typeof window !== 'undefined' && window.innerWidth < MOBILE_BP ? '150vh' : '200vh' }}
       />
     </div>
   )
