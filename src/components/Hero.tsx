@@ -17,8 +17,8 @@ const D = {
   scaleEnd:   1.08,      // video zooms to 108% at full progress
   nameXMax:   220,       // px the name lines slide in from
   nameXEnd:   0.40,      // progress fraction where slide completes
-  objPos:     'center 10%',  // frames face on landscape desktop
-  tfOrigin:   'center 10%',  // zoom anchor matches face position
+  objPos:     'center 8%',   // frames face on landscape desktop
+  tfOrigin:   'center 8%',   // zoom anchor matches face position
   opRange:    [0, 0.15] as const,
   opVals:     [0.85, 1] as const,
   mqRange:    [0.30, 1.0] as const,
@@ -27,14 +27,14 @@ const D = {
 }
 
 const M = {
-  spacer:     '110vh',   // short budget → first swipe = instant motion
-  scaleEnd:   1.04,      // lighter zoom on mobile
-  nameXMax:   0,         // name is centered from first render on mobile
-  objPos:     'center center',  // full portrait visible on portrait viewport
+  spacer:     '110vh',
+  scaleEnd:   1.08,                    // dramatic zoom — noticeable on first swipe
+  nameXMax:   60,                      // subtle slide-in from sides on mobile
+  objPos:     'center center',
   tfOrigin:   'center center',
-  mqRange:    [0, 1.0] as const, // starts immediately — first swipe creates movement
+  mqRange:    [0, 1.0] as const,
   mqEnd:      '-40%',
-  tlRange:    [0, 0.35] as const, // fades in quickly during early scroll
+  tlRange:    [0, 0.001] as const,     // tagline snaps visible on first scroll tick
 }
 
 // ─── Math helpers ──────────────────────────────────────────────────────────
@@ -56,9 +56,9 @@ export default function Hero() {
   // ─── Framer Motion values ─────────────────────────────────────────────
   const progress   = useMotionValue(0)
 
-  // x offset: desktop slides in from ±nameXMax; mobile always 0
-  const danielX    = useMotionValue(mobile ? 0 : -D.nameXMax)
-  const rodriguezX = useMotionValue(mobile ? 0 :  D.nameXMax)
+  // x offset: both breakpoints slide from ±nameXMax (mobile uses M.nameXMax = 60)
+  const danielX    = useMotionValue(mobile ? -M.nameXMax : -D.nameXMax)
+  const rodriguezX = useMotionValue(mobile ?  M.nameXMax :  D.nameXMax)
 
   // These transforms are computed once at mount using the initial mobile state.
   // Mobile: text is fully opaque from the start; marquee and tagline animate
@@ -76,7 +76,7 @@ export default function Hero() {
   )
   const taglineOpacity = useTransform(
     progress,
-    mobile ? [...M.tlRange] : [...D.tlRange],
+    mobile ? [0, 0.001] : [...D.tlRange],
     [0, 1],
   )
 
@@ -109,8 +109,12 @@ export default function Hero() {
       const scEnd = mob ? M.scaleEnd : D.scaleEnd
       video.style.transform = `scale(${lerp(1, scEnd, p)})`
 
-      // Desktop-only: slide name lines from ±nameXMax to 0
-      // Mobile x stays at 0 (name is already centered on first load)
+      // Slide name lines from offset to center — mobile uses smaller offset
+      if (mob) {
+        const xT = invlerp(0, 0.35, p)
+        danielX.set(lerp(-M.nameXMax, 0, xT))
+        rodriguezX.set(lerp(M.nameXMax, 0, xT))
+      }
       if (!mob) {
         const xT = invlerp(0, D.nameXEnd, p)
         danielX.set(lerp(-D.nameXMax, 0, xT))
@@ -183,7 +187,7 @@ export default function Hero() {
           immediately while the video loads — no black flash on mobile.
           autoPlay unlocks programmatic play() in iOS Safari scroll handlers.
           objectPosition is breakpoint-specific:
-            desktop — 'center 10%' anchors the face on a landscape crop
+            desktop — 'center 8%' anchors the face on a landscape crop
             mobile  — 'center center' (full portrait fits portrait viewport)
           transformOrigin matches objectPosition so zoom stays on the face.
         */}
