@@ -141,13 +141,27 @@ export default function Hero({ onProgress }: HeroProps) {
       return img
     })
 
-    // Start the continuous loop — no scroll listener needed
+    // Restart loop when screen unlocks or tab becomes visible
+    const onVisible = () => {
+      cancelAnimationFrame(rafId.current)
+      rafId.current = requestAnimationFrame(loop)
+    }
+
+    // First touch activates scrollY on iOS immediately
+    const onTouch = () => { update() }
+
+    window.addEventListener('touchstart',        onTouch,   { passive: true })
+    document.addEventListener('visibilitychange', onVisible)
+
+    // Start the continuous loop
     rafId.current = requestAnimationFrame(loop)
 
     return () => {
       cancelAnimationFrame(rafId.current)
       window.removeEventListener('resize',            onResize)
       window.removeEventListener('orientationchange', onResize)
+      window.removeEventListener('touchstart',        onTouch)
+      document.removeEventListener('visibilitychange', onVisible)
     }
   }, [onProgress])
 
