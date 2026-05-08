@@ -77,7 +77,7 @@ export default function Hero({ onProgress }: HeroProps) {
       const frameIdx = Math.min(TOTAL_FRAMES - 1, Math.floor(p * TOTAL_FRAMES))
       const mob = getMob()
 
-      if (frameIdx !== lastFrame.current) {
+      if (frameIdx !== lastFrame.current || frameIdx === 0) {
         lastFrame.current = frameIdx
         const f = frames.current[frameIdx]
         if (f) drawFrame(ctx, f, canvas.width, canvas.height, mob)
