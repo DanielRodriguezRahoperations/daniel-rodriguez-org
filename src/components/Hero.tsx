@@ -20,7 +20,6 @@ function drawFrame(
   let sw: number, sh: number, sx: number, sy: number
 
   if (mob) {
-    // Mobile: cover — fills screen edge to edge
     if (ir > cr) {
       sh = ch; sw = sh * ir
       sy = 0; sx = (cw - sw) * 0.5
@@ -29,7 +28,6 @@ function drawFrame(
       sx = 0; sy = (ch - sh) * 0.5
     }
   } else {
-    // Desktop: contain — shows full portrait centered, dark bars on sides
     if (ir < cr) {
       sh = ch; sw = sh * ir
       sx = (cw - sw) * 0.5; sy = 0
@@ -54,7 +52,7 @@ export default function Hero({ onProgress }: HeroProps) {
   const danielRef    = useRef<HTMLDivElement>(null)
   const rodriguezRef = useRef<HTMLDivElement>(null)
   const marqueeRef   = useRef<HTMLDivElement>(null)
-  const rafPending   = useRef(false)
+  const rafId        = useRef<number>(0)
   const lastFrame    = useRef(-1)
   const frames       = useRef<HTMLImageElement[]>([])
   const framesReady  = useRef(false)
@@ -85,8 +83,8 @@ export default function Hero({ onProgress }: HeroProps) {
       }
     }
 
-    const tick = () => {
-      rafPending.current = false
+    // Runs immediately — no rAF delay
+    const update = () => {
       const p = clamp01(window.scrollY / Math.max(1, spacer.offsetHeight))
       const frameIdx = Math.min(TOTAL_FRAMES - 1, Math.floor(p * TOTAL_FRAMES))
       const mob = getMob()
@@ -99,35 +97,29 @@ export default function Hero({ onProgress }: HeroProps) {
 
       onProgress?.(p)
 
-      // Name group: fade in 0→0.25, hold, fade out 0.85→1.0
       const groupIn  = invlerp(0, 0.25, p)
       const groupOut = 1 - invlerp(0.85, 1.0, p)
       nameGroup.style.opacity = String(Math.min(groupIn, groupOut))
 
-      // Daniel from left, Rodriguez from right
       const nameP = invlerp(0, 0.25, p)
       danielEl.style.transform    = `translateX(${lerp(-120, 0, nameP)}px)`
       danielEl.style.opacity      = String(nameP)
       rodriguezEl.style.transform = `translateX(${lerp(120, 0, nameP)}px)`
       rodriguezEl.style.opacity   = String(nameP)
 
-      // Marquee
       const mqP = invlerp(0, 0.4, p)
       marqueeEl.style.transform = `translateX(${lerp(0, -35, mqP)}%)`
       marqueeEl.style.opacity   = String(mqP)
     }
 
-    const onScroll = () => {
-      if (!rafPending.current) {
-        rafPending.current = true
-        requestAnimationFrame(tick)
-      }
+    // rAF loop — runs every frame while page is active
+    const loop = () => {
+      update()
+      rafId.current = requestAnimationFrame(loop)
     }
-    const onResize = () => { setH(); requestAnimationFrame(tick) }
 
-    window.addEventListener('touchstart',        onScroll, { passive: true })
-    window.addEventListener('touchmove',         onScroll, { passive: true })
-    window.addEventListener('scroll',            onScroll, { passive: true })
+    const onResize = () => { setH(); update() }
+
     window.addEventListener('resize',            onResize, { passive: true })
     window.addEventListener('orientationchange', onResize)
 
@@ -149,12 +141,11 @@ export default function Hero({ onProgress }: HeroProps) {
       return img
     })
 
-    requestAnimationFrame(tick)
+    // Start the continuous loop — no scroll listener needed
+    rafId.current = requestAnimationFrame(loop)
 
     return () => {
-      window.removeEventListener('touchstart',        onScroll)
-      window.removeEventListener('touchmove',         onScroll)
-      window.removeEventListener('scroll',            onScroll)
+      cancelAnimationFrame(rafId.current)
       window.removeEventListener('resize',            onResize)
       window.removeEventListener('orientationchange', onResize)
     }
@@ -168,7 +159,6 @@ export default function Hero({ onProgress }: HeroProps) {
         ref={stickyRef}
         style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}
       >
-        {/* Poster fallback behind canvas */}
         <img
           src="/hero-poster.jpg"
           alt=""
@@ -183,7 +173,6 @@ export default function Hero({ onProgress }: HeroProps) {
           }}
         />
 
-        {/* Canvas */}
         <canvas
           ref={canvasRef}
           style={{
@@ -194,7 +183,6 @@ export default function Hero({ onProgress }: HeroProps) {
           }}
         />
 
-        {/* Gradient */}
         <div
           aria-hidden
           style={{
@@ -205,7 +193,6 @@ export default function Hero({ onProgress }: HeroProps) {
           }}
         />
 
-        {/* Name group */}
         <div
           ref={nameGroupRef}
           style={{
@@ -244,7 +231,6 @@ export default function Hero({ onProgress }: HeroProps) {
           </div>
         </div>
 
-        {/* Marquee */}
         <div
           ref={marqueeRef}
           style={{
@@ -265,7 +251,6 @@ export default function Hero({ onProgress }: HeroProps) {
         </div>
       </div>
 
-      {/* Spacer — scroll budget */}
       <div
         ref={spacerRef}
         style={{ height: isMob ? '150vh' : '200vh' }}
