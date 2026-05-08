@@ -1,263 +1,191 @@
-import { useEffect, useRef } from 'react'
 
-const TOTAL_FRAMES = 60
-const MOBILE_BP = 768
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
 
-const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
-const invlerp = (a: number, b: number, v: number) => clamp01(b === a ? 0 : (v - a) / (b - a))
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+const credentials = [
+  { value: '10+',   label: 'Years in market' },
+  { value: '100+',  label: 'Businesses scaled' },
+  { value: '3',     label: 'Industries led' },
+  { value: 'IAPDA', label: 'Certified specialist' },
+]
 
-function drawFrame(
-  ctx: CanvasRenderingContext2D,
-  img: HTMLImageElement,
-  cw: number,
-  ch: number,
-  mob: boolean
-) {
-  if (!cw || !ch || !img.complete || img.naturalWidth === 0) return
-  const ir = img.naturalWidth / img.naturalHeight
-  const cr = cw / ch
-  let sw: number, sh: number, sx: number, sy: number
+const marqueeItems = [
+  'Digital Marketing', 'SEO Architecture', 'Business Credit', 'Net 30 Vendor Setup',
+  'Solar Energy', 'Lead Generation', 'Reputation Management', 'Brand Strategy',
+  'Capital Access', 'Google Business', 'Website Development', 'Debt Relief Strategy',
+]
 
-  if (mob) {
-    if (ir > cr) {
-      sh = ch; sw = sh * ir
-      sy = 0; sx = (cw - sw) * 0.5
-    } else {
-      sw = cw; sh = sw / ir
-      sx = 0; sy = (ch - sh) * 0.5
-    }
-  } else {
-    if (ir < cr) {
-      sh = ch; sw = sh * ir
-      sx = (cw - sw) * 0.5; sy = 0
-    } else {
-      sw = cw; sh = sw / ir
-      sx = 0; sy = (ch - sh) * 0.15
-    }
-  }
-  ctx.clearRect(0, 0, cw, ch)
-  ctx.drawImage(img, sx, sy, sw, sh)
+function LineReveal({
+  children,
+  delay = 0,
+  className = '',
+}: {
+  children: React.ReactNode
+  delay?: number
+  className?: string
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-40px' })
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ clipPath: 'inset(0 0 100% 0)', opacity: 0 }}
+      animate={inView ? { clipPath: 'inset(0 0 0% 0)', opacity: 1 } : {}}
+      transition={{ duration: 0.92, delay, ease: [0.16, 1, 0.3, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
 }
 
-interface HeroProps {
-  onProgress?: (p: number) => void
-}
-
-export default function Hero({ onProgress }: HeroProps) {
-  const stickyRef    = useRef<HTMLDivElement>(null)
-  const spacerRef    = useRef<HTMLDivElement>(null)
-  const canvasRef    = useRef<HTMLCanvasElement>(null)
-  const nameGroupRef = useRef<HTMLDivElement>(null)
-  const danielRef    = useRef<HTMLDivElement>(null)
-  const rodriguezRef = useRef<HTMLDivElement>(null)
-  const marqueeRef   = useRef<HTMLDivElement>(null)
-  const rafPending   = useRef(false)
-  const lastFrame    = useRef(-1)
-  const frames       = useRef<HTMLImageElement[]>([])
-  const framesReady  = useRef(false)
-
-  useEffect(() => {
-    const sticky      = stickyRef.current
-    const spacer      = spacerRef.current
-    const canvas      = canvasRef.current
-    const nameGroup   = nameGroupRef.current
-    const danielEl    = danielRef.current
-    const rodriguezEl = rodriguezRef.current
-    const marqueeEl   = marqueeRef.current
-    if (!sticky || !spacer || !canvas || !nameGroup || !danielEl || !rodriguezEl || !marqueeEl) return
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    const getMob = () => window.innerWidth < MOBILE_BP
-
-    const setH = () => {
-      sticky.style.height = window.innerHeight + 'px'
-      canvas.width  = sticky.offsetWidth
-      canvas.height = sticky.offsetHeight
-      const idx = lastFrame.current >= 0 ? lastFrame.current : 0
-      const f = frames.current[idx]
-      if (f?.complete && f.naturalWidth > 0) {
-        drawFrame(ctx, f, canvas.width, canvas.height, getMob())
-      }
-    }
-
-    const tick = () => {
-      rafPending.current = false
-      const p = clamp01(window.scrollY / Math.max(1, spacer.offsetHeight))
-      const frameIdx = Math.min(TOTAL_FRAMES - 1, Math.floor(p * TOTAL_FRAMES))
-      const mob = getMob()
-
-      if (frameIdx !== lastFrame.current) {
-        lastFrame.current = frameIdx
-        const f = frames.current[frameIdx]
-        if (f) drawFrame(ctx, f, canvas.width, canvas.height, mob)
-      }
-
-      onProgress?.(p)
-
-      const groupIn  = invlerp(0, 0.25, p)
-      const groupOut = 1 - invlerp(0.85, 1.0, p)
-      nameGroup.style.opacity = String(Math.min(groupIn, groupOut))
-
-      const nameP = invlerp(0, 0.25, p)
-      danielEl.style.transform    = `translateX(${lerp(-120, 0, nameP)}px)`
-      danielEl.style.opacity      = String(nameP)
-      rodriguezEl.style.transform = `translateX(${lerp(120, 0, nameP)}px)`
-      rodriguezEl.style.opacity   = String(nameP)
-
-      const mqP = invlerp(0, 0.4, p)
-      marqueeEl.style.transform = `translateX(${lerp(0, -35, mqP)}%)`
-      marqueeEl.style.opacity   = String(mqP)
-    }
-
-    const onScroll = () => {
-      if (!rafPending.current) {
-        rafPending.current = true
-        requestAnimationFrame(tick)
-      }
-    }
-    const onResize = () => { setH(); requestAnimationFrame(tick) }
-
-    // pointermove fires instantly on first touch movement — no tap needed
-    window.addEventListener('pointermove',       onScroll, { passive: true })
-    window.addEventListener('scroll',            onScroll, { passive: true })
-    window.addEventListener('resize',            onResize, { passive: true })
-    window.addEventListener('orientationchange', onResize)
-
-    setH()
-
-    let loadedCount = 0
-    frames.current = Array.from({ length: TOTAL_FRAMES }, (_, i) => {
-      const img = new Image()
-      img.src = `/hero-frames/frame_${String(i + 1).padStart(4, '0')}.jpg`
-      img.onload = () => {
-        loadedCount++
-        if (i === 0) {
-          if (!canvas.width || !canvas.height) setH()
-          drawFrame(ctx, img, canvas.width, canvas.height, getMob())
-          lastFrame.current = 0
-        }
-        if (loadedCount === TOTAL_FRAMES) framesReady.current = true
-      }
-      return img
-    })
-
-    requestAnimationFrame(tick)
-
-    return () => {
-      window.removeEventListener('pointermove',       onScroll)
-      window.removeEventListener('scroll',            onScroll)
-      window.removeEventListener('resize',            onResize)
-      window.removeEventListener('orientationchange', onResize)
-    }
-  }, [onProgress])
-
-  const isMob = typeof window !== 'undefined' && window.innerWidth < MOBILE_BP
+export default function Statement() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const credRef    = useRef<HTMLDivElement>(null)
+  const inView     = useInView(sectionRef, { once: true, margin: '-80px' })
+  const credInView = useInView(credRef,    { once: true, margin: '-60px' })
 
   return (
-    <div>
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden"
+      style={{ background: 'rgba(8,8,8,0.97)', zIndex: 10 }}
+    >
+      {/* Soft bleed from hero */}
       <div
-        ref={stickyRef}
-        style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}
+        aria-hidden
+        style={{
+          position: 'absolute', top: 0, left: 0, right: 0,
+          height: 100,
+          background: 'linear-gradient(to bottom, #0a0a0a 0%, transparent 100%)',
+          pointerEvents: 'none', zIndex: 1,
+        }}
+      />
+
+      {/* Philosophy statement */}
+      <div
+        className="relative max-w-7xl mx-auto px-6 lg:px-12 pt-36 lg:pt-52 pb-28 lg:pb-36"
+        style={{ zIndex: 2 }}
       >
-        <img
-          src="/hero-poster.jpg"
-          alt=""
-          aria-hidden
+        <motion.p
+          initial={{ opacity: 0, x: -12 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
+          className="font-sans mb-16"
           style={{
-            position: 'absolute', inset: 0,
-            width: '100%', height: '100%',
-            objectFit: isMob ? 'cover' : 'contain',
-            objectPosition: 'center',
-            background: '#0a0a0a',
-            zIndex: 0, pointerEvents: 'none',
-          }}
-        />
-
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: 'absolute', inset: 0,
-            width: '100%', height: '100%',
-            zIndex: 1, pointerEvents: 'none',
-            background: '#0a0a0a',
-          }}
-        />
-
-        <div
-          aria-hidden
-          style={{
-            position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
-            background:
-              'linear-gradient(to top, rgba(10,10,10,0.80) 0%, transparent 52%),' +
-              'linear-gradient(to bottom, rgba(10,10,10,0.30) 0%, transparent 28%)',
-          }}
-        />
-
-        <div
-          ref={nameGroupRef}
-          style={{
-            position: 'absolute', inset: 0, zIndex: 3,
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'flex-end',
-            paddingBottom: '6rem', paddingLeft: '1.5rem', paddingRight: '1.5rem',
-            pointerEvents: 'none', opacity: 0,
+            fontSize: '0.65rem', letterSpacing: '0.45em',
+            textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)',
           }}
         >
-          <div style={{ textAlign: 'center', lineHeight: 0.88, marginBottom: '2rem' }}>
-            <div ref={danielRef} style={{ opacity: 0, transform: 'translateX(-120px)' }}>
-              <span style={{
-                display: 'block',
-                fontFamily: "'Playfair Display', serif",
-                fontWeight: 900,
-                fontSize: 'clamp(4rem, 12vw, 10rem)',
-                color: '#ffffff',
-                letterSpacing: '-0.02em',
-                textShadow: '0 4px 40px rgba(0,0,0,0.55)',
-              }}>Daniel</span>
-            </div>
-            <div ref={rodriguezRef} style={{ opacity: 0, transform: 'translateX(120px)' }}>
-              <span style={{
-                display: 'block',
-                fontFamily: "'Playfair Display', serif",
-                fontWeight: 900,
-                fontStyle: 'italic',
-                fontSize: 'clamp(3.5rem, 11vw, 9rem)',
-                color: '#ffffff',
-                letterSpacing: '-0.02em',
-                marginTop: '-0.06em',
-                textShadow: '0 4px 40px rgba(0,0,0,0.55)',
-              }}>Rodriguez</span>
-            </div>
-          </div>
+          The operating principle
+        </motion.p>
+
+        <div
+          className="font-display font-black"
+          style={{
+            fontSize: 'clamp(3rem, 6.5vw, 6.2rem)',
+            letterSpacing: '-0.03em', lineHeight: '1.0',
+          }}
+        >
+          <LineReveal delay={0.1}>
+            <span style={{ color: 'rgba(255,255,255,0.26)' }}>Most consultants advise.</span>
+          </LineReveal>
+          <LineReveal delay={0.32} className="mt-3">
+            <span className="text-white">Daniel&nbsp;</span>
+            <span className="italic" style={{ color: '#97CCF6' }}>builds.</span>
+          </LineReveal>
         </div>
 
-        <div
-          ref={marqueeRef}
-          style={{
-            position: 'absolute', bottom: '2rem', left: 0, zIndex: 3,
-            whiteSpace: 'nowrap', pointerEvents: 'none',
-            opacity: 0, transform: 'translateX(0%)',
-          }}
+        <motion.p
+          initial={{ opacity: 0, y: 14 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, delay: 0.58, ease: [0.16, 1, 0.3, 1] }}
+          className="font-sans leading-relaxed mt-10 max-w-lg"
+          style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.34)', letterSpacing: '0.01em' }}
         >
-          <span style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(1rem, 2.5vw, 1.6rem)',
-            fontStyle: 'italic',
-            color: 'rgba(151,204,246,0.65)',
-            letterSpacing: '0.08em',
-          }}>
-            Transform Your Narrative&nbsp;&nbsp;•&nbsp;&nbsp;Build Your Legacy&nbsp;&nbsp;•&nbsp;&nbsp;Scottsdale, Arizona&nbsp;&nbsp;•&nbsp;&nbsp;Founder · RAH Operations&nbsp;&nbsp;•&nbsp;&nbsp;Transform Your Narrative&nbsp;&nbsp;•&nbsp;&nbsp;Build Your Legacy&nbsp;&nbsp;•&nbsp;&nbsp;Scottsdale, Arizona&nbsp;&nbsp;•&nbsp;&nbsp;
-          </span>
+          Ten years of execution across digital marketing, business credit, and clean energy.
+          Not theory — working systems that generate real, measurable results for real people.
+        </motion.p>
+
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={inView ? { scaleX: 1 } : {}}
+          transition={{ duration: 1.3, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            transformOrigin: 'left', height: 1,
+            background: 'rgba(255,255,255,0.06)', marginTop: '5rem',
+          }}
+        />
+      </div>
+
+      {/* Credential bar */}
+      <div ref={credRef} className="max-w-7xl mx-auto px-6 lg:px-12 pb-16 lg:pb-20">
+        <div
+          className="grid grid-cols-2 lg:grid-cols-4"
+          style={{ border: '1px solid rgba(255,255,255,0.06)' }}
+        >
+          {credentials.map((item, i) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 22 }}
+              animate={credInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="group px-8 lg:px-10 py-12 cursor-default"
+              style={{
+                borderRight: i < 3 ? '1px solid rgba(255,255,255,0.06)' : undefined,
+                borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.06)' : undefined,
+              }}
+            >
+              <div
+                className="font-display font-black mb-3 group-hover:text-gold transition-colors duration-500"
+                style={{
+                  fontSize: 'clamp(2.4rem, 4vw, 3.8rem)',
+                  lineHeight: 1, letterSpacing: '-0.03em', color: '#ffffff',
+                }}
+              >
+                {item.value}
+              </div>
+              <div
+                className="font-sans"
+                style={{
+                  fontSize: '0.65rem', letterSpacing: '0.35em',
+                  textTransform: 'uppercase', color: 'rgba(255,255,255,0.24)',
+                }}
+              >
+                {item.label}
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
 
+      {/* Services strip */}
       <div
-        ref={spacerRef}
-        style={{ height: isMob ? '150vh' : '200vh' }}
-      />
-    </div>
+        className="overflow-hidden py-5"
+        style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+      >
+        <motion.div
+          animate={{ x: ['0%', '-50%'] }}
+          transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
+          className="flex whitespace-nowrap"
+        >
+          {[...marqueeItems, ...marqueeItems].map((item, i) => (
+            <span
+              key={i}
+              className="font-sans"
+              style={{
+                fontSize: '0.65rem', letterSpacing: '0.3em',
+                textTransform: 'uppercase',
+                paddingLeft: '2rem', paddingRight: '2rem',
+                borderRight: '1px solid rgba(255,255,255,0.06)',
+                color: i % 5 === 0 ? 'rgba(151,204,246,0.35)' : 'rgba(255,255,255,0.1)',
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </motion.div>
+      </div>
+    </section>
   )
 }
