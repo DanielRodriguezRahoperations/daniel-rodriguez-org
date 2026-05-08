@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
@@ -11,28 +11,34 @@ const navLinks = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
+  const [opacity, setOpacity] = useState(0)
   const location = useLocation()
-  const navRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     setMenuOpen(false)
   }, [location.pathname])
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
+    const onScroll = () => {
+      // Fade in between 80px and 300px of scroll
+      const p = Math.min(1, Math.max(0, (window.scrollY - 80) / 220))
+      setOpacity(p)
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
+    // Run once on mount for non-home pages
+    onScroll()
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (
     <nav
-      ref={navRef}
-      className="fixed top-0 left-0 right-0 border-b border-white/5 transition-all duration-500"
+      className="fixed top-0 left-0 right-0 border-b transition-all duration-300"
       style={{
         zIndex: 50,
-        background: scrolled ? 'rgba(10,10,10,0.85)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        background: `rgba(10,10,10,${opacity * 0.9})`,
+        backdropFilter: opacity > 0.1 ? `blur(20px)` : 'none',
+        borderColor: `rgba(255,255,255,${opacity * 0.06})`,
+        opacity: opacity < 0.05 ? 0 : 1,
       }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -50,7 +56,7 @@ export default function Navbar() {
               <Link
                 key={link.label}
                 to={link.href}
-                className="font-sans text-sm font-medium text-white/80 hover:text-white transition-colors duration-300 tracking-widest uppercase"
+                className="font-sans text-sm font-medium text-white hover:text-gold transition-colors duration-300 tracking-widest uppercase"
               >
                 {link.label}
               </Link>
@@ -89,7 +95,7 @@ export default function Navbar() {
               key={link.label}
               to={link.href}
               onClick={() => setMenuOpen(false)}
-              className="font-sans text-sm font-medium text-white/80 hover:text-white transition-colors duration-300 tracking-widest uppercase"
+              className="font-sans text-sm font-medium text-white hover:text-gold transition-colors duration-300 tracking-widest uppercase"
             >
               {link.label}
             </Link>
