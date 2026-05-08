@@ -153,8 +153,11 @@ export default function Hero({ onProgress }: HeroProps) {
     window.addEventListener('touchstart',        onTouch,   { passive: true })
     document.addEventListener('visibilitychange', onVisible)
 
-    // Start the continuous loop
-    rafId.current = requestAnimationFrame(loop)
+    // Delay start until after first paint so spacer has correct height
+    setTimeout(() => {
+      setH()
+      rafId.current = requestAnimationFrame(loop)
+    }, 100)
 
     return () => {
       cancelAnimationFrame(rafId.current)
