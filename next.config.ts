@@ -4,6 +4,7 @@ import path from 'path'
 const nextConfig: NextConfig = {
   transpilePackages: ['three', '@react-three/fiber', '@react-three/drei'],
   distDir: '.next',
+  serverExternalPackages: ['@react-three/fiber', '@react-three/drei', 'three'],
   webpack(config) {
     config.resolve.alias = {
       ...config.resolve.alias,
