@@ -9,23 +9,38 @@ const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
 const invlerp = (a: number, b: number, v: number) => clamp01(b === a ? 0 : (v - a) / (b - a))
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 
-function drawCover(
+function drawFrame(
   ctx: CanvasRenderingContext2D,
   img: HTMLImageElement,
   cw: number,
   ch: number,
-  anchorY: number
+  mob: boolean
 ) {
+  if (!cw || !ch || !img.complete || img.naturalWidth === 0) return
   const ir = img.naturalWidth / img.naturalHeight
   const cr = cw / ch
   let sw: number, sh: number, sx: number, sy: number
-  if (ir > cr) {
-    sh = ch; sw = sh * ir
-    sy = 0; sx = (cw - sw) * 0.5
+
+  if (mob) {
+    // Mobile: cover — fills screen edge to edge
+    if (ir > cr) {
+      sh = ch; sw = sh * ir
+      sy = 0; sx = (cw - sw) * 0.5
+    } else {
+      sw = cw; sh = sw / ir
+      sx = 0; sy = (ch - sh) * 0.5
+    }
   } else {
-    sw = cw; sh = sw / ir
-    sx = 0; sy = (ch - sh) * anchorY
+    // Desktop: contain — shows full portrait centered
+    if (ir < cr) {
+      sh = ch; sw = sh * ir
+      sx = (cw - sw) * 0.5; sy = 0
+    } else {
+      sw = cw; sh = sw / ir
+      sx = 0; sy = (ch - sh) * 0.15
+    }
   }
+  ctx.clearRect(0, 0, cw, ch)
   ctx.drawImage(img, sx, sy, sw, sh)
 }
 
@@ -59,6 +74,8 @@ export default function Hero({ onProgress }: HeroProps) {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    const getMob = () => window.innerWidth < MOBILE_BP
+
     // ── Sticky height (dvh via JS) ──────────────────────────────────
     const setH = () => {
       sticky.style.height = window.innerHeight + 'px'
@@ -66,21 +83,9 @@ export default function Hero({ onProgress }: HeroProps) {
       canvas.height = sticky.offsetHeight
       // Redraw current frame at new size
       const idx = lastFrame.current >= 0 ? lastFrame.current : 0
-      if (frames.current[idx]?.complete && frames.current[idx].naturalWidth > 0) {
-        const mob = window.innerWidth < MOBILE_BP
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        drawCover(ctx, frames.current[idx], canvas.width, canvas.height, mob ? 0.5 : 0.1)
+      if (frames.current[idx]) {
+        drawFrame(ctx, frames.current[idx], canvas.width, canvas.height, getMob())
       }
-    }
-
-    // ── Draw a specific frame ───────────────────────────────────────
-    const drawFrame = (idx: number) => {
-      if (!canvas.width || !canvas.height) return
-      const img = frames.current[idx]
-      if (!img?.complete || img.naturalWidth === 0) return
-      const mob = window.innerWidth < MOBILE_BP
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      drawCover(ctx, img, canvas.width, canvas.height, mob ? 0.5 : 0.1)
     }
 
     // ── Tick ────────────────────────────────────────────────────────
@@ -92,7 +97,7 @@ export default function Hero({ onProgress }: HeroProps) {
       // Only redraw canvas when frame changes
       if (frameIdx !== lastFrame.current) {
         lastFrame.current = frameIdx
-        drawFrame(frameIdx)
+        drawFrame(ctx, frames.current[frameIdx], canvas.width, canvas.height, getMob())
       }
 
       // Notify parent for navbar
@@ -146,7 +151,7 @@ export default function Hero({ onProgress }: HeroProps) {
         // Draw frame 0 immediately when it loads — no black flash
         if (i === 0) {
           if (!canvas.width || !canvas.height) setH()
-          drawFrame(0)
+          drawFrame(ctx, img, canvas.width, canvas.height, getMob())
           lastFrame.current = 0
         }
         if (loadedCount === TOTAL_FRAMES) {
