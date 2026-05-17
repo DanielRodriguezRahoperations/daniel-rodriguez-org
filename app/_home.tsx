@@ -1,15 +1,11 @@
+'use client'
 
-import { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useRef } from 'react'
+import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
-import { Helmet } from 'react-helmet-async'
-import Hero from '../components/Hero'
-import Statement from '../components/Statement'
-import BlogCard from '../components/BlogCard'
-import SEO from '../components/SEO'
-import { blogPosts } from '../data/blog-posts'
-
-// Footer is rendered globally in App.tsx — never import or render it here
+import Hero from '@/components/Hero'
+import BlogCard from '@/components/BlogCard'
+import { blogPosts } from '@/data/blog-posts'
 
 const pressPreview = [
   {
@@ -102,76 +98,17 @@ const label = (text: string) => (
   </p>
 )
 
-export default function HomePage() {
+export default function HomeContent() {
   const previewPosts = blogPosts.slice(0, 3)
-  const [_heroProgress, setHeroProgress] = useState(0)
 
   return (
     <>
-      <SEO
-        title="Daniel Rodriguez | Arizona Entrepreneur, SEO & Website Design Expert"
-        description="Daniel Rodriguez is a Scottsdale-based entrepreneur, founder of RAH Operations LLC, IAPDA-certified debt specialist, and digital marketing strategist helping businesses grow across Arizona and beyond."
-        canonical="/"
-        keywords="Daniel Rodriguez, Daniel Rodriguez Arizona, Daniel Rodriguez RAH Operations, Arizona entrepreneur, Scottsdale website design, Phoenix SEO, business credit services"
-      />
-
-      <Helmet>
-        <script type="application/ld+json">{JSON.stringify({
-          '@context': 'https://schema.org',
-          '@graph': [
-            {
-              '@type': 'Person',
-              '@id': 'https://danielrodriguez.org/#person',
-              name: 'Daniel Rodriguez',
-              url: 'https://danielrodriguez.org',
-              sameAs: [
-                'https://www.linkedin.com/in/danielrodriguez-scottsdale/',
-                'https://www.instagram.com/drod6211/',
-                'https://www.rahoperations.com',
-              ],
-              jobTitle: 'Entrepreneur, Strategist & Business Builder',
-              description:
-                'Scottsdale-based entrepreneur, founder of RAH Operations LLC, owner of SunVision Solar, and IAPDA-certified Senior Debt Specialist.',
-              worksFor: {
-                '@type': 'Organization',
-                name: 'RAH Operations LLC',
-                url: 'https://www.rahoperations.com',
-              },
-              address: {
-                '@type': 'PostalAddress',
-                addressLocality: 'Scottsdale',
-                addressRegion: 'AZ',
-                addressCountry: 'US',
-              },
-              knowsAbout: [
-                'Digital Marketing', 'SEO', 'Website Design',
-                'Business Credit', 'Debt Relief', 'Solar Energy',
-                'Personal Branding', 'Sales Strategy',
-              ],
-            },
-            {
-              '@type': 'WebSite',
-              '@id': 'https://danielrodriguez.org/#website',
-              name: 'Daniel Rodriguez',
-              url: 'https://danielrodriguez.org',
-              author: { '@id': 'https://danielrodriguez.org/#person' },
-            },
-            {
-              '@type': 'Organization',
-              '@id': 'https://www.rahoperations.com/#org',
-              name: 'RAH Operations LLC',
-              url: 'https://www.rahoperations.com',
-              founder: { '@id': 'https://danielrodriguez.org/#person' },
-            },
-          ],
-        })}</script>
-      </Helmet>
-
       {/* ── HERO ─────────────────────────────────────────────── */}
-      <Hero onProgress={setHeroProgress} />
-
-      {/* ── STATEMENT — protected, do not modify ─────────────── */}
-      <Statement />
+      <Hero
+        onProgress={(p) =>
+          window.dispatchEvent(new CustomEvent('hero-progress', { detail: p }))
+        }
+      />
 
       {/* ── CREDIBILITY STRIP ───────────────────────────────── */}
       <section style={{ background: 'rgba(10,10,10,0.82)' }}>
@@ -251,7 +188,6 @@ export default function HomePage() {
             </Reveal>
           </div>
 
-          {/* Service cards — full card is clickable */}
           <div
             className="grid grid-cols-1 lg:grid-cols-3"
             style={{ border: '1px solid rgba(255,255,255,0.07)' }}
@@ -356,12 +292,12 @@ export default function HomePage() {
                 >
                   Scottsdale entrepreneur. Started in sales. Built into debt relief, business
                   credit, digital marketing, and clean energy. Founder of RAH Operations LLC.
-                  IAPDA certified. He executes — he doesn't just advise.
+                  IAPDA certified. He executes — he doesn&apos;t just advise.
                 </p>
               </Reveal>
               <Reveal from="left" delay={0.22}>
                 <Link
-                  to="/about"
+                  href="/about"
                   className="group inline-flex items-center gap-4 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
                   style={{ fontSize: '0.65rem', color: '#97CCF6' }}
                 >
@@ -374,7 +310,6 @@ export default function HomePage() {
               </Reveal>
             </div>
 
-            {/* Stats strip — right side */}
             <Reveal from="right" delay={0.1}>
               <div
                 className="grid grid-cols-2 gap-px"
@@ -447,7 +382,7 @@ export default function HomePage() {
             </div>
             <Reveal from="right" delay={0.1}>
               <Link
-                to="/press"
+                href="/press"
                 className="group inline-flex items-center gap-4 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white shrink-0"
                 style={{ fontSize: '0.65rem', color: '#97CCF6' }}
               >
@@ -530,7 +465,7 @@ export default function HomePage() {
             </div>
             <Reveal from="right" delay={0.1}>
               <Link
-                to="/blog"
+                href="/blog"
                 className="group inline-flex items-center gap-4 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white shrink-0"
                 style={{ fontSize: '0.65rem', color: '#97CCF6' }}
               >
@@ -596,18 +531,14 @@ export default function HomePage() {
 
               <div className="flex flex-wrap gap-4">
                 <Link
-                  to="/contact"
+                  href="/contact"
                   className="font-sans font-medium tracking-widest uppercase px-7 py-3.5 transition-all duration-300 hover:opacity-90"
-                  style={{
-                    fontSize: '0.7rem',
-                    background: '#97CCF6',
-                    color: '#0a0a0a',
-                  }}
+                  style={{ fontSize: '0.7rem', background: '#97CCF6', color: '#0a0a0a' }}
                 >
                   Get In Touch
                 </Link>
                 <Link
-                  to="/about"
+                  href="/about"
                   className="font-sans font-medium tracking-widest uppercase px-7 py-3.5 border transition-all duration-300 hover:bg-white/5"
                   style={{
                     fontSize: '0.7rem',

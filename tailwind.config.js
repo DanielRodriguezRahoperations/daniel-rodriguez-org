@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./index.html",
+    "./app/**/*.{js,ts,jsx,tsx}",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
@@ -16,9 +16,9 @@ export default {
         'dark-200': '#141414',
       },
       fontFamily: {
-        display: ['Playfair Display', 'serif'],
-        cormorant: ['Cormorant Garamond', 'serif'],
-        sans: ['Inter', 'sans-serif'],
+        display: ['var(--font-display)', 'serif'],
+        cormorant: ['var(--font-cormorant)', 'serif'],
+        sans: ['var(--font-sans)', 'sans-serif'],
       },
     },
   },

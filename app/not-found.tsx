@@ -1,7 +1,9 @@
-import { Link } from 'react-router-dom'
+'use client'
+
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 
-export default function NotFoundPage() {
+export default function NotFound() {
   return (
     <section style={{ background: 'rgba(10,10,10,0.90)' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col items-center justify-center min-h-screen text-center">
@@ -26,18 +28,18 @@ export default function NotFoundPage() {
             className="font-display font-semibold text-white mb-6"
             style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', letterSpacing: '-0.02em' }}
           >
-            This page doesn't exist.
+            This page doesn&apos;t exist.
           </p>
 
           <p
             className="font-sans mb-12"
             style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.32)' }}
           >
-            The page you're looking for has moved or never existed.
+            The page you&apos;re looking for has moved or never existed.
           </p>
 
           <Link
-            to="/"
+            href="/"
             className="group inline-flex items-center gap-5 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
             style={{ fontSize: '0.72rem', color: '#97CCF6' }}
           >

@@ -1,5 +1,7 @@
+'use client'
+
 import { useRef } from 'react'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import type { BlogPost } from '../data/blog-posts'
 
@@ -48,7 +50,7 @@ export default function BlogCard({ post, index = 0 }: Props) {
       </div>
 
       {/* Title */}
-      <Link to={`/blog/${post.slug}`} className="block mb-4">
+      <Link href={`/blog/${post.slug}`} className="block mb-4">
         <h3
           className="font-display font-semibold text-white transition-colors duration-300 group-hover:text-gold leading-snug"
           style={{ fontSize: 'clamp(1.05rem, 1.6vw, 1.25rem)', letterSpacing: '-0.01em' }}
@@ -67,7 +69,7 @@ export default function BlogCard({ post, index = 0 }: Props) {
 
       {/* Read link */}
       <Link
-        to={`/blog/${post.slug}`}
+        href={`/blog/${post.slug}`}
         className="inline-flex items-center gap-4 font-sans font-medium tracking-widest uppercase transition-colors duration-300 group-hover:text-white"
         style={{ fontSize: '0.65rem', color: '#97CCF6' }}
       >

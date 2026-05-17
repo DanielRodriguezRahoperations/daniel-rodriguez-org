@@ -4,31 +4,28 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@react-three/drei": "^9.92.7",
     "@react-three/fiber": "^8.15.19",
     "framer-motion": "^11.0.8",
+    "next": "^15.5.18",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-helmet-async": "^3.0.0",
-    "react-router-dom": "^7.15.0",
     "three": "^0.161.0"
   },
   "devDependencies": {
+    "@types/node": "20.17.6",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@types/react-router-dom": "^5.3.3",
     "@types/three": "^0.161.2",
-    "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.10"
+    "typescript": "^5.4.5"
   }
 }

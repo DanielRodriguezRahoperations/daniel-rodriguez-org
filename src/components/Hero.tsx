@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useRef } from 'react'
 
 const TOTAL_FRAMES = 60

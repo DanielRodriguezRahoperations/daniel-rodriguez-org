@@ -1,9 +1,14 @@
+'use client'
+
 import { useRef } from 'react'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { motion, useInView } from 'framer-motion'
-import { Helmet } from 'react-helmet-async'
-import FloatingGeometry from '../components/FloatingGeometry'
-import SEO from '../components/SEO'
+
+const FloatingGeometry = dynamic(
+  () => import('@/components/FloatingGeometry'),
+  { ssr: false }
+)
 
 const stats = [
   { value: '10+', label: 'Years Operating' },
@@ -38,6 +43,15 @@ const pillars = [
       'As founder of SunVision Solar, Daniel helps homeowners and commercial operators reduce energy costs and build long-term asset value. Owning your power means reducing overhead, improving equity position, and removing a recurring cost from your financial picture indefinitely.',
   },
 ]
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://danielrodriguez.org/' },
+    { '@type': 'ListItem', position: 2, name: 'About', item: 'https://danielrodriguez.org/about' },
+  ],
+}
 
 function Reveal({
   children,
@@ -75,34 +89,19 @@ function Reveal({
   )
 }
 
-export default function AboutPage() {
+export default function AboutContent() {
   return (
     <>
-      <SEO
-        title="About Daniel Rodriguez | Entrepreneur, Strategist & Business Builder"
-        description="Meet Daniel Rodriguez — Scottsdale-based entrepreneur, founder of RAH Operations LLC, owner of SunVision Solar, IAPDA-certified Senior Debt Specialist with 10+ years building businesses across digital marketing, credit, debt relief, and clean energy."
-        canonical="/about"
-        keywords="Daniel Rodriguez about, Daniel Rodriguez entrepreneur, Daniel Rodriguez Arizona, RAH Operations founder, IAPDA certified debt specialist"
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-
-      <Helmet>
-        <script type="application/ld+json">{JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://danielrodriguez.org/' },
-            { '@type': 'ListItem', position: 2, name: 'About', item: 'https://danielrodriguez.org/about' },
-          ],
-        })}</script>
-      </Helmet>
 
       <section style={{ background: 'rgba(10,10,10,0.75)' }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-40 lg:py-56">
 
-          {/* Bio: asymmetric two-column */}
           <div className="grid lg:grid-cols-[1fr_460px] xl:grid-cols-[1fr_540px] gap-16 lg:gap-20 items-start mb-36">
 
-            {/* Left — text */}
             <div>
               <Reveal from="left" delay={0}>
                 <p
@@ -144,19 +143,15 @@ export default function AboutPage() {
                     borderLeft: '2px solid rgba(151,204,246,0.28)',
                   }}
                 >
-                  "Most consultants describe what you should do. I do it — and I've been doing it
-                  across multiple industries for over a decade."
+                  &ldquo;Most consultants describe what you should do. I do it — and I&apos;ve been doing it
+                  across multiple industries for over a decade.&rdquo;
                 </blockquote>
               </Reveal>
 
               <Reveal from="left" delay={0.3}>
                 <p
                   className="font-sans leading-relaxed mb-6"
-                  style={{
-                    fontSize: '0.9375rem',
-                    color: 'rgba(255,255,255,0.48)',
-                    letterSpacing: '0.01em',
-                  }}
+                  style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.48)', letterSpacing: '0.01em' }}
                 >
                   Daniel Rodriguez is a Scottsdale-based entrepreneur who started where most
                   operators start — in sales. The ability to understand what people need, build
@@ -168,11 +163,7 @@ export default function AboutPage() {
               <Reveal from="left" delay={0.36}>
                 <p
                   className="font-sans leading-relaxed mb-6"
-                  style={{
-                    fontSize: '0.9375rem',
-                    color: 'rgba(255,255,255,0.48)',
-                    letterSpacing: '0.01em',
-                  }}
+                  style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.48)', letterSpacing: '0.01em' }}
                 >
                   That foundation expanded into debt relief — earning IAPDA Senior Certified Debt
                   Specialist certification and helping individuals navigate financial pressure with
@@ -185,11 +176,7 @@ export default function AboutPage() {
               <Reveal from="left" delay={0.42}>
                 <p
                   className="font-sans leading-relaxed mb-14"
-                  style={{
-                    fontSize: '0.9375rem',
-                    color: 'rgba(255,255,255,0.48)',
-                    letterSpacing: '0.01em',
-                  }}
+                  style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.48)', letterSpacing: '0.01em' }}
                 >
                   Today he runs RAH Operations LLC — a digital marketing and business services firm
                   built specifically for small business owners and entrepreneurs — and SunVision
@@ -200,7 +187,7 @@ export default function AboutPage() {
 
               <Reveal from="left" delay={0.48}>
                 <Link
-                  to="/contact"
+                  href="/contact"
                   className="group inline-flex items-center gap-5 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
                   style={{ fontSize: '0.72rem', color: '#97CCF6' }}
                 >
@@ -213,7 +200,6 @@ export default function AboutPage() {
               </Reveal>
             </div>
 
-            {/* Right — 3D geometry */}
             <Reveal from="right" delay={0.15} className="relative h-[480px] lg:h-[560px]">
               <div
                 className="absolute inset-0 pointer-events-none z-10"
@@ -226,7 +212,6 @@ export default function AboutPage() {
             </Reveal>
           </div>
 
-          {/* Stats row */}
           <div
             className="grid grid-cols-2 lg:grid-cols-4 mb-36"
             style={{ border: '1px solid rgba(255,255,255,0.06)' }}
@@ -242,22 +227,13 @@ export default function AboutPage() {
                 >
                   <div
                     className="font-display font-bold text-white mb-3 group-hover:text-gold transition-colors duration-500"
-                    style={{
-                      fontSize: 'clamp(2.2rem, 4.5vw, 3.6rem)',
-                      letterSpacing: '-0.03em',
-                      lineHeight: 1,
-                    }}
+                    style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.6rem)', letterSpacing: '-0.03em', lineHeight: 1 }}
                   >
                     {stat.value}
                   </div>
                   <div
                     className="font-sans"
-                    style={{
-                      fontSize: '0.65rem',
-                      letterSpacing: '0.3em',
-                      textTransform: 'uppercase',
-                      color: 'rgba(255,255,255,0.28)',
-                    }}
+                    style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)' }}
                   >
                     {stat.label}
                   </div>
@@ -266,16 +242,10 @@ export default function AboutPage() {
             ))}
           </div>
 
-          {/* Areas of Expertise */}
           <Reveal from="up" delay={0}>
             <p
               className="font-sans mb-14"
-              style={{
-                fontSize: '0.65rem',
-                letterSpacing: '0.45em',
-                textTransform: 'uppercase',
-                color: 'rgba(151,204,246,0.5)',
-              }}
+              style={{ fontSize: '0.65rem', letterSpacing: '0.45em', textTransform: 'uppercase', color: 'rgba(151,204,246,0.5)' }}
             >
               Areas of Expertise
             </p>
@@ -287,43 +257,25 @@ export default function AboutPage() {
                 <div style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                   <motion.div
                     className="group py-12 lg:py-14"
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'minmax(64px, 80px) 1fr 2fr',
-                      gap: '2rem',
-                      alignItems: 'start',
-                    }}
+                    style={{ display: 'grid', gridTemplateColumns: 'minmax(64px, 80px) 1fr 2fr', gap: '2rem', alignItems: 'start' }}
                     whileHover={{ x: 8 }}
                     transition={{ type: 'spring', stiffness: 280, damping: 28 }}
                   >
                     <div
                       className="font-sans pt-1"
-                      style={{
-                        fontSize: '0.65rem',
-                        letterSpacing: '0.4em',
-                        textTransform: 'uppercase',
-                        color: 'rgba(151,204,246,0.28)',
-                      }}
+                      style={{ fontSize: '0.65rem', letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(151,204,246,0.28)' }}
                     >
                       {pillar.num}
                     </div>
                     <h2
                       className="font-display font-semibold text-white group-hover:text-gold transition-colors duration-400"
-                      style={{
-                        fontSize: 'clamp(1.3rem, 2.2vw, 1.8rem)',
-                        lineHeight: '1.2',
-                        letterSpacing: '-0.01em',
-                      }}
+                      style={{ fontSize: 'clamp(1.3rem, 2.2vw, 1.8rem)', lineHeight: '1.2', letterSpacing: '-0.01em' }}
                     >
                       {pillar.title}
                     </h2>
                     <p
                       className="font-sans leading-relaxed"
-                      style={{
-                        fontSize: '0.875rem',
-                        color: 'rgba(255,255,255,0.36)',
-                        letterSpacing: '0.01em',
-                      }}
+                      style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.36)', letterSpacing: '0.01em' }}
                     >
                       {pillar.description}
                     </p>
@@ -333,7 +285,6 @@ export default function AboutPage() {
             ))}
           </div>
 
-          {/* CTA */}
           <Reveal from="up" delay={0.1}>
             <div
               className="mt-32 lg:mt-40 pt-20"
@@ -341,18 +292,15 @@ export default function AboutPage() {
             >
               <p
                 className="font-cormorant italic mb-10 max-w-2xl"
-                style={{
-                  fontSize: 'clamp(1.1rem, 2vw, 1.45rem)',
-                  color: 'rgba(255,255,255,0.32)',
-                }}
+                style={{ fontSize: 'clamp(1.1rem, 2vw, 1.45rem)', color: 'rgba(255,255,255,0.32)' }}
               >
-                If you're a business owner looking to grow online, a professional who needs a
+                If you&apos;re a business owner looking to grow online, a professional who needs a
                 stronger financial position, or someone who just wants to have a direct conversation
-                with someone who's actually done this work — the contact page is the right next
+                with someone who&apos;s actually done this work — the contact page is the right next
                 step.
               </p>
               <Link
-                to="/contact"
+                href="/contact"
                 className="group inline-flex items-center gap-5 font-sans font-medium tracking-widest uppercase transition-colors duration-300 hover:text-white"
                 style={{ fontSize: '0.72rem', color: '#97CCF6' }}
               >

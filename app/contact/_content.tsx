@@ -1,24 +1,21 @@
+'use client'
+
 import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Helmet } from 'react-helmet-async'
-import SEO from '../components/SEO'
 
 /*
   CONTACT FORM — powered by Formspree (https://formspree.io)
 
   Required environment variable:
-    VITE_FORMSPREE_ID=xxxxxxxx
+    NEXT_PUBLIC_FORMSPREE_ID=xxxxxxxx
 
   Setup:
     1. Go to https://formspree.io and sign in (or create a free account).
     2. Create a new form — set the notification email to daniel@rahoperations.com.
     3. Copy the form ID from the endpoint URL (e.g. https://formspree.io/f/xpwzjkbd → ID is xpwzjkbd).
     4. In Vercel dashboard → Settings → Environment Variables, add:
-         VITE_FORMSPREE_ID = your-form-id
+         NEXT_PUBLIC_FORMSPREE_ID = your-form-id
     5. Redeploy.
-
-  The form submits JSON to https://formspree.io/f/{VITE_FORMSPREE_ID}.
-  Formspree emails every submission to daniel@rahoperations.com, no backend required.
 */
 
 function Reveal({
@@ -76,6 +73,15 @@ const whoFor = [
   { label: 'Collaborations', detail: 'Partnership inquiries, referral relationships, strategic conversations.' },
 ]
 
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://danielrodriguez.org/' },
+    { '@type': 'ListItem', position: 2, name: 'Contact', item: 'https://danielrodriguez.org/contact' },
+  ],
+}
+
 type FormState = {
   name: string
   email: string
@@ -84,7 +90,7 @@ type FormState = {
   message: string
 }
 
-export default function ContactPage() {
+export default function ContactContent() {
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -109,12 +115,10 @@ export default function ContactPage() {
     setLoading(true)
     setError(null)
 
-    const formspreeId = import.meta.env.VITE_FORMSPREE_ID
+    const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID
 
     if (!formspreeId) {
-      setError(
-        'Form is not configured yet. Please email daniel@rahoperations.com directly.',
-      )
+      setError('Form is not configured yet. Please email daniel@rahoperations.com directly.')
       setLoading(false)
       return
     }
@@ -122,10 +126,7 @@ export default function ContactPage() {
     try {
       const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           name: form.name,
           email: form.email,
@@ -167,28 +168,14 @@ export default function ContactPage() {
 
   return (
     <>
-      <SEO
-        title="Contact Daniel Rodriguez | Work With Me"
-        description="Ready to build something real? Contact Daniel Rodriguez for website design, SEO, business credit, debt relief strategy, or digital marketing. Based in Scottsdale, Arizona — serving clients nationwide."
-        canonical="/contact"
-        keywords="contact Daniel Rodriguez, work with Daniel Rodriguez, Daniel Rodriguez consultation, RAH Operations contact, Scottsdale business consultant"
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-
-      <Helmet>
-        <script type="application/ld+json">{JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://danielrodriguez.org/' },
-            { '@type': 'ListItem', position: 2, name: 'Contact', item: 'https://danielrodriguez.org/contact' },
-          ],
-        })}</script>
-      </Helmet>
 
       <section style={{ background: 'rgba(10,10,10,0.84)' }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-40 lg:py-56">
 
-          {/* Page heading */}
           <motion.div
             ref={headerRef}
             initial={{ opacity: 0, y: 50 }}
@@ -198,22 +185,13 @@ export default function ContactPage() {
           >
             <p
               className="font-sans mb-7"
-              style={{
-                fontSize: '0.62rem',
-                letterSpacing: '0.45em',
-                textTransform: 'uppercase',
-                color: 'rgba(151,204,246,0.6)',
-              }}
+              style={{ fontSize: '0.62rem', letterSpacing: '0.45em', textTransform: 'uppercase', color: 'rgba(151,204,246,0.6)' }}
             >
               004 / Work With Me
             </p>
             <h1
               className="font-display font-bold text-white mb-7"
-              style={{
-                fontSize: 'clamp(2.8rem, 7vw, 6.5rem)',
-                lineHeight: '0.93',
-                letterSpacing: '-0.03em',
-              }}
+              style={{ fontSize: 'clamp(2.8rem, 7vw, 6.5rem)', lineHeight: '0.93', letterSpacing: '-0.03em' }}
             >
               Ready to build
               <br />
@@ -221,27 +199,18 @@ export default function ContactPage() {
             </h1>
             <p
               className="font-sans leading-relaxed max-w-lg"
-              style={{
-                fontSize: '0.9375rem',
-                color: 'rgba(255,255,255,0.38)',
-              }}
+              style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.38)' }}
             >
-              Daniel accepts a limited number of clients each quarter. Reach out if you're
+              Daniel accepts a limited number of clients each quarter. Reach out if you&apos;re
               serious about growing in revenue, reputation, or reach.
             </p>
           </motion.div>
 
-          {/* Who this is for */}
           <Reveal from="up" delay={0}>
             <div className="mb-20 lg:mb-28">
               <p
                 className="font-sans mb-8"
-                style={{
-                  fontSize: '0.62rem',
-                  letterSpacing: '0.45em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(151,204,246,0.42)',
-                }}
+                style={{ fontSize: '0.62rem', letterSpacing: '0.45em', textTransform: 'uppercase', color: 'rgba(151,204,246,0.42)' }}
               >
                 Who This Is For
               </p>
@@ -250,27 +219,14 @@ export default function ContactPage() {
                 style={{ background: 'rgba(255,255,255,0.05)' }}
               >
                 {whoFor.map((item, i) => (
-                  <div
-                    key={item.label}
-                    className="px-6 py-7"
-                    style={{ background: 'rgba(10,10,10,0.82)' }}
-                  >
-                    <p
-                      className="font-sans uppercase tracking-[0.18em] mb-2.5"
-                      style={{ fontSize: '0.58rem', color: 'rgba(151,204,246,0.45)' }}
-                    >
+                  <div key={item.label} className="px-6 py-7" style={{ background: 'rgba(10,10,10,0.82)' }}>
+                    <p className="font-sans uppercase tracking-[0.18em] mb-2.5" style={{ fontSize: '0.58rem', color: 'rgba(151,204,246,0.45)' }}>
                       0{i + 1}
                     </p>
-                    <p
-                      className="font-display font-semibold text-white mb-1.5"
-                      style={{ fontSize: '0.975rem', letterSpacing: '-0.01em', lineHeight: '1.3' }}
-                    >
+                    <p className="font-display font-semibold text-white mb-1.5" style={{ fontSize: '0.975rem', letterSpacing: '-0.01em', lineHeight: '1.3' }}>
                       {item.label}
                     </p>
-                    <p
-                      className="font-sans"
-                      style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.28)', lineHeight: '1.6' }}
-                    >
+                    <p className="font-sans" style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.28)', lineHeight: '1.6' }}>
                       {item.detail}
                     </p>
                   </div>
@@ -279,22 +235,15 @@ export default function ContactPage() {
             </div>
           </Reveal>
 
-          {/* Two-column: info + form */}
           <div className="grid lg:grid-cols-2 gap-20 lg:gap-32">
-
-            {/* Left — quote + contact info */}
             <div>
               <Reveal from="left" delay={0.08}>
                 <blockquote
                   className="font-cormorant italic leading-relaxed mb-14 pl-5"
-                  style={{
-                    fontSize: 'clamp(1.15rem, 2.2vw, 1.5rem)',
-                    color: 'rgba(255,255,255,0.33)',
-                    borderLeft: '2px solid rgba(151,204,246,0.2)',
-                  }}
+                  style={{ fontSize: 'clamp(1.15rem, 2.2vw, 1.5rem)', color: 'rgba(255,255,255,0.33)', borderLeft: '2px solid rgba(151,204,246,0.2)' }}
                 >
-                  "The most powerful brands didn't happen by accident. They were built deliberately —
-                  with a clear strategy, a defined outcome, and someone willing to execute it."
+                  &ldquo;The most powerful brands didn&apos;t happen by accident. They were built deliberately —
+                  with a clear strategy, a defined outcome, and someone willing to execute it.&rdquo;
                 </blockquote>
               </Reveal>
 
@@ -307,29 +256,15 @@ export default function ContactPage() {
                 ].map((item, i) => (
                   <Reveal key={item.label} from="left" delay={0.12 + i * 0.07}>
                     <div>
-                      <p
-                        className="font-sans mb-1.5"
-                        style={{
-                          fontSize: '0.62rem',
-                          letterSpacing: '0.3em',
-                          textTransform: 'uppercase',
-                          color: 'rgba(151,204,246,0.36)',
-                        }}
-                      >
+                      <p className="font-sans mb-1.5" style={{ fontSize: '0.62rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(151,204,246,0.36)' }}>
                         {item.label}
                       </p>
                       {item.href ? (
-                        <a
-                          href={item.href}
-                          className="font-sans text-sm transition-colors duration-300 hover:text-gold"
-                          style={{ color: 'rgba(255,255,255,0.46)' }}
-                        >
+                        <a href={item.href} className="font-sans text-sm transition-colors duration-300 hover:text-gold" style={{ color: 'rgba(255,255,255,0.46)' }}>
                           {item.content}
                         </a>
                       ) : (
-                        <p className="font-sans text-sm" style={{ color: 'rgba(255,255,255,0.46)' }}>
-                          {item.content}
-                        </p>
+                        <p className="font-sans text-sm" style={{ color: 'rgba(255,255,255,0.46)' }}>{item.content}</p>
                       )}
                     </div>
                   </Reveal>
@@ -337,34 +272,14 @@ export default function ContactPage() {
 
                 <Reveal from="left" delay={0.44}>
                   <div>
-                    <p
-                      className="font-sans mb-3"
-                      style={{
-                        fontSize: '0.62rem',
-                        letterSpacing: '0.3em',
-                        textTransform: 'uppercase',
-                        color: 'rgba(151,204,246,0.36)',
-                      }}
-                    >
+                    <p className="font-sans mb-3" style={{ fontSize: '0.62rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(151,204,246,0.36)' }}>
                       Follow
                     </p>
                     <div className="flex gap-6">
-                      <a
-                        href="https://www.linkedin.com/in/danielrodriguez-scottsdale/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-sans text-sm transition-colors duration-300 hover:text-gold"
-                        style={{ color: 'rgba(255,255,255,0.28)' }}
-                      >
+                      <a href="https://www.linkedin.com/in/danielrodriguez-scottsdale/" target="_blank" rel="noopener noreferrer" className="font-sans text-sm transition-colors duration-300 hover:text-gold" style={{ color: 'rgba(255,255,255,0.28)' }}>
                         LinkedIn
                       </a>
-                      <a
-                        href="https://www.instagram.com/drod6211/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-sans text-sm transition-colors duration-300 hover:text-gold"
-                        style={{ color: 'rgba(255,255,255,0.28)' }}
-                      >
+                      <a href="https://www.instagram.com/drod6211/" target="_blank" rel="noopener noreferrer" className="font-sans text-sm transition-colors duration-300 hover:text-gold" style={{ color: 'rgba(255,255,255,0.28)' }}>
                         Instagram
                       </a>
                     </div>
@@ -373,7 +288,6 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Right — form */}
             <Reveal from="right" delay={0.15}>
               {submitted ? (
                 <motion.div
@@ -382,72 +296,23 @@ export default function ContactPage() {
                   transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                   className="flex flex-col items-center justify-center h-full py-24 text-center"
                 >
-                  <div
-                    className="mb-10 mx-auto"
-                    style={{ width: '3rem', height: 1, background: '#97CCF6' }}
-                  />
-                  <h2 className="font-display text-3xl font-semibold text-white mb-5">
-                    Message Received
-                  </h2>
-                  <p
-                    className="font-cormorant text-xl italic leading-relaxed max-w-sm"
-                    style={{ color: 'rgba(255,255,255,0.38)' }}
-                  >
-                    Thank you for reaching out. I'll be in touch within 48 hours to explore what we
+                  <div className="mb-10 mx-auto" style={{ width: '3rem', height: 1, background: '#97CCF6' }} />
+                  <h2 className="font-display text-3xl font-semibold text-white mb-5">Message Received</h2>
+                  <p className="font-cormorant text-xl italic leading-relaxed max-w-sm" style={{ color: 'rgba(255,255,255,0.38)' }}>
+                    Thank you for reaching out. I&apos;ll be in touch within 48 hours to explore what we
                     can build together.
                   </p>
-                  <div
-                    className="mt-10 mx-auto"
-                    style={{ width: '3rem', height: 1, background: '#97CCF6' }}
-                  />
+                  <div className="mt-10 mx-auto" style={{ width: '3rem', height: 1, background: '#97CCF6' }} />
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-
-                  {/* Name + Email */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="Full Name *"
-                      required
-                      value={form.name}
-                      onChange={handleChange}
-                      disabled={loading}
-                      className={inputBase}
-                      style={{ border: '1px solid rgba(255,255,255,0.08)' }}
-                      onFocus={focusBorder}
-                      onBlur={blurBorder}
-                    />
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Email Address *"
-                      required
-                      value={form.email}
-                      onChange={handleChange}
-                      disabled={loading}
-                      className={inputBase}
-                      style={{ border: '1px solid rgba(255,255,255,0.08)' }}
-                      onFocus={focusBorder}
-                      onBlur={blurBorder}
-                    />
+                    <input type="text" name="name" placeholder="Full Name *" required value={form.name} onChange={handleChange} disabled={loading} className={inputBase} style={{ border: '1px solid rgba(255,255,255,0.08)' }} onFocus={focusBorder} onBlur={blurBorder} />
+                    <input type="email" name="email" placeholder="Email Address *" required value={form.email} onChange={handleChange} disabled={loading} className={inputBase} style={{ border: '1px solid rgba(255,255,255,0.08)' }} onFocus={focusBorder} onBlur={blurBorder} />
                   </div>
 
-                  {/* Phone + Reason */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input
-                      type="tel"
-                      name="phone"
-                      placeholder="Phone (optional)"
-                      value={form.phone}
-                      onChange={handleChange}
-                      disabled={loading}
-                      className={inputBase}
-                      style={{ border: '1px solid rgba(255,255,255,0.08)' }}
-                      onFocus={focusBorder}
-                      onBlur={blurBorder}
-                    />
+                    <input type="tel" name="phone" placeholder="Phone (optional)" value={form.phone} onChange={handleChange} disabled={loading} className={inputBase} style={{ border: '1px solid rgba(255,255,255,0.08)' }} onFocus={focusBorder} onBlur={blurBorder} />
                     <select
                       name="reason"
                       value={form.reason}
@@ -467,18 +332,13 @@ export default function ContactPage() {
                       onFocus={focusBorder}
                       onBlur={blurBorder}
                     >
-                      <option value="" disabled style={{ background: '#0a0a0a' }}>
-                        Reason for Reaching Out
-                      </option>
+                      <option value="" disabled style={{ background: '#0a0a0a' }}>Reason for Reaching Out</option>
                       {reasons.map((r) => (
-                        <option key={r} value={r} style={{ background: '#0a0a0a' }}>
-                          {r}
-                        </option>
+                        <option key={r} value={r} style={{ background: '#0a0a0a' }}>{r}</option>
                       ))}
                     </select>
                   </div>
 
-                  {/* Message */}
                   <textarea
                     name="message"
                     placeholder="Tell me where your business is now and where you want it to go. Be specific — the more context you share, the more useful our first conversation will be. *"
@@ -493,7 +353,6 @@ export default function ContactPage() {
                     onBlur={blurBorder}
                   />
 
-                  {/* Error message */}
                   {error && (
                     <motion.p
                       initial={{ opacity: 0, y: -8 }}
@@ -505,7 +364,6 @@ export default function ContactPage() {
                     </motion.p>
                   )}
 
-                  {/* Submit */}
                   <div className="pt-1">
                     <motion.button
                       type="submit"
@@ -525,27 +383,19 @@ export default function ContactPage() {
                     >
                       {loading ? (
                         <>
-                          <span
-                            className="block w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin"
-                          />
+                          <span className="block w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
                           Sending…
                         </>
                       ) : (
                         <>
                           Send Message
-                          <span
-                            className="block h-px group-hover:w-8 transition-all duration-400"
-                            style={{ width: '0.875rem', background: '#0a0a0a' }}
-                          />
+                          <span className="block h-px group-hover:w-8 transition-all duration-400" style={{ width: '0.875rem', background: '#0a0a0a' }} />
                         </>
                       )}
                     </motion.button>
                   </div>
 
-                  <p
-                    className="font-sans text-center"
-                    style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.16)' }}
-                  >
+                  <p className="font-sans text-center" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.16)' }}>
                     No spam. No automation. A real reply within 48 hours.
                   </p>
                 </form>

@@ -1,7 +1,7 @@
+'use client'
+
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Helmet } from 'react-helmet-async'
-import SEO from '../components/SEO'
 
 const outlets = ['PRLog', 'BizWire Express', '1888 Press Release', 'Articleted']
 
@@ -58,6 +58,15 @@ const pressItems = [
   },
 ]
 
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://danielrodriguez.org/' },
+    { '@type': 'ListItem', position: 2, name: 'Press', item: 'https://danielrodriguez.org/press' },
+  ],
+}
+
 function Reveal({
   children,
   delay = 0,
@@ -81,12 +90,8 @@ function Reveal({
 
   const animate =
     from === 'clip'
-      ? inView
-        ? { clipPath: 'inset(0% 0 0 0)', opacity: 1 }
-        : {}
-      : inView
-        ? { opacity: 1, x: 0, y: 0 }
-        : {}
+      ? inView ? { clipPath: 'inset(0% 0 0 0)', opacity: 1 } : {}
+      : inView ? { opacity: 1, x: 0, y: 0 } : {}
 
   return (
     <motion.div
@@ -100,45 +105,20 @@ function Reveal({
   )
 }
 
-export default function PressPage() {
+export default function PressContent() {
   const headerRef = useRef<HTMLDivElement>(null)
   const headerInView = useInView(headerRef, { once: true, margin: '-80px' })
 
   return (
     <>
-      <SEO
-        title="Daniel Rodriguez In The Media | Press & Recognition"
-        description="Media coverage of Daniel Rodriguez, founder of RAH Operations LLC — featured in PRLog, BizWire Express, 1888 Press Release, and Articleted for his work in digital marketing, business credit, and entrepreneurship."
-        canonical="/press"
-        keywords="Daniel Rodriguez press, Daniel Rodriguez media, Daniel Rodriguez PRLog, RAH Operations coverage"
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-
-      {/* BreadcrumbList Schema */}
-      <Helmet>
-        <script type="application/ld+json">{JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          itemListElement: [
-            {
-              '@type': 'ListItem',
-              position: 1,
-              name: 'Home',
-              item: 'https://danielrodriguez.org/',
-            },
-            {
-              '@type': 'ListItem',
-              position: 2,
-              name: 'Press',
-              item: 'https://danielrodriguez.org/press',
-            },
-          ],
-        })}</script>
-      </Helmet>
 
       <section style={{ background: 'rgba(10,10,10,0.86)' }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-40 lg:py-56">
 
-          {/* Header — clip reveal */}
           <motion.div
             ref={headerRef}
             initial={{ clipPath: 'inset(100% 0 0 0)', opacity: 0 }}
@@ -148,22 +128,13 @@ export default function PressPage() {
           >
             <p
               className="font-sans mb-6"
-              style={{
-                fontSize: '0.65rem',
-                letterSpacing: '0.45em',
-                textTransform: 'uppercase',
-                color: 'rgba(151,204,246,0.6)',
-              }}
+              style={{ fontSize: '0.65rem', letterSpacing: '0.45em', textTransform: 'uppercase', color: 'rgba(151,204,246,0.6)' }}
             >
               002 / In The Media
             </p>
             <h1
               className="font-display font-bold text-white"
-              style={{
-                fontSize: 'clamp(2.8rem, 5.5vw, 4.8rem)',
-                lineHeight: '1.0',
-                letterSpacing: '-0.025em',
-              }}
+              style={{ fontSize: 'clamp(2.8rem, 5.5vw, 4.8rem)', lineHeight: '1.0', letterSpacing: '-0.025em' }}
             >
               Press &amp;{' '}
               <span className="italic" style={{ color: '#97CCF6' }}>
@@ -172,21 +143,16 @@ export default function PressPage() {
             </h1>
           </motion.div>
 
-          {/* Intro statement */}
           <Reveal from="up" delay={0.12}>
             <p
               className="font-cormorant italic mb-20 max-w-2xl"
-              style={{
-                fontSize: 'clamp(1.1rem, 2vw, 1.4rem)',
-                color: 'rgba(255,255,255,0.32)',
-              }}
+              style={{ fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', color: 'rgba(255,255,255,0.32)' }}
             >
               Five media features across four independent publications. All earned — no paid
               placements, no PR shortcuts.
             </p>
           </Reveal>
 
-          {/* Outlet marquee */}
           <Reveal from="clip" delay={0.18}>
             <div
               className="overflow-hidden mb-24"
@@ -215,7 +181,6 @@ export default function PressPage() {
             </div>
           </Reveal>
 
-          {/* Press items — editorial list */}
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
             {pressItems.map((item, i) => (
               <Reveal key={i} delay={0.04} from={i % 2 === 0 ? 'left' : 'right'}>
@@ -234,58 +199,36 @@ export default function PressPage() {
                   whileHover={{ x: i % 2 === 0 ? 7 : -7 }}
                   transition={{ type: 'spring', stiffness: 280, damping: 28 }}
                 >
-                  {/* Number */}
                   <div
                     className="font-sans pt-1"
-                    style={{
-                      fontSize: '0.65rem',
-                      letterSpacing: '0.4em',
-                      textTransform: 'uppercase',
-                      color: 'rgba(151,204,246,0.28)',
-                    }}
+                    style={{ fontSize: '0.65rem', letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(151,204,246,0.28)' }}
                   >
                     {item.num}
                   </div>
 
-                  {/* Content */}
                   <div>
                     <div className="flex flex-wrap items-center gap-4 mb-4">
-                      <span
-                        className="font-display font-semibold"
-                        style={{ fontSize: '0.8rem', color: '#97CCF6' }}
-                      >
+                      <span className="font-display font-semibold" style={{ fontSize: '0.8rem', color: '#97CCF6' }}>
                         {item.outlet}
                       </span>
-                      <span
-                        className="font-sans tracking-widest"
-                        style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)' }}
-                      >
+                      <span className="font-sans tracking-widest" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)' }}>
                         {item.date}
                       </span>
                     </div>
                     <h2
                       className="font-display font-semibold text-white group-hover:text-gold transition-colors duration-400 mb-4"
-                      style={{
-                        fontSize: 'clamp(1rem, 1.8vw, 1.35rem)',
-                        lineHeight: '1.35',
-                        letterSpacing: '-0.01em',
-                      }}
+                      style={{ fontSize: 'clamp(1rem, 1.8vw, 1.35rem)', lineHeight: '1.35', letterSpacing: '-0.01em' }}
                     >
                       {item.headline}
                     </h2>
                     <p
                       className="font-sans leading-relaxed"
-                      style={{
-                        fontSize: '0.825rem',
-                        color: 'rgba(255,255,255,0.3)',
-                        maxWidth: '42rem',
-                      }}
+                      style={{ fontSize: '0.825rem', color: 'rgba(255,255,255,0.3)', maxWidth: '42rem' }}
                     >
                       {item.excerpt}
                     </p>
                   </div>
 
-                  {/* Read link */}
                   <div
                     className="hidden md:flex items-center gap-3 font-sans tracking-widest uppercase text-gold/25 group-hover:text-gold transition-colors duration-400 pt-1 whitespace-nowrap"
                     style={{ fontSize: '0.65rem' }}
