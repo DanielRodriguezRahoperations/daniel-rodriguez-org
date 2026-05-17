@@ -2,13 +2,7 @@
 
 import { useRef } from 'react'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import { motion, useInView } from 'framer-motion'
-
-const FloatingGeometry = dynamic(
-  () => import('@/components/FloatingGeometry'),
-  { ssr: false }
-)
 
 const stats = [
   { value: '10+', label: 'Years Operating' },
@@ -208,7 +202,6 @@ export default function AboutContent() {
                     'radial-gradient(ellipse at 50% 50%, rgba(151,204,246,0.04) 0%, transparent 70%)',
                 }}
               />
-              <FloatingGeometry />
             </Reveal>
           </div>
 

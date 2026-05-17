@@ -1,15 +1,9 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-
-const ParticleBackground = dynamic(
-  () => import('@/components/ParticleBackground'),
-  { ssr: false }
-)
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   const [heroProgress, setHeroProgress] = useState(0)
@@ -25,7 +19,6 @@ export default function ClientShell({ children }: { children: React.ReactNode })
 
   return (
     <div className="bg-[#0a0a0a] min-h-screen overflow-x-hidden relative">
-      <ParticleBackground />
       <div className="relative z-10">
         <Navbar heroProgress={heroProgress} />
         <main>{children}</main>
